@@ -1,0 +1,16 @@
+import { sqliteTable, text, primaryKey } from "drizzle-orm/sqlite-core";
+import { userTable } from "../auth/auth.sql";
+import { timestamps } from '../drizzle/types'
+import { Provider } from './provider'
+
+export const providerTable = sqliteTable("provider", {
+  ...timestamps,
+  provider: text("provider").
+    $type<Provider.Entity['provider']>()
+    .notNull(),
+  apiKey: text("api_key")
+    .notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => userTable.id, { onDelete: "cascade" }),
+}, (table) => [primaryKey({ columns: [table.userId, table.provider] })]);

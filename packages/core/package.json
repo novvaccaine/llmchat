@@ -1,0 +1,25 @@
+{
+  "name": "@llmchat/core",
+  "version": "0.0.1",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {},
+  "packageManager": "pnpm@10.13.1",
+  "devDependencies": {
+    "@tsconfig/node22": "*",
+    "@types/node": "*",
+    "drizzle-kit": "^0.31.4"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.10",
+    "@openrouter/ai-sdk-provider": "^0.7.3",
+    "ai": "^4.3.19",
+    "better-auth": "*",
+    "drizzle-orm": "^0.44.3",
+    "ulid": "^3.0.1",
+    "zod": "*"
+  }
+}

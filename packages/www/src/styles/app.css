@@ -1,0 +1,47 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@config "../../tailwind.config.ts";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --color-bg: hsl(235, 19%, 13%);
+  --color-bg-2: hsl(235, 19%, 18%);
+  --color-sidebar: hsl(235, 19%, 10%);
+  --color-fg: hsl(235, 19%, 90%);
+  --color-muted: hsl(235, 19%, 59%);
+  --color-border: hsl(235, 19%, 25%);
+  --color-brand: hsl(263deg, 32.54%, 68.64%);
+}
+
+html, body, #root {
+  @apply h-full;
+}
+
+body {
+  @apply bg-bg text-fg;
+}
+
+.scroller {
+  @apply overflow-x-auto;
+}
+
+*::-webkit-scrollbar {
+  @apply size-2;
+}
+
+*::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply bg-bg-2 rounded-md;
+}
+
+textarea::placeholder, input::placeholder {
+  @apply text-muted resize-none;
+}
+
+button {
+  @apply cursor-pointer;
+}

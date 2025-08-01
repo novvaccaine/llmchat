@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "stream",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-07-26",
+  "compatibility_flags": ["nodejs_compat"],
+   "migrations": [
+      {
+        "new_sqlite_classes": ["StreamDO"],
+        "tag": "v1",
+      },
+    ],
+    "durable_objects": {
+      "bindings": [
+        {
+          "class_name": "StreamDO",
+          "name": "STREAM_DO",
+        },
+      ],
+    },
+    "observability": {
+      "enabled": true,
+    },
+}
