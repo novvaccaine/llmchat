@@ -3,8 +3,12 @@ import { Conversation } from "@llmchat/core/conversation/conversation";
 import { Message } from "@llmchat/core/messsage/message";
 import { queryClient } from ".";
 
+// TODO: only call this function is user is authorized
 async function getConversation() {
   const res = await fetch("/api/conversation");
+  if (!res.ok) {
+    return [];
+  }
   const data = await res.json();
   return data.conversation as Conversation.Entity[];
 }
@@ -34,11 +38,10 @@ async function updateConversation(input: Message.CreateInput) {
   return data.messageID as string;
 }
 
-export function conversationQueryOptions(enabled: boolean) {
+export function conversationQueryOptions() {
   return queryOptions({
     queryKey: ["conversation"],
     queryFn: getConversation,
-    enabled,
   });
 }
 

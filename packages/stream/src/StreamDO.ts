@@ -29,16 +29,17 @@ export class StreamDO extends DurableObject {
   async generateContent(conversationID: string, userID: string, model: string) {
     Actor.provide("user", { userID }, async () => {
       try {
-        const stream = await AI.generateContent({
+        const stream = AI.generateContent({
           conversationID,
           model,
 
-          onFinish: (content: string) => {
+          onFinish: (content: string, title: string | undefined) => {
             this.publishEvent({
               type: "generated_content",
               data: {
                 content,
                 conversationID,
+                title,
               },
             });
             delete this.conversation[conversationID];
@@ -55,17 +56,18 @@ export class StreamDO extends DurableObject {
           },
         });
 
-        for await (const chunk of stream.textStream) {
+        for await (const data of stream) {
           if (!this.conversation[conversationID]) {
-            this.conversation[conversationID] = chunk;
+            this.conversation[conversationID] = data.content;
           } else {
-            this.conversation[conversationID] += chunk;
+            this.conversation[conversationID] += data.content;
           }
           this.publishEvent({
             type: "generating_content",
             data: {
               conversationID,
               content: this.conversation[conversationID],
+              title: data.title,
             },
           });
         }

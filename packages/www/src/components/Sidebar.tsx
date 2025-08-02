@@ -5,7 +5,7 @@ import { Route } from '@/routes/__root';
 import { Conversation } from '@llmchat/core/conversation/conversation';
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { LoadingIcon } from './LoadingIcon';
-import { useStreamStore } from '@/utils/streamStore';
+import { useConversationStore } from '@/utils/conversationStore';
 
 type Props = {
   conversation: Conversation.Entity[]
@@ -13,7 +13,7 @@ type Props = {
 
 export function Sidebar(props: Props) {
   const user = Route.useRouteContext().user
-  const streamConversation = useStreamStore().conversation
+  const conversation = useConversationStore().conversation
 
   const signIn = async () => {
     await authClient.signIn.social({
@@ -31,20 +31,19 @@ export function Sidebar(props: Props) {
 
       <div className='mt-6 flex flex-col gap-0.5'>
         {props.conversation.map(c => {
-          const streamEntry = streamConversation[c.id]
-          const title = (streamEntry ? streamEntry.title : c.title) ?? 'Untitled'
-          const isGenerating = streamEntry ? !streamEntry.generated : false
+          const entry = conversation[c.id]
+          const title = (entry?.title ?? c.title) ?? 'Untitled'
 
           return (
             <Tooltip.Provider key={c.id}>
               <Tooltip.Root>
-                <Tooltip.Trigger className='hover:bg-bg px-4 py-2 rounded-md flex gap-4 items-center'>
-                  <Link className='truncate' to="/conversation/$conversationID" params={{ conversationID: c.id }}>
-                    {title}
+                <Tooltip.Trigger asChild>
+                  <Link className='hover:bg-bg px-4 py-2 rounded-md flex gap-4 items-center' to="/conversation/$conversationID" params={{ conversationID: c.id }} activeProps={{ className: 'bg-bg' }}>
+                    <span className='truncate'>{title}</span>
+                    {entry && (
+                      <LoadingIcon className='shrink-0 text-brand/40 fill-white ml-auto' />
+                    )}
                   </Link>
-                  {isGenerating && (
-                    <LoadingIcon className='shrink-0 text-brand/40 fill-white ml-auto' />
-                  )}
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
                   <Tooltip.Content className='bg-bg px-2 py-1 rounded-md border border-border' side='bottom'>

@@ -4,7 +4,7 @@ import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { CodeHighlight } from '@/components/CodeHighlight'
 import { rehypeInlineCodeProperty } from "react-shiki";
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 type MessagesProps = {
   messages: Message.Entity[]
@@ -14,13 +14,6 @@ type MessagesProps = {
 export function Messages(props: MessagesProps) {
   const { messages, streamingContent } = props
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!messagesEndRef.current) {
-      return
-    }
-    messagesEndRef.current.scrollIntoView()
-  }, [props.messages])
 
   return <div className="flex-1 flex flex-col gap-8 pb-[60px]">
     {messages.map((message) => {

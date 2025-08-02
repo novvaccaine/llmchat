@@ -9,17 +9,15 @@ export const Route = createFileRoute('/_layout')({
     if (!context.user) {
       return []
     }
-    return context.queryClient.ensureQueryData(conversationQueryOptions(true))
+    return context.queryClient.ensureQueryData(conversationQueryOptions())
   }
 })
 
-// TODO: test this component to check how it handles when the user is not logged in
 function RouteComponent() {
-  const enabled = Route.useRouteContext().user !== null
-  const { data: conversation } = useSuspenseQuery(conversationQueryOptions(enabled))
+  const { data: conversation } = useSuspenseQuery(conversationQueryOptions())
 
   return (
-    <div className='h-full'>
+    <div className='h-full overflow-auto'>
       <Sidebar conversation={conversation} />
       <div className="ml-[270px] h-full">
         <Outlet />

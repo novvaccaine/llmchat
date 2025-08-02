@@ -1,6 +1,7 @@
 import { Event } from "@llmchat/core/event";
 import { WebSocket } from "partysocket";
-import { useStreamStore } from "./streamStore";
+import { useConversationStore } from "./conversationStore";
+import { queryClient } from ".";
 
 export class WS {
   socket: WebSocket | null = null;
@@ -23,15 +24,28 @@ export class WS {
         const event: Event.Event = JSON.parse(message.data);
         switch (event.type) {
           case "generated_content": {
-            useStreamStore.getState().onGeneratedContent(event);
+            const keys = [
+              ["conversation"],
+              ["conversation", event.data.conversationID],
+            ];
+            Promise.all(
+              keys.map((queryKey) =>
+                queryClient.invalidateQueries({
+                  queryKey,
+                  refetchType: "all",
+                }),
+              ),
+            ).then(() => {
+              useConversationStore.getState().onGeneratedContent(event.data);
+            });
             break;
           }
           case "generating_content": {
-            useStreamStore.getState().onGeneratingContent(event);
+            useConversationStore.getState().onGeneratingContent(event.data);
             break;
           }
           case "generated_title": {
-            useStreamStore.getState().onGeneratedTitle(event);
+            useConversationStore.getState().onGeneratedTitle(event.data);
             break;
           }
           default: {
