@@ -3,6 +3,7 @@ import { json } from "@tanstack/react-start";
 import { authMiddleware, validationMiddleware } from "@/middlewares";
 import { Message } from "@llmchat/core/messsage/message";
 import z from "zod";
+import { Conversation } from "@llmchat/core/conversation/conversation";
 
 export const ServerRoute = createServerFileRoute(
   "/api/conversation/$conversationID",
@@ -10,6 +11,11 @@ export const ServerRoute = createServerFileRoute(
   GET: api.middleware([authMiddleware]).handler(async ({ params }) => {
     const conversation = await Message.list(params.conversationID);
     return json({ conversation });
+  }),
+
+  DELETE: api.middleware([authMiddleware]).handler(async ({ params }) => {
+    const conversationID = await Conversation.remove(params.conversationID);
+    return json({ conversationID });
   }),
 
   PUT: api

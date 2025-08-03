@@ -12,6 +12,7 @@
   --color-muted: hsl(235, 19%, 59%);
   --color-border: hsl(235, 19%, 25%);
   --color-brand: hsl(263deg, 32.54%, 68.64%);
+  --color-danger: hsl(349, 89%, 72%);
 }
 
 html, body, #root {

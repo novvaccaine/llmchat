@@ -27,8 +27,15 @@ export namespace AI {
     let title: string | undefined = undefined;
     if (messages.length === 1) {
       title = await generateTitle(messages[0].content);
-      await Conversation.update(input.conversationID, title);
+      await Conversation.update(input.conversationID, {
+        title,
+        status: "streaming",
+      });
       input.onTitleGenerate(title);
+    }
+
+    if (!title) {
+      await Conversation.update(input.conversationID, { status: "streaming" });
     }
 
     const chat = createOpenRouter({

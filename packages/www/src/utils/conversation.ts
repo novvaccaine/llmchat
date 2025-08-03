@@ -19,6 +19,9 @@ async function getConversation() {
 async function getMessages(conversationID: string) {
   const res = await fetch(`/api/conversation/${conversationID}`);
   const data = await res.json();
+  if (!res.ok) {
+    throw new Error("failed to fetch messages for conversation");
+  }
   return data.conversation as Conversation.Entity & {
     messages: Message.Entity[];
   };
@@ -41,6 +44,15 @@ async function updateConversation(input: Message.CreateInput) {
   });
   const data = await res.json();
   return data.messageID as string;
+}
+
+async function deleteConversation(conversationID: string) {
+  const res = await fetch(`/api/conversation/${conversationID}`, {
+    method: "DELETE",
+    body: JSON.stringify({ conversationID }),
+  });
+  const data = await res.json();
+  return data.conversationID as string;
 }
 
 export function conversationQueryOptions() {
@@ -76,6 +88,18 @@ export function useUpdateConversation() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["conversation", variables.conversationID],
+      });
+    },
+  });
+}
+
+export function useDeleteConveration() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (conversationID: string) => deleteConversation(conversationID),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["conversation"],
       });
     },
   });

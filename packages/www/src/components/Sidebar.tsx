@@ -1,76 +1,184 @@
-import { authClient } from '@/utils'
-import { LogIn as LoginIcon } from 'lucide-react';
-import { Link } from '@tanstack/react-router'
-import { Route } from '@/routes/__root';
-import { Conversation } from '@llmchat/core/conversation/conversation';
+import { authClient } from "@/utils";
+import { LogIn as LoginIcon } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Route } from "@/routes/__root";
+import { Conversation } from "@llmchat/core/conversation/conversation";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { LoadingIcon } from './LoadingIcon';
-import { useConversationStore } from '@/utils/conversationStore';
+import { LoadingIcon } from "./LoadingIcon";
+import { useConversationStore } from "@/utils/conversationStore";
+import { EllipsisVertical as OptionsIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useHover } from "@uidotdev/usehooks";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { useState } from "react";
+import { Trash2 as DeleteIcon, SquarePen as EditIcon } from "lucide-react";
+import { useUIStore } from "@/utils/uiStore";
 
 type Props = {
-  conversation: Conversation.Entity[]
-}
+  conversation: Conversation.Entity[];
+};
 
 export function Sidebar(props: Props) {
-  const user = Route.useRouteContext().user
-  const conversation = useConversationStore().conversation
+  const user = Route.useRouteContext().user;
+  const conversation = useConversationStore().conversation;
 
   const signIn = async () => {
     await authClient.signIn.social({
       provider: "google",
-    })
-  }
+    });
+  };
 
   return (
     <div className="h-full bg-sidebar p-4 flex flex-col">
-      <Link className='text-lg font-semibold text-center' to="/">
+      <Link className="text-lg font-semibold text-center" to="/">
         LLM Chat
       </Link>
 
-      <Link to="/" className='mt-4 bg-brand text-black px-4 py-2 rounded-md text-center'>
+      <Link
+        to="/"
+        className="mt-4 bg-brand text-black px-4 py-2 rounded-md text-center"
+      >
         New Chat
       </Link>
 
-      <div className='mt-6 flex flex-col gap-0.5 flex-1'>
-        {props.conversation.map(c => {
-          const entry = conversation[c.id]
-          const title = (entry?.title ?? c.title) ?? 'Untitled'
-
+      <div className="mt-6 flex flex-col gap-0.5 flex-1">
+        {props.conversation.map((c) => {
+          const entry = conversation[c.id];
+          const title = entry?.title ?? c.title ?? "Untitled";
           return (
-            <Tooltip.Provider key={c.id}>
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <Link className='hover:bg-bg px-4 py-2 rounded-md flex gap-4 items-center' to="/conversation/$conversationID" params={{ conversationID: c.id }} activeProps={{ className: 'bg-bg' }}>
-                    <span className='truncate'>{title}</span>
-                    {entry && (
-                      <LoadingIcon className='shrink-0 text-brand/40 fill-white ml-auto' />
-                    )}
-                  </Link>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content className='bg-bg px-2 py-1 rounded-md border border-border max-w-[320px]' side='bottom'>
-                    {title}
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
-            </Tooltip.Provider>
-          )
+            <ConversationLink
+              key={c.id}
+              conversation={{ ...c, title }}
+              isGenerating={Boolean(entry)}
+            />
+          );
         })}
       </div>
 
-      <div className='mt-auto'>
+      <div className="mt-auto">
         {user ? (
-          <Link to="/settings" className='px-3 py-2 rounded-md flex gap-3 items-center hover:bg-bg'>
-            <img className='size-8 rounded-full' src={user.image!} alt="avatar" referrerPolicy='no-referrer' />
+          <Link
+            to="/settings"
+            className="px-3 py-2 rounded-md flex gap-3 items-center hover:bg-bg"
+          >
+            <img
+              className="size-8 rounded-full"
+              src={user.image!}
+              alt="avatar"
+              referrerPolicy="no-referrer"
+            />
             <span>{user.name}</span>
           </Link>
         ) : (
-          <button onClick={signIn} className='flex gap-3 items-center hover:bg-bg w-full px-4 py-2 rounded-md'>
-            <span><LoginIcon size={16} /></span>
+          <button
+            onClick={signIn}
+            className="flex gap-3 items-center hover:bg-bg w-full px-4 py-2 rounded-md"
+          >
+            <span>
+              <LoginIcon size={16} />
+            </span>
             <span>Login</span>
           </button>
         )}
       </div>
     </div>
-  )
+  );
+}
+
+type ConversationProps = {
+  conversation: Conversation.Entity;
+  isGenerating: boolean;
+};
+
+function ConversationLink(props: ConversationProps) {
+  const { conversation, isGenerating } = props;
+  const [ref, hovering] = useHover();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Link
+      ref={ref}
+      className="hover:bg-bg px-4 py-2 rounded-md flex gap-4 items-center"
+      to="/conversation/$conversationID"
+      params={{ conversationID: conversation.id }}
+      activeProps={{ className: "bg-bg" }}
+    >
+      <Tooltip.Provider>
+        <Tooltip.Root>
+          <Tooltip.Trigger asChild>
+            <span className="truncate">{conversation.title}</span>
+          </Tooltip.Trigger>
+          <Tooltip.Portal>
+            <Tooltip.Content
+              className="bg-bg px-2 py-1 rounded-md border border-border max-w-[320px]"
+              side="bottom"
+            >
+              {conversation.title}
+            </Tooltip.Content>
+          </Tooltip.Portal>
+        </Tooltip.Root>
+      </Tooltip.Provider>
+      {isGenerating && (
+        <LoadingIcon className="shrink-0 text-brand/40 fill-white ml-auto" />
+      )}
+      <AnimatePresence>
+        {(hovering || open) && !isGenerating && (
+          <ConversationOptions setOpen={setOpen} conversation={conversation} />
+        )}
+      </AnimatePresence>
+    </Link>
+  );
+}
+
+type ConversationOptionsProps = {
+  setOpen: (open: boolean) => void;
+  conversation: Conversation.Entity;
+};
+
+function ConversationOptions(props: ConversationOptionsProps) {
+  const setDialog = useUIStore().setDialog;
+
+  return (
+    <DropdownMenu.Root onOpenChange={props.setOpen}>
+      <DropdownMenu.Trigger asChild>
+        <motion.button
+          initial={{ x: 10 }}
+          animate={{ x: 0 }}
+          transition={{
+            duration: 0.1,
+            ease: "easeInOut",
+          }}
+          className="shrink-0 ml-auto p-1 hover:bg-bg-2 rounded-md"
+        >
+          <OptionsIcon size={16} />
+        </motion.button>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content className="bg-bg border border-border p-3 px-2 rounded-md flex flex-col gap-2">
+          <DropdownMenu.Item
+            className="flex gap-3 px-2 py-1 rounded-md items-center data-highlighted:outline-none data-highlighted:bg-bg-2 cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <EditIcon size={16} />
+            <span>Rename</span>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            className="flex gap-3 px-2 py-1 rounded-md items-center data-highlighted:outline-none data-highlighted:bg-danger/5 cursor-pointer text-danger"
+            onClick={(e) => {
+              e.stopPropagation();
+              setDialog({
+                type: "delete_conversation",
+                data: props.conversation,
+              });
+            }}
+          >
+            <DeleteIcon size={16} />
+            <span>Delete</span>
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
+  );
 }
