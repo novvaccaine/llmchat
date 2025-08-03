@@ -1,7 +1,10 @@
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Conversation } from "@llmchat/core/conversation/conversation";
 import { Message } from "@llmchat/core/messsage/message";
-import { queryClient } from ".";
 
 // TODO: only call this function is user is authorized
 async function getConversation() {
@@ -16,7 +19,9 @@ async function getConversation() {
 async function getMessages(conversationID: string) {
   const res = await fetch(`/api/conversation/${conversationID}`);
   const data = await res.json();
-  return data.messages as Message.Entity[];
+  return data.conversation as Conversation.Entity & {
+    messages: Message.Entity[];
+  };
 }
 
 async function createConversation(content: string) {
@@ -53,6 +58,7 @@ export function messagesQueryOptions(conversationID: string) {
 }
 
 export function useCreateConversation() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (content: string) => createConversation(content),
     onSuccess: () => {
@@ -64,6 +70,7 @@ export function useCreateConversation() {
 }
 
 export function useUpdateConversation() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: Message.CreateInput) => updateConversation(input),
     onSuccess: (_, variables) => {

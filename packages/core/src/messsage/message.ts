@@ -47,8 +47,22 @@ export namespace Message {
     return messageRows[0].id;
   }
 
-  export function list(conversationID: string) {
-    return db
+  export async function list(conversationID: string) {
+    const rows = await db
+      .select()
+      .from(conversationTable)
+      .where(
+        and(
+          eq(conversationTable.userId, Actor.userID()),
+          eq(conversationTable.id, conversationID),
+        ),
+      );
+    if (!rows.length) {
+      throw new Error("conversation not found");
+    }
+    const conversation = rows[0];
+
+    const messages = await db
       .select({
         id: messageTable.id,
         content: messageTable.content,
@@ -56,16 +70,13 @@ export namespace Message {
         model: messageTable.content,
       })
       .from(messageTable)
-      .innerJoin(
-        conversationTable,
-        eq(conversationTable.id, messageTable.conversationID),
-      )
-      .where(
-        and(
-          eq(messageTable.conversationID, conversationID),
-          eq(conversationTable.userId, Actor.userID()),
-        ),
-      )
+      .where(and(eq(messageTable.conversationID, conversationID)))
       .orderBy(asc(messageTable.createdAt));
+
+    return {
+      id: conversation.id,
+      title: conversation.title,
+      messages,
+    };
   }
 }

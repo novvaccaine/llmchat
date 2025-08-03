@@ -58,14 +58,14 @@ export const Route = createRootRouteWithContext<{
 })
 
 function RootComponent() {
-  const user = Route.useRouteContext().user
+  const { user, queryClient } = Route.useRouteContext()
 
   useEffect(() => {
     if (!user) {
       return
     }
-    ws.init()
-  }, [user])
+    ws.init(queryClient)
+  }, [user, queryClient])
 
   return (
     <RootDocument>

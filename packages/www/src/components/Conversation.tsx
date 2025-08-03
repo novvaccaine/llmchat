@@ -8,7 +8,7 @@ import { useConversationStore } from "@/utils/conversationStore";
 import { createServerFn } from '@tanstack/react-start'
 import z from 'zod';
 import { getCookie } from '@tanstack/react-start/server';
-import { useStickToBottom } from 'use-stick-to-bottom';
+import { cn } from '@/utils';
 
 type Props = {
   messages: Message.Entity[]
@@ -47,11 +47,9 @@ export function Conversation(props: Props) {
   const navigate = useNavigate()
   const { conversationID } = useParams({ strict: false })
   const streamingContent = useConversationStore().conversation[conversationID!]?.content
-  const { scrollRef, contentRef } = useStickToBottom()
+  const isNewConversation = !props.messages.length
 
   async function onNewMessage(content: string) {
-    const isNewConversation = !props.messages.length
-
     try {
       let cID = conversationID
       if (isNewConversation) {
@@ -77,11 +75,20 @@ export function Conversation(props: Props) {
   }
 
   return (
-    <div className="h-full px-4 pt-8 overflow-auto flex flex-col" ref={scrollRef}>
-      <div className='w-full max-w-3xl mx-auto flex flex-col flex-1' ref={contentRef}>
-        <Messages messages={props.messages} streamingContent={streamingContent} />
-        <ChatInput onNewMessage={onNewMessage} />
-      </div>
+    <div className={cn("h-full px-4 pt-8 overflow-auto flex flex-col", {
+      "items-center justify-center": isNewConversation
+    })}>
+      {isNewConversation ? (
+        <div className='max-w-2xl w-full flex flex-col items-center justify-center gap-3'>
+          <p className='text-3xl font-semibold'>How can I assist you today?</p>
+          <ChatInput onNewMessage={onNewMessage} isNewConversation />
+        </div>
+      ) : (
+        <div className='w-full max-w-3xl mx-auto flex flex-col flex-1'>
+          <Messages messages={props.messages} streamingContent={streamingContent} />
+          <ChatInput onNewMessage={onNewMessage} />
+        </div>
+      )}
     </div>
   )
 }

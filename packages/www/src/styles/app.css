@@ -22,8 +22,19 @@ body {
   @apply bg-bg text-fg;
 }
 
-.scroller {
-  @apply overflow-x-auto;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+p,
+blockquote,
+pre,
+code,
+a {
+  @apply break-words;
 }
 
 *::-webkit-scrollbar {

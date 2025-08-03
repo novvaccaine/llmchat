@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
+import { cn } from '@/utils'
+import React, { useEffect, useRef, useState } from 'react'
 
 type ChatInputProps = {
   onNewMessage: (content: string) => void
+  isNewConversation?: boolean
 }
 
 export function ChatInput(props: ChatInputProps) {
   const [content, setContent] = useState('')
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   async function handleSubmit() {
     const input = content.trim()
@@ -23,14 +26,21 @@ export function ChatInput(props: ChatInputProps) {
     }
   }
 
+  useEffect(() => {
+    if (!textareaRef.current) {
+      return
+    }
+    textareaRef.current.focus()
+  }, [])
+
   return (
-    <div className='grid place-items-center sticky bottom-0 left-[270px] w-full max-w-3xl z-[4]'>
-      <textarea className="rounded-t-md bg-bg-2 border border-border w-full p-2 resize-none focus:outline-none" rows={4}
-        placeholder='Type your message here...'
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
-    </div>
+    <textarea ref={textareaRef} className={cn("sticky bottom-0 rounded-t-md bg-bg-2 border border-border w-full p-2 resize-none focus:outline-none", {
+      "rounded-md": props.isNewConversation
+    })} rows={4}
+      placeholder='Type your message here...'
+      value={content}
+      onChange={(e) => setContent(e.target.value)}
+      onKeyDown={handleKeyDown}
+    />
   )
 }

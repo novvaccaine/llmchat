@@ -11,11 +11,10 @@
 import { createServerRootRoute } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as LayoutRouteImport } from './routes/_layout'
-import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as LayoutIndexRouteImport } from './routes/_layout.index'
-import { Route as AuthedSettingsRouteImport } from './routes/_authed.settings'
-import { Route as LayoutAuthedConversationConversationIDRouteImport } from './routes/_layout._authed.conversation.$conversationID'
+import { Route as LayoutConversationConversationIDRouteImport } from './routes/_layout.conversation.$conversationID'
 import { ServerRoute as ApiProviderServerRouteImport } from './routes/api.provider'
 import { ServerRoute as ApiConversationServerRouteImport } from './routes/api.conversation'
 import { ServerRoute as ApiConversationConversationIDServerRouteImport } from './routes/api.conversation.$conversationID'
@@ -23,12 +22,13 @@ import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api.auth.
 
 const rootServerRouteImport = createServerRootRoute()
 
-const LayoutRoute = LayoutRouteImport.update({
-  id: '/_layout',
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthedRoute = AuthedRouteImport.update({
-  id: '/_authed',
+const LayoutRoute = LayoutRouteImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LayoutIndexRoute = LayoutIndexRouteImport.update({
@@ -36,14 +36,9 @@ const LayoutIndexRoute = LayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LayoutRoute,
 } as any)
-const AuthedSettingsRoute = AuthedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AuthedRoute,
-} as any)
-const LayoutAuthedConversationConversationIDRoute =
-  LayoutAuthedConversationConversationIDRouteImport.update({
-    id: '/_authed/conversation/$conversationID',
+const LayoutConversationConversationIDRoute =
+  LayoutConversationConversationIDRouteImport.update({
+    id: '/conversation/$conversationID',
     path: '/conversation/$conversationID',
     getParentRoute: () => LayoutRoute,
   } as any)
@@ -70,22 +65,21 @@ const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/settings': typeof AuthedSettingsRoute
+  '/settings': typeof SettingsRoute
   '/': typeof LayoutIndexRoute
-  '/conversation/$conversationID': typeof LayoutAuthedConversationConversationIDRoute
+  '/conversation/$conversationID': typeof LayoutConversationConversationIDRoute
 }
 export interface FileRoutesByTo {
-  '/settings': typeof AuthedSettingsRoute
+  '/settings': typeof SettingsRoute
   '/': typeof LayoutIndexRoute
-  '/conversation/$conversationID': typeof LayoutAuthedConversationConversationIDRoute
+  '/conversation/$conversationID': typeof LayoutConversationConversationIDRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_authed': typeof AuthedRouteWithChildren
   '/_layout': typeof LayoutRouteWithChildren
-  '/_authed/settings': typeof AuthedSettingsRoute
+  '/settings': typeof SettingsRoute
   '/_layout/': typeof LayoutIndexRoute
-  '/_layout/_authed/conversation/$conversationID': typeof LayoutAuthedConversationConversationIDRoute
+  '/_layout/conversation/$conversationID': typeof LayoutConversationConversationIDRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -94,16 +88,15 @@ export interface FileRouteTypes {
   to: '/settings' | '/' | '/conversation/$conversationID'
   id:
     | '__root__'
-    | '/_authed'
     | '/_layout'
-    | '/_authed/settings'
+    | '/settings'
     | '/_layout/'
-    | '/_layout/_authed/conversation/$conversationID'
+    | '/_layout/conversation/$conversationID'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthedRoute: typeof AuthedRouteWithChildren
   LayoutRoute: typeof LayoutRouteWithChildren
+  SettingsRoute: typeof SettingsRoute
 }
 export interface FileServerRoutesByFullPath {
   '/api/conversation': typeof ApiConversationServerRouteWithChildren
@@ -153,18 +146,18 @@ export interface RootServerRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_layout': {
       id: '/_layout'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof LayoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authed': {
-      id: '/_authed'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_layout/': {
@@ -174,18 +167,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_authed/settings': {
-      id: '/_authed/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthedSettingsRouteImport
-      parentRoute: typeof AuthedRoute
-    }
-    '/_layout/_authed/conversation/$conversationID': {
-      id: '/_layout/_authed/conversation/$conversationID'
+    '/_layout/conversation/$conversationID': {
+      id: '/_layout/conversation/$conversationID'
       path: '/conversation/$conversationID'
       fullPath: '/conversation/$conversationID'
-      preLoaderRoute: typeof LayoutAuthedConversationConversationIDRouteImport
+      preLoaderRoute: typeof LayoutConversationConversationIDRouteImport
       parentRoute: typeof LayoutRoute
     }
   }
@@ -223,26 +209,14 @@ declare module '@tanstack/react-start/server' {
   }
 }
 
-interface AuthedRouteChildren {
-  AuthedSettingsRoute: typeof AuthedSettingsRoute
-}
-
-const AuthedRouteChildren: AuthedRouteChildren = {
-  AuthedSettingsRoute: AuthedSettingsRoute,
-}
-
-const AuthedRouteWithChildren =
-  AuthedRoute._addFileChildren(AuthedRouteChildren)
-
 interface LayoutRouteChildren {
   LayoutIndexRoute: typeof LayoutIndexRoute
-  LayoutAuthedConversationConversationIDRoute: typeof LayoutAuthedConversationConversationIDRoute
+  LayoutConversationConversationIDRoute: typeof LayoutConversationConversationIDRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutIndexRoute: LayoutIndexRoute,
-  LayoutAuthedConversationConversationIDRoute:
-    LayoutAuthedConversationConversationIDRoute,
+  LayoutConversationConversationIDRoute: LayoutConversationConversationIDRoute,
 }
 
 const LayoutRouteWithChildren =
@@ -263,8 +237,8 @@ const ApiConversationServerRouteWithChildren =
   )
 
 const rootRouteChildren: RootRouteChildren = {
-  AuthedRoute: AuthedRouteWithChildren,
   LayoutRoute: LayoutRouteWithChildren,
+  SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

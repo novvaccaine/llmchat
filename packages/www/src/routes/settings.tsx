@@ -1,15 +1,20 @@
 import { authClient } from '@/utils';
-import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect, useRouter } from '@tanstack/react-router'
 import { ArrowLeft as LeftIcon, Key as KeyIcon } from 'lucide-react';
 import { providersQueryOptions, useUpdateProvider } from '@/utils/provider';
 import { LoadingIcon } from '@/components/LoadingIcon';
 import { toast } from 'sonner';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
-export const Route = createFileRoute('/_authed/settings')({
+export const Route = createFileRoute('/settings')({
   component: RouteComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.user) {
+      throw redirect({ to: '/' })
+    }
+  },
   loader: async ({ context }) => {
-    return context.queryClient.ensureQueryData(providersQueryOptions())
+    return context.queryClient.fetchQuery(providersQueryOptions())
   }
 })
 

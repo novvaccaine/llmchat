@@ -22,14 +22,16 @@ export function Sidebar(props: Props) {
   }
 
   return (
-    <div className="bg-sidebar p-4 fixed top-0 left-0 h-full w-[270px] flex flex-col">
-      <Link to="/">LLM Chat</Link>
+    <div className="h-full bg-sidebar p-4 flex flex-col">
+      <Link className='text-lg font-semibold text-center' to="/">
+        LLM Chat
+      </Link>
 
-      <Link to="/" className='mt-3 bg-brand text-black px-4 py-2 rounded-md text-center'>
+      <Link to="/" className='mt-4 bg-brand text-black px-4 py-2 rounded-md text-center'>
         New Chat
       </Link>
 
-      <div className='mt-6 flex flex-col gap-0.5'>
+      <div className='mt-6 flex flex-col gap-0.5 flex-1'>
         {props.conversation.map(c => {
           const entry = conversation[c.id]
           const title = (entry?.title ?? c.title) ?? 'Untitled'
@@ -46,7 +48,7 @@ export function Sidebar(props: Props) {
                   </Link>
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
-                  <Tooltip.Content className='bg-bg px-2 py-1 rounded-md border border-border' side='bottom'>
+                  <Tooltip.Content className='bg-bg px-2 py-1 rounded-md border border-border max-w-[320px]' side='bottom'>
                     {title}
                   </Tooltip.Content>
                 </Tooltip.Portal>

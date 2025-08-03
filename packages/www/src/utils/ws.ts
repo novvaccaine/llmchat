@@ -1,12 +1,12 @@
 import { Event } from "@llmchat/core/event";
 import { WebSocket } from "partysocket";
 import { useConversationStore } from "./conversationStore";
-import { queryClient } from ".";
+import { QueryClient } from "@tanstack/react-query";
 
 export class WS {
   socket: WebSocket | null = null;
 
-  init() {
+  init(queryClient: QueryClient) {
     if (this.socket) {
       return;
     }

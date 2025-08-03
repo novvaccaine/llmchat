@@ -16,7 +16,7 @@ export namespace AI {
   const GENERATE_TITLE_MODEL = "openai/gpt-4.1-mini";
 
   export async function* generateContent(input: GenerateContentInput) {
-    const messages = await Message.list(input.conversationID);
+    const { messages } = await Message.list(input.conversationID);
     if (!messages.length) {
       throw new Error("should contain atleast 1 message");
     }

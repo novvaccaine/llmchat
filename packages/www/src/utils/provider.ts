@@ -1,6 +1,9 @@
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Provider } from "@llmchat/core/provider/provider";
-import { queryClient } from ".";
 
 async function getProviders() {
   const res = await fetch("/api/provider");
@@ -16,6 +19,7 @@ export function providersQueryOptions() {
 }
 
 export function useUpdateProvider() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (provider: Provider.Entity) =>
       fetch("/api/provider", {
