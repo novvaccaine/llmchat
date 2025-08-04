@@ -1,10 +1,8 @@
 import { Messages } from "@/components/Messages";
 import { ChatInput } from "@/components/ChatInput";
 import type { Message } from "@llmchat/core/messsage/message";
-import {
-  useCreateConversation,
-  useUpdateConversation,
-} from "@/utils/conversation";
+import { useCreateConversation } from "@/utils/conversation";
+import { useUpdateMessages } from "@/utils/message";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useConversationStore } from "@/utils/conversationStore";
@@ -49,7 +47,7 @@ const startStream = createServerFn({ method: "POST" })
 
 export function Conversation(props: Props) {
   const { mutateAsync: createConversation } = useCreateConversation();
-  const { mutateAsync: updateConversation } = useUpdateConversation();
+  const { mutateAsync: updateMessages } = useUpdateMessages();
   const navigate = useNavigate();
   const { conversationID } = useParams({ strict: false });
   const streamingContent =
@@ -62,7 +60,7 @@ export function Conversation(props: Props) {
       if (isNewConversation) {
         cID = await createConversation(content);
       } else {
-        await updateConversation({
+        await updateMessages({
           content,
           conversationID: cID!,
           role: "user",

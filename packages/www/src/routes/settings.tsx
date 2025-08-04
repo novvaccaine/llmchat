@@ -49,13 +49,18 @@ function RouteComponent() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const apiKey = formData.get("openrouterAPIKey");
-    if (!apiKey) {
+    const key = formData.get("openrouterAPIKey");
+    if (!key) {
+      return;
+    }
+
+    const apiKey = key.toString();
+    if (!apiKey.trim().length) {
       return;
     }
 
     const input = {
-      apiKey: apiKey.toString(),
+      apiKey: apiKey.trim(),
       provider: "openrouter",
     } as const;
 
@@ -109,6 +114,7 @@ function RouteComponent() {
                 <span>OpenRouter API Key</span>
               </label>
               <input
+                autoComplete="off"
                 name="openrouterAPIKey"
                 id="openrouterAPIKey"
                 className="w-full bg-bg-2 p-2 rounded-md focus:outline-none"

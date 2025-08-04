@@ -24,20 +24,14 @@ export class WS {
         const event: Event.Event = JSON.parse(message.data);
         switch (event.type) {
           case "generated_content": {
-            const keys = [
-              ["conversation"],
-              ["conversation", event.data.conversationID],
-            ];
-            Promise.all(
-              keys.map((queryKey) =>
-                queryClient.invalidateQueries({
-                  queryKey,
-                  refetchType: "all",
-                }),
-              ),
-            ).then(() => {
-              useConversationStore.getState().onGeneratedContent(event.data);
-            });
+            queryClient
+              .invalidateQueries({
+                queryKey: ["conversation"],
+                refetchType: "all",
+              })
+              .then(() => {
+                useConversationStore.getState().onGeneratedContent(event.data);
+              });
             break;
           }
           case "generating_content": {

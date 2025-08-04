@@ -1,5 +1,5 @@
 import { Conversation } from "@/components/Conversation";
-import { messagesQueryOptions } from "@/utils/conversation";
+import { messagesQueryOptions } from "@/utils/message";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Navigate, redirect } from "@tanstack/react-router";
 

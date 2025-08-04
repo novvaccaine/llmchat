@@ -4,7 +4,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { Conversation } from "@llmchat/core/conversation/conversation";
-import { Message } from "@llmchat/core/messsage/message";
 
 // TODO: only call this function is user is authorized
 async function getConversation() {
@@ -16,17 +15,6 @@ async function getConversation() {
   return data.conversation as Conversation.Entity[];
 }
 
-async function getMessages(conversationID: string) {
-  const res = await fetch(`/api/conversation/${conversationID}`);
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error("failed to fetch messages for conversation");
-  }
-  return data.conversation as Conversation.Entity & {
-    messages: Message.Entity[];
-  };
-}
-
 async function createConversation(content: string) {
   const res = await fetch("/api/conversation", {
     method: "POST",
@@ -36,14 +24,13 @@ async function createConversation(content: string) {
   return data.conversationID as string;
 }
 
-async function updateConversation(input: Message.CreateInput) {
-  const { conversationID, ...other } = input;
+async function updateConversation(conversationID: string, title: string) {
   const res = await fetch(`/api/conversation/${conversationID}`, {
     method: "PUT",
-    body: JSON.stringify({ ...other }),
+    body: JSON.stringify({ title }),
   });
   const data = await res.json();
-  return data.messageID as string;
+  return data.conversationID as string;
 }
 
 async function deleteConversation(conversationID: string) {
@@ -62,13 +49,6 @@ export function conversationQueryOptions() {
   });
 }
 
-export function messagesQueryOptions(conversationID: string) {
-  return queryOptions({
-    queryKey: ["conversation", conversationID],
-    queryFn: () => getMessages(conversationID),
-  });
-}
-
 export function useCreateConversation() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -81,22 +61,23 @@ export function useCreateConversation() {
   });
 }
 
-export function useUpdateConversation() {
+export function useDeleteConveration() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: Message.CreateInput) => updateConversation(input),
-    onSuccess: (_, variables) => {
+    mutationFn: (conversationID: string) => deleteConversation(conversationID),
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["conversation", variables.conversationID],
+        queryKey: ["conversation"],
       });
     },
   });
 }
 
-export function useDeleteConveration() {
+export function useUpdateConversation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (conversationID: string) => deleteConversation(conversationID),
+    mutationFn: (input: { conversationID: string; title: string }) =>
+      updateConversation(input.conversationID, input.title),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["conversation"],

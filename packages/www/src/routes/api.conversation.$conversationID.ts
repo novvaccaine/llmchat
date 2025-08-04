@@ -1,18 +1,12 @@
 import { createServerFileRoute } from "@tanstack/react-start/server";
 import { json } from "@tanstack/react-start";
 import { authMiddleware, validationMiddleware } from "@/middlewares";
-import { Message } from "@llmchat/core/messsage/message";
 import z from "zod";
 import { Conversation } from "@llmchat/core/conversation/conversation";
 
 export const ServerRoute = createServerFileRoute(
   "/api/conversation/$conversationID",
 ).methods((api) => ({
-  GET: api.middleware([authMiddleware]).handler(async ({ params }) => {
-    const conversation = await Message.list(params.conversationID);
-    return json({ conversation });
-  }),
-
   DELETE: api.middleware([authMiddleware]).handler(async ({ params }) => {
     const conversationID = await Conversation.remove(params.conversationID);
     return json({ conversationID });
@@ -21,14 +15,12 @@ export const ServerRoute = createServerFileRoute(
   PUT: api
     .middleware([
       authMiddleware,
-      validationMiddleware(z.object({ content: z.string() })),
+      validationMiddleware(z.object({ title: z.string().min(1) })),
     ])
     .handler(async ({ params, context }) => {
-      const messageID = await Message.create({
-        content: context.input.content,
-        conversationID: params.conversationID,
-        role: "user",
+      const conversationID = await Conversation.update(params.conversationID, {
+        title: context.input.title,
       });
-      return json({ messageID });
+      return json({ conversationID });
     }),
 }));

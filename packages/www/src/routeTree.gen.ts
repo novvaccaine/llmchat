@@ -19,6 +19,7 @@ import { ServerRoute as ApiProviderServerRouteImport } from './routes/api.provid
 import { ServerRoute as ApiConversationServerRouteImport } from './routes/api.conversation'
 import { ServerRoute as ApiConversationConversationIDServerRouteImport } from './routes/api.conversation.$conversationID'
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api.auth.$'
+import { ServerRoute as ApiConversationConversationIDMessageServerRouteImport } from './routes/api.conversation.$conversationID.message'
 
 const rootServerRouteImport = createServerRootRoute()
 
@@ -63,6 +64,12 @@ const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiConversationConversationIDMessageServerRoute =
+  ApiConversationConversationIDMessageServerRouteImport.update({
+    id: '/message',
+    path: '/message',
+    getParentRoute: () => ApiConversationConversationIDServerRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
@@ -102,20 +109,23 @@ export interface FileServerRoutesByFullPath {
   '/api/conversation': typeof ApiConversationServerRouteWithChildren
   '/api/provider': typeof ApiProviderServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
-  '/api/conversation/$conversationID': typeof ApiConversationConversationIDServerRoute
+  '/api/conversation/$conversationID': typeof ApiConversationConversationIDServerRouteWithChildren
+  '/api/conversation/$conversationID/message': typeof ApiConversationConversationIDMessageServerRoute
 }
 export interface FileServerRoutesByTo {
   '/api/conversation': typeof ApiConversationServerRouteWithChildren
   '/api/provider': typeof ApiProviderServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
-  '/api/conversation/$conversationID': typeof ApiConversationConversationIDServerRoute
+  '/api/conversation/$conversationID': typeof ApiConversationConversationIDServerRouteWithChildren
+  '/api/conversation/$conversationID/message': typeof ApiConversationConversationIDMessageServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
   '/api/conversation': typeof ApiConversationServerRouteWithChildren
   '/api/provider': typeof ApiProviderServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
-  '/api/conversation/$conversationID': typeof ApiConversationConversationIDServerRoute
+  '/api/conversation/$conversationID': typeof ApiConversationConversationIDServerRouteWithChildren
+  '/api/conversation/$conversationID/message': typeof ApiConversationConversationIDMessageServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
@@ -124,18 +134,21 @@ export interface FileServerRouteTypes {
     | '/api/provider'
     | '/api/auth/$'
     | '/api/conversation/$conversationID'
+    | '/api/conversation/$conversationID/message'
   fileServerRoutesByTo: FileServerRoutesByTo
   to:
     | '/api/conversation'
     | '/api/provider'
     | '/api/auth/$'
     | '/api/conversation/$conversationID'
+    | '/api/conversation/$conversationID/message'
   id:
     | '__root__'
     | '/api/conversation'
     | '/api/provider'
     | '/api/auth/$'
     | '/api/conversation/$conversationID'
+    | '/api/conversation/$conversationID/message'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
@@ -206,6 +219,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiAuthSplatServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/conversation/$conversationID/message': {
+      id: '/api/conversation/$conversationID/message'
+      path: '/message'
+      fullPath: '/api/conversation/$conversationID/message'
+      preLoaderRoute: typeof ApiConversationConversationIDMessageServerRouteImport
+      parentRoute: typeof ApiConversationConversationIDServerRoute
+    }
   }
 }
 
@@ -222,13 +242,28 @@ const LayoutRouteChildren: LayoutRouteChildren = {
 const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
+interface ApiConversationConversationIDServerRouteChildren {
+  ApiConversationConversationIDMessageServerRoute: typeof ApiConversationConversationIDMessageServerRoute
+}
+
+const ApiConversationConversationIDServerRouteChildren: ApiConversationConversationIDServerRouteChildren =
+  {
+    ApiConversationConversationIDMessageServerRoute:
+      ApiConversationConversationIDMessageServerRoute,
+  }
+
+const ApiConversationConversationIDServerRouteWithChildren =
+  ApiConversationConversationIDServerRoute._addFileChildren(
+    ApiConversationConversationIDServerRouteChildren,
+  )
+
 interface ApiConversationServerRouteChildren {
-  ApiConversationConversationIDServerRoute: typeof ApiConversationConversationIDServerRoute
+  ApiConversationConversationIDServerRoute: typeof ApiConversationConversationIDServerRouteWithChildren
 }
 
 const ApiConversationServerRouteChildren: ApiConversationServerRouteChildren = {
   ApiConversationConversationIDServerRoute:
-    ApiConversationConversationIDServerRoute,
+    ApiConversationConversationIDServerRouteWithChildren,
 }
 
 const ApiConversationServerRouteWithChildren =

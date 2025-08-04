@@ -12,11 +12,9 @@ export const ServerRoute = createServerFileRoute("/api/provider").methods(
         return json({ message: "ok" });
       }),
 
-    GET: api
-      .middleware([authMiddleware])
-      .handler(async () => {
-        const providers = await Provider.list();
-        return json({ providers });
-      }),
+    GET: api.middleware([authMiddleware]).handler(async () => {
+      const providers = await Provider.list();
+      return json({ providers });
+    }),
   }),
 );

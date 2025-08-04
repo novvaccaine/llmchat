@@ -7,6 +7,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { cn } from "@/utils";
 import { useUIStore } from "@/utils/uiStore";
 import { DeleteConversation } from "@/components/DeleteConversation";
+import { RenameConversation } from "@/components/RenameConversation";
 
 const hotKeysOptions = {
   preventDefault: true,
@@ -52,6 +53,10 @@ function RouteComponent() {
 
       {dialog?.type === "delete_conversation" && (
         <DeleteConversation conversation={dialog.data} />
+      )}
+
+      {dialog?.type === "rename_conversation" && (
+        <RenameConversation conversation={dialog.data} />
       )}
 
       <div

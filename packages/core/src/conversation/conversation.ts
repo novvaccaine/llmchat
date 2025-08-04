@@ -67,7 +67,8 @@ export namespace Conversation {
     if (input.status !== undefined) {
       updateColumns.status = input.status;
     }
-    return db
+
+    const rows = await db
       .update(conversationTable)
       .set(updateColumns)
       .where(
@@ -78,6 +79,12 @@ export namespace Conversation {
         ),
       )
       .returning({ id: conversationTable.id });
+
+    if (rows.length !== 1) {
+      throw new Error("expected one row to be affected");
+    }
+
+    return rows[0].id;
   }
 
   export async function remove(conversationID: string) {

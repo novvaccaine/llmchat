@@ -159,6 +159,10 @@ function ConversationOptions(props: ConversationOptionsProps) {
             className="flex gap-3 px-2 py-1 rounded-md items-center data-highlighted:outline-none data-highlighted:bg-bg-2 cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
+              setDialog({
+                type: "rename_conversation",
+                data: props.conversation,
+              });
             }}
           >
             <EditIcon size={16} />
