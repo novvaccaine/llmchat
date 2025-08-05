@@ -2,6 +2,7 @@ import { streamText, generateText } from "ai";
 import { Message } from "./messsage/message";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { Conversation } from "./conversation/conversation";
+import { env } from "./env";
 
 // TODO: use the user provided api key, cache in KV for quick lookup
 // daily 25 free messages for each user, use system api key if not configured
@@ -39,7 +40,7 @@ export namespace AI {
     }
 
     const chat = createOpenRouter({
-      apiKey: process.env.OPENROUTER_API_KEY,
+      apiKey: env.OPENROUTER_API_KEY,
     });
 
     const stream = streamText({
@@ -69,7 +70,7 @@ export namespace AI {
 
   export async function generateTitle(content: string) {
     const chat = createOpenRouter({
-      apiKey: process.env.OPENROUTER_API_KEY,
+      apiKey: env.OPENROUTER_API_KEY,
     });
 
     const res = await generateText({

@@ -1,4 +1,5 @@
 import { defineConfig } from "drizzle-kit";
+import { env } from "./src/env";
 
 export default defineConfig({
   strict: true,
@@ -6,8 +7,8 @@ export default defineConfig({
   out: "./migrations",
   dialect: "turso",
   dbCredentials: {
-    url: process.env.TURSO_CONNECTION_URL!,
-    authToken: process.env.TURSO_AUTH_TOKEN!,
+    url: env.TURSO_CONNECTION_URL,
+    authToken: env.TURSO_AUTH_TOKEN!,
   },
   schema: "./src/**/*.sql.ts",
 });

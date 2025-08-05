@@ -11,12 +11,13 @@ import z from "zod";
 import { getCookie } from "@tanstack/react-start/server";
 import { cn } from "@/utils";
 import { motion } from "motion/react";
+import { env } from "@llmchat/core/env";
 
 type Props = {
   messages: Message.Entity[];
 };
 
-const model = "openai/gpt-4.1-mini";
+const model = "google/gemini-2.5-flash";
 
 const startStream = createServerFn({ method: "POST" })
   .validator(
@@ -29,7 +30,7 @@ const startStream = createServerFn({ method: "POST" })
     // TODO: accessing cookie like this feels ugly, can you do better?
     const cookie = getCookie("better-auth.session_token");
     const res = await fetch(
-      process.env.STREAM_URL + `/conversation/${data.conversationID}/stream`,
+      env.STREAM_URL + `/conversation/${data.conversationID}/stream`,
       {
         method: "POST",
         body: JSON.stringify({ model: data.model }),
@@ -54,7 +55,10 @@ export function Conversation(props: Props) {
     useConversationStore().conversation[conversationID!]?.content;
   const isNewConversation = !props.messages.length;
 
-  async function onNewMessage(content: string) {
+  async function onNewMessage(
+    content: string,
+    onError: (content: string) => void,
+  ) {
     try {
       let cID = conversationID;
       if (isNewConversation) {
@@ -81,6 +85,7 @@ export function Conversation(props: Props) {
         });
       }
     } catch (err) {
+      onError(content);
       console.error("failed to get response", err);
       toast.error("Failed to get response");
     }

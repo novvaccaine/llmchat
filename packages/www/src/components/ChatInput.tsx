@@ -1,46 +1,52 @@
-import { cn } from '@/utils'
-import React, { useEffect, useRef, useState } from 'react'
+import { cn } from "@/utils";
+import React, { useEffect, useRef, useState } from "react";
 
 type ChatInputProps = {
-  onNewMessage: (content: string) => void
-  isNewConversation?: boolean
-}
+  onNewMessage: (content: string, onError: (content: string) => void) => void;
+  isNewConversation?: boolean;
+};
 
 export function ChatInput(props: ChatInputProps) {
-  const [content, setContent] = useState('')
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [content, setContent] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   async function handleSubmit() {
-    const input = content.trim()
+    const input = content.trim();
     if (!input.length) {
-      return
+      return;
     }
-    setContent('')
-    props.onNewMessage(input)
+    setContent("");
+    props.onNewMessage(input, (content) => setContent(content));
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLElement>) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSubmit()
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
     }
   }
 
   useEffect(() => {
     if (!textareaRef.current) {
-      return
+      return;
     }
-    textareaRef.current.focus()
-  }, [])
+    textareaRef.current.focus();
+  }, []);
 
   return (
-    <textarea ref={textareaRef} className={cn("sticky bottom-0 rounded-t-md bg-bg-2 border border-border w-full p-2 resize-none focus:outline-none", {
-      "rounded-md": props.isNewConversation
-    })} rows={4}
-      placeholder='Type your message here...'
+    <textarea
+      ref={textareaRef}
+      className={cn(
+        "sticky bottom-0 rounded-t-md bg-bg-2 border border-border w-full p-2 resize-none focus:outline-none",
+        {
+          "rounded-md": props.isNewConversation,
+        },
+      )}
+      rows={4}
+      placeholder="Type your message here..."
       value={content}
       onChange={(e) => setContent(e.target.value)}
       onKeyDown={handleKeyDown}
     />
-  )
+  );
 }
