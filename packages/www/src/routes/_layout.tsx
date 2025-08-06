@@ -4,10 +4,10 @@ import { conversationQueryOptions } from "@/utils/conversation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { useHotkeys } from "react-hotkeys-hook";
-import { cn } from "@/utils";
 import { useUIStore } from "@/utils/uiStore";
 import { DeleteConversation } from "@/components/DeleteConversation";
 import { RenameConversation } from "@/components/RenameConversation";
+import { motion } from "motion/react";
 
 const hotKeysOptions = {
   preventDefault: true,
@@ -59,12 +59,17 @@ function RouteComponent() {
         <RenameConversation conversation={dialog.data} />
       )}
 
-      <div
-        className={cn("h-full grid grid-cols-[270px_1fr]", {
-          "grid-cols-1": !sidebarOpen,
-        })}
-      >
-        {sidebarOpen && <Sidebar conversation={conversation} />}
+      <div className="h-full grid grid-cols-[auto_1fr]">
+        <motion.div
+          initial={false}
+          animate={{ width: sidebarOpen ? 270 : 0 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+          className="overflow-hidden"
+        >
+          <div className="w-[270px] h-full">
+            <Sidebar conversation={conversation} />
+          </div>
+        </motion.div>
         <Outlet />
       </div>
     </>
