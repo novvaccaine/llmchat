@@ -13,6 +13,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useState } from "react";
 import { Trash2 as DeleteIcon, SquarePen as EditIcon } from "lucide-react";
 import { useUIStore } from "@/utils/uiStore";
+import { SidebarToggle } from "./SidebarToggle";
 
 type Props = {
   conversation: Conversation.Entity[];
@@ -30,9 +31,12 @@ export function Sidebar(props: Props) {
 
   return (
     <div className="h-full bg-sidebar p-4 flex flex-col">
-      <Link className="text-lg font-semibold text-center" to="/">
-        LLM Chat
-      </Link>
+      <div className="flex items-center">
+        <SidebarToggle className="shrink-0 hover:bg-bg-2" />
+        <Link className="flex-1 text-center text-lg font-semibold text-center" to="/">
+          LLM Chat
+        </Link>
+      </div>
 
       <Link
         to="/"

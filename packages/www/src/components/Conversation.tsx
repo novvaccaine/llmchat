@@ -107,7 +107,7 @@ export function Conversation(props: Props) {
           }}
           className="max-w-2xl w-full flex flex-col items-center justify-center gap-3"
         >
-          <p className="text-3xl font-semibold">How can I assist you today?</p>
+          <p className="text-2xl sm:text-3xl font-semibold">How can I assist you today?</p>
           <ChatInput onNewMessage={onNewMessage} isNewConversation />
         </motion.div>
       ) : (

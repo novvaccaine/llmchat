@@ -8,6 +8,8 @@ import { useUIStore } from "@/utils/uiStore";
 import { DeleteConversation } from "@/components/DeleteConversation";
 import { RenameConversation } from "@/components/RenameConversation";
 import { motion } from "motion/react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 const hotKeysOptions = {
   preventDefault: true,
@@ -31,6 +33,7 @@ function RouteComponent() {
   const hasHydrated = useUIStore()._hasHydrated;
   const navigate = useNavigate();
   const dialog = useUIStore().dialog;
+  const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
 
   useHotkeys("ctrl+b", toggleSidebar, hotKeysOptions, []);
 
@@ -49,7 +52,7 @@ function RouteComponent() {
 
   return (
     <>
-      <SidebarToggle />
+      {!sidebarOpen && <SidebarToggle className="fixed top-4 left-4 hover:bg-bg-2" />}
 
       {dialog?.type === "delete_conversation" && (
         <DeleteConversation conversation={dialog.data} />
@@ -59,17 +62,32 @@ function RouteComponent() {
         <RenameConversation conversation={dialog.data} />
       )}
 
-      <div className="h-full grid grid-cols-[auto_1fr]">
-        <motion.div
-          initial={false}
-          animate={{ width: sidebarOpen ? 270 : 0 }}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
-          className="overflow-hidden"
-        >
-          <div className="w-[270px] h-full">
+      <Dialog.Root
+        open={sidebarOpen && isSmallDevice}
+        onOpenChange={toggleSidebar}
+      >
+        <Dialog.Trigger className="hidden" />
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-bg/75" />
+          <Dialog.Content className="fixed top-0 left-0 w-[270px] focus:outline-none h-full">
             <Sidebar conversation={conversation} />
-          </div>
-        </motion.div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
+      <div className="h-full grid grid-cols-1 md:grid-cols-[auto_1fr]">
+        {!isSmallDevice && (
+          <motion.div
+            initial={false}
+            animate={{ width: sidebarOpen ? 270 : 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="w-[270px] h-full">
+              <Sidebar conversation={conversation} />
+            </div>
+          </motion.div>
+        )}
         <Outlet />
       </div>
     </>
