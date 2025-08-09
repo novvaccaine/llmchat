@@ -7,7 +7,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useUIStore } from "@/utils/uiStore";
 import { DeleteConversation } from "@/components/DeleteConversation";
 import { RenameConversation } from "@/components/RenameConversation";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
@@ -58,7 +58,9 @@ function Content() {
   return (
     <>
       {!sidebarOpen && (
-        <SidebarToggle className="fixed top-4 left-4 hover:bg-bg-2" />
+        <div className="fixed p-[2px] rounded-md bg-sidebar/20 top-[14px] left-[14px] backdrop-blur-sm z-[1]">
+          <SidebarToggle className="hover:bg-bg-2" />
+        </div>
       )}
 
       {dialog?.type === "delete_conversation" && (
@@ -74,17 +76,29 @@ function Content() {
         onOpenChange={toggleSidebar}
       >
         <Dialog.Trigger className="hidden" />
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-bg/75" />
-          <Dialog.Content className="fixed top-0 left-0 w-[270px] focus:outline-none h-full">
-            <VisuallyHidden.Root>
-              <Dialog.Title>
-                Select Conversation or Create New Chat
-              </Dialog.Title>
-            </VisuallyHidden.Root>
-            <Sidebar conversation={conversation} />
-          </Dialog.Content>
-        </Dialog.Portal>
+        <AnimatePresence initial={false}>
+          {sidebarOpen && isSmallDevice && (
+            <Dialog.Portal forceMount>
+              <Dialog.Overlay className="fixed inset-0 bg-bg/75" />
+              <Dialog.Content asChild>
+                <motion.div
+                  className="fixed top-0 left-0 w-[270px] focus:outline-none h-full"
+                  initial={{ x: -270 }}
+                  animate={{ x: 0 }}
+                  exit={{ x: -270 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                >
+                  <VisuallyHidden.Root>
+                    <Dialog.Title>
+                      Select Conversation or Create New Chat
+                    </Dialog.Title>
+                  </VisuallyHidden.Root>
+                  <Sidebar conversation={conversation} />
+                </motion.div>
+              </Dialog.Content>
+            </Dialog.Portal>
+          )}
+        </AnimatePresence>
       </Dialog.Root>
 
       <div className="h-full grid grid-cols-1 md:grid-cols-[auto_1fr]">

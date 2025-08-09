@@ -37,7 +37,7 @@ export function ChatInput(props: ChatInputProps) {
     <textarea
       ref={textareaRef}
       className={cn(
-        "sticky bottom-0 rounded-t-md bg-bg-2 border border-border w-full p-2 resize-none focus:outline-none",
+        "bg-bg-2/80 backdrop-blur-lg sticky bottom-0 rounded-t-md border border-border w-full p-2 resize-none focus:outline-none",
         {
           "rounded-md": props.isNewConversation,
         },
