@@ -1,7 +1,13 @@
 import { Conversation } from "@/components/Conversation";
+import { titleTag } from "@/utils";
 import { messagesQueryOptions } from "@/utils/message";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Navigate, redirect } from "@tanstack/react-router";
+import {
+  AnyRouteMatch,
+  createFileRoute,
+  Navigate,
+  redirect,
+} from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/conversation/$conversationID")({
   component: RouteComponent,
@@ -14,6 +20,15 @@ export const Route = createFileRoute("/_layout/conversation/$conversationID")({
     return context.queryClient.fetchQuery(
       messagesQueryOptions(params.conversationID),
     );
+  },
+  head: ({ loaderData }) => {
+    const meta: AnyRouteMatch["meta"] = [];
+    if (loaderData?.title) {
+      meta.push({ title: titleTag(loaderData.title) });
+    }
+    return {
+      meta,
+    };
   },
   errorComponent: () => {
     return <Navigate to="/" />;

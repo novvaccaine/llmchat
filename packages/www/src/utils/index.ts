@@ -7,3 +7,7 @@ export const authClient = createAuthClient();
 export function cn(...inputs: any[]) {
   return twMerge(clsx(inputs));
 }
+
+export function titleTag(title: string) {
+  return `${title} - LLM Chat`;
+}

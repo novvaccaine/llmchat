@@ -1,4 +1,9 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  HeadContent,
+  Outlet,
+  useNavigate,
+} from "@tanstack/react-router";
 import { Sidebar } from "@/components/Sidebar";
 import { conversationQueryOptions } from "@/utils/conversation";
 import { useSuspenseQuery } from "@tanstack/react-query";

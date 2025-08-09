@@ -33,7 +33,10 @@ export function Sidebar(props: Props) {
     <div className="h-full bg-sidebar p-4 flex flex-col">
       <div className="flex items-center">
         <SidebarToggle className="shrink-0 hover:bg-bg-2" />
-        <Link className="flex-1 text-center text-lg font-semibold text-center" to="/">
+        <Link
+          className="flex-1 text-center text-lg font-semibold text-center"
+          to="/"
+        >
           LLM Chat
         </Link>
       </div>
@@ -45,7 +48,7 @@ export function Sidebar(props: Props) {
         New Chat
       </Link>
 
-      <div className="mt-6 flex flex-col gap-0.5 flex-1">
+      <div className="mt-6 mb-2 flex flex-col gap-0.5 flex-1 overflow-auto hide-scrollbar">
         {props.conversation.map((c) => {
           const entry = conversation[c.id];
           const title = entry?.title ?? c.title ?? "Untitled";

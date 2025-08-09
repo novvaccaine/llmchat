@@ -54,6 +54,10 @@ textarea::placeholder, input::placeholder {
   @apply text-muted resize-none;
 }
 
+.hide-scrollbar::-webkit-scrollbar {
+  @apply size-0;
+}
+
 button {
   @apply cursor-pointer;
 }
