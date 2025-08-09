@@ -5,11 +5,16 @@ import { immer } from "zustand/middleware/immer";
 type State = {
   conversation: Record<
     string,
-    { content: string; title?: string; generating: boolean }
+    {
+      content: string;
+      title?: string;
+      status: "waiting" | "generating" | "generated";
+    }
   >;
 };
 
 type Action = {
+  newConversation: (conversationID: string) => void;
   onGeneratingContent: (data: Event.EventData<"generating_content">) => void;
   onGeneratingTitle: (data: Event.EventData<"generated_title">) => void;
   onGeneratedContent: (data: Event.EventData<"generating_content">) => void;
@@ -17,7 +22,16 @@ type Action = {
 
 export const useConversationStore = create<State & Action>()(
   immer((set) => ({
+    waitingForStream: true,
     conversation: {},
+
+    newConversation: (conversationID: string) =>
+      set((state) => {
+        state.conversation[conversationID] = {
+          content: "",
+          status: "waiting",
+        };
+      }),
 
     onGeneratingContent: (data) =>
       set((state) => {
@@ -25,7 +39,7 @@ export const useConversationStore = create<State & Action>()(
         state.conversation[data.conversationID] = {
           content: data.content,
           title: data.title ?? conversation.title,
-          generating: true,
+          status: "generating",
         };
       }),
 
@@ -34,7 +48,7 @@ export const useConversationStore = create<State & Action>()(
         state.conversation[data.conversationID] = {
           content: "",
           title: data.title,
-          generating: true,
+          status: "generating",
         };
       }),
 
@@ -43,7 +57,7 @@ export const useConversationStore = create<State & Action>()(
         const conversation = state.conversation[data.conversationID];
         if (conversation) {
           conversation.content = "";
-          conversation.generating = false;
+          conversation.status = "generated";
         }
       }),
   })),

@@ -5,7 +5,6 @@ import { useCreateConversation } from "@/utils/conversation";
 import { useUpdateMessages } from "@/utils/message";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useConversationStore } from "@/utils/conversationStore";
 import { createServerFn } from "@tanstack/react-start";
 import z from "zod";
 import { getCookie } from "@tanstack/react-start/server";
@@ -13,6 +12,7 @@ import { cn } from "@/utils";
 import { motion } from "motion/react";
 import { env } from "@llmchat/core/env";
 import { Logo } from "./Logo";
+import { useConversationStore } from "@/utils/conversationStore";
 
 type Props = {
   messages: Message.Entity[];
@@ -52,9 +52,8 @@ export function Conversation(props: Props) {
   const { mutateAsync: updateMessages } = useUpdateMessages();
   const navigate = useNavigate();
   const { conversationID } = useParams({ strict: false });
-  const streamingContent =
-    useConversationStore().conversation[conversationID!]?.content;
   const isNewConversation = !props.messages.length;
+  const newConversation = useConversationStore().newConversation;
 
   async function onNewMessage(
     content: string,
@@ -78,6 +77,8 @@ export function Conversation(props: Props) {
           model,
         },
       });
+
+      newConversation(cID!);
 
       if (isNewConversation) {
         navigate({
@@ -118,7 +119,7 @@ export function Conversation(props: Props) {
         <div className="w-full max-w-3xl mx-auto flex flex-col flex-1">
           <Messages
             messages={props.messages}
-            streamingContent={streamingContent}
+            conversationID={conversationID!}
           />
           <ChatInput onNewMessage={onNewMessage} />
         </div>
