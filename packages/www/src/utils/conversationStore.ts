@@ -14,7 +14,7 @@ type State = {
 };
 
 type Action = {
-  newConversation: (conversationID: string) => void;
+  requestGenerateContent: (conversationID: string) => void;
   onGeneratingContent: (data: Event.EventData<"generating_content">) => void;
   onGeneratingTitle: (data: Event.EventData<"generated_title">) => void;
   onGeneratedContent: (data: Event.EventData<"generating_content">) => void;
@@ -22,15 +22,19 @@ type Action = {
 
 export const useConversationStore = create<State & Action>()(
   immer((set) => ({
-    waitingForStream: true,
     conversation: {},
 
-    newConversation: (conversationID: string) =>
+    requestGenerateContent: (conversationID: string) =>
       set((state) => {
-        state.conversation[conversationID] = {
-          content: "",
-          status: "waiting",
-        };
+        const conversation = state.conversation[conversationID];
+        if (conversation) {
+          conversation.status = "waiting";
+        } else {
+          state.conversation[conversationID] = {
+            content: "",
+            status: "waiting",
+          };
+        }
       }),
 
     onGeneratingContent: (data) =>

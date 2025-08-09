@@ -56,7 +56,7 @@ export function Sidebar(props: Props) {
             <ConversationLink
               key={c.id}
               conversation={{ ...c, title }}
-              generating={entry?.status === "generating"}
+              generating={entry && entry.status !== "generated"}
             />
           );
         })}

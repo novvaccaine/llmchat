@@ -53,7 +53,7 @@ export function Conversation(props: Props) {
   const navigate = useNavigate();
   const { conversationID } = useParams({ strict: false });
   const isNewConversation = !props.messages.length;
-  const newConversation = useConversationStore().newConversation;
+  const requestGenerateContent = useConversationStore().requestGenerateContent;
 
   async function onNewMessage(
     content: string,
@@ -78,7 +78,7 @@ export function Conversation(props: Props) {
         },
       });
 
-      newConversation(cID!);
+      requestGenerateContent(cID!);
 
       if (isNewConversation) {
         navigate({
