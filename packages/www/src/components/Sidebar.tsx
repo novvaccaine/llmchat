@@ -1,33 +1,44 @@
-import { authClient } from "@/utils";
+import { authClient, splitConversationsByDate } from "@/utils";
 import { LogIn as LoginIcon } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Route } from "@/routes/__root";
 import { Conversation } from "@llmchat/core/conversation/conversation";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { LoadingIcon } from "./LoadingIcon";
-import { useConversationStore } from "@/utils/conversationStore";
 import { EllipsisVertical as OptionsIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useHover } from "@uidotdev/usehooks";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Trash2 as DeleteIcon, SquarePen as EditIcon } from "lucide-react";
 import { useUIStore } from "@/utils/uiStore";
 import { SidebarToggle } from "./SidebarToggle";
+import { useConversationStore } from "@/utils/conversationStore";
 
 type Props = {
   conversation: Conversation.Entity[];
 };
 
+const indexDateMap = {
+  0: "Today",
+  1: "Yesterday",
+  2: "Last 7 days",
+  3: "Last 30 days",
+};
+
 export function Sidebar(props: Props) {
   const user = Route.useRouteContext().user;
-  const conversation = useConversationStore().conversation;
+  const conversationStore = useConversationStore().conversation;
 
   const signIn = async () => {
     await authClient.signIn.social({
       provider: "google",
     });
   };
+
+  const conversation = useMemo(() => {
+    return splitConversationsByDate(props.conversation);
+  }, [props.conversation]);
 
   return (
     <div className="h-full bg-sidebar p-4 flex flex-col">
@@ -48,16 +59,28 @@ export function Sidebar(props: Props) {
         New Chat
       </Link>
 
-      <div className="mt-6 mb-2 flex flex-col gap-0.5 flex-1 overflow-auto hide-scrollbar">
-        {props.conversation.map((c) => {
-          const entry = conversation[c.id];
-          const title = entry?.title ?? c.title ?? "Untitled";
+      <div className="mt-6 mb-2 flex-1 overflow-auto hide-scrollbar">
+        {conversation.map((item, i) => {
+          if (!item.length) {
+            return null;
+          }
           return (
-            <ConversationLink
-              key={c.id}
-              conversation={{ ...c, title }}
-              generating={entry && entry.status !== "generated"}
-            />
+            <div key={i} className="mb-4">
+              <p className="text-muted mb-2">{indexDateMap[i]}</p>
+              <div className="flex flex-col gap-0.5">
+                {item.map((c) => {
+                  const entry = conversationStore[c.id];
+                  const title = entry?.title ?? c.title ?? "Untitled";
+                  return (
+                    <ConversationLink
+                      key={c.id}
+                      conversation={{ ...c, title }}
+                      generating={entry && entry.status !== "generated"}
+                    />
+                  );
+                })}
+              </div>
+            </div>
           );
         })}
       </div>

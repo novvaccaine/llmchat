@@ -18,7 +18,7 @@ type Action = {
   rename: (conversationID: string, title: string) => void;
   // events
   onGeneratingContent: (data: Event.EventData<"generating_content">) => void;
-  onGeneratingTitle: (data: Event.EventData<"generated_title">) => void;
+  onGeneratedTitle: (data: Event.EventData<"generated_title">) => void;
   onGeneratedContent: (data: Event.EventData<"generating_content">) => void;
 };
 
@@ -57,7 +57,7 @@ export const useConversationStore = create<State & Action>()(
         };
       }),
 
-    onGeneratingTitle: (data) =>
+    onGeneratedTitle: (data) =>
       set((state) => {
         state.conversation[data.conversationID] = {
           content: "",

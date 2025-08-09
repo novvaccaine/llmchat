@@ -11,6 +11,7 @@ export namespace Conversation {
     id: z.string(),
     title: z.string().optional(),
     status: z.enum(["none", "deleted", "streaming"]),
+    lastMessageAt: z.string(),
   });
 
   export type Entity = z.infer<typeof Entity>;
@@ -45,6 +46,7 @@ export namespace Conversation {
       .select({
         id: conversationTable.id,
         title: conversationTable.title,
+        lastMessageAt: conversationTable.lastMessageAt,
       })
       .from(conversationTable)
       .where(
