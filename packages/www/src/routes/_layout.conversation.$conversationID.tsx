@@ -45,7 +45,10 @@ function RouteComponent() {
   return (
     <>
       {title && <title>{titleTag(title)}</title>}
-      <Conversation messages={conversation.messages} />
+      <Conversation
+        messages={conversation.messages}
+        conversationID={conversation.id}
+      />
     </>
   );
 }

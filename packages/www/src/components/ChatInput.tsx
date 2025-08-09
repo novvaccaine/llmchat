@@ -1,18 +1,22 @@
 import { cn } from "@/utils";
+import { useConversationStore } from "@/utils/conversationStore";
 import React, { useEffect, useRef, useState } from "react";
 
 type ChatInputProps = {
   onNewMessage: (content: string, onError: (content: string) => void) => void;
   isNewConversation?: boolean;
+  conversationID?: string;
 };
 
 export function ChatInput(props: ChatInputProps) {
   const [content, setContent] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const status =
+    useConversationStore().conversation[props.conversationID!]?.status;
 
   async function handleSubmit() {
     const input = content.trim();
-    if (!input.length) {
+    if (!input.length || (status && status !== "generated")) {
       return;
     }
     setContent("");
@@ -31,7 +35,7 @@ export function ChatInput(props: ChatInputProps) {
       return;
     }
     textareaRef.current.focus();
-  }, []);
+  }, [props.conversationID]);
 
   return (
     <textarea

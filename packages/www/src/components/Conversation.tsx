@@ -4,7 +4,7 @@ import type { Message } from "@llmchat/core/messsage/message";
 import { useCreateConversation } from "@/utils/conversation";
 import { useUpdateMessages } from "@/utils/message";
 import { toast } from "sonner";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import z from "zod";
 import { getCookie } from "@tanstack/react-start/server";
@@ -16,6 +16,7 @@ import { useConversationStore } from "@/utils/conversationStore";
 
 type Props = {
   messages: Message.Entity[];
+  conversationID?: string;
 };
 
 const model = "openai/gpt-4.1-mini";
@@ -48,11 +49,10 @@ const startStream = createServerFn({ method: "POST" })
   });
 
 export function Conversation(props: Props) {
+  const { messages, conversationID } = props;
   const { mutateAsync: createConversation } = useCreateConversation();
   const { mutateAsync: updateMessages } = useUpdateMessages();
   const navigate = useNavigate();
-  const { conversationID } = useParams({ strict: false });
-  const isNewConversation = !props.messages.length;
   const requestGenerateContent = useConversationStore().requestGenerateContent;
 
   async function onNewMessage(
@@ -61,7 +61,7 @@ export function Conversation(props: Props) {
   ) {
     try {
       let cID = conversationID;
-      if (isNewConversation) {
+      if (!conversationID) {
         cID = await createConversation(content);
       } else {
         await updateMessages({
@@ -80,7 +80,7 @@ export function Conversation(props: Props) {
 
       requestGenerateContent(cID!);
 
-      if (isNewConversation) {
+      if (!conversationID) {
         navigate({
           to: "/conversation/$conversationID",
           params: { conversationID: cID! },
@@ -96,10 +96,10 @@ export function Conversation(props: Props) {
   return (
     <div
       className={cn("h-full px-4 pt-8 overflow-auto flex flex-col", {
-        "items-center justify-center": isNewConversation,
+        "items-center justify-center": !conversationID,
       })}
     >
-      {isNewConversation ? (
+      {!conversationID ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -117,11 +117,11 @@ export function Conversation(props: Props) {
         </motion.div>
       ) : (
         <div className="w-full max-w-3xl mx-auto flex flex-col flex-1">
-          <Messages
-            messages={props.messages}
-            conversationID={conversationID!}
+          <Messages messages={messages} conversationID={conversationID!} />
+          <ChatInput
+            onNewMessage={onNewMessage}
+            conversationID={conversationID}
           />
-          <ChatInput onNewMessage={onNewMessage} />
         </div>
       )}
     </div>
