@@ -1,12 +1,9 @@
 import type { Message } from "@llmchat/core/messsage/message";
 import { cn } from "@/utils";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { CodeHighlight } from "@/components/CodeHighlight";
-import { rehypeInlineCodeProperty } from "react-shiki";
 import { useEffect, useRef } from "react";
 import { TypingIndicator } from "./TypingIndicator";
 import { useConversationStore } from "@/utils/conversationStore";
+import { Markdown } from "@/components/Markdown";
 
 type MessagesProps = {
   conversationID: string;
@@ -37,12 +34,14 @@ export function Messages(props: MessagesProps) {
           <div
             data-message-id={message.id}
             key={message.id}
-            className={cn("p-2 prose prose-llmchat max-w-none", {
-              "self-end border border-border rounded-md bg-bg-2 max-w-[80%]":
+            className={cn({
+              "self-end border border-border rounded-md bg-bg-2 max-w-[80%] p-2":
                 message.role === "user",
             })}
           >
-            <MarkdownWrapper content={message.content} />
+            <Markdown className="prose prose-llmchat max-w-none">
+              {message.content}
+            </Markdown>
           </div>
         );
       })}
@@ -50,28 +49,12 @@ export function Messages(props: MessagesProps) {
       {streamingStatus === "waiting" && <TypingIndicator />}
 
       {streamingContent && (
-        <div className="p-2 prose prose-llmchat max-w-none">
-          <MarkdownWrapper content={streamingContent} />
-        </div>
+        <Markdown className="prose prose-llmchat max-w-none">
+          {streamingContent}
+        </Markdown>
       )}
 
       <div ref={messagesEndRef} />
     </div>
-  );
-}
-
-type MarkdownWrapperProps = {
-  content: string;
-};
-
-function MarkdownWrapper(props: MarkdownWrapperProps) {
-  return (
-    <Markdown
-      components={{ code: CodeHighlight }}
-      remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeInlineCodeProperty]}
-    >
-      {props.content}
-    </Markdown>
   );
 }
