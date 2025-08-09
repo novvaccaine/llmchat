@@ -24,5 +24,10 @@ export const ServerRoute = createServerFileRoute("/api/conversation").methods(
       const conversation = await Conversation.list();
       return json({ conversation });
     }),
+
+    DELETE: api.middleware([authMiddleware]).handler(async () => {
+      await Conversation.remove(undefined);
+      return json({ message: "ok" });
+    }),
   }),
 );

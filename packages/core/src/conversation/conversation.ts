@@ -89,23 +89,19 @@ export namespace Conversation {
     return rows[0].id;
   }
 
-  export async function remove(conversationID: string) {
-    const rows = await db
-      .update(conversationTable)
-      .set({ status: "deleted" })
-      .where(
-        and(
-          eq(conversationTable.userId, Actor.userID()),
-          eq(conversationTable.id, conversationID),
-          eq(conversationTable.status, "none"),
-        ),
-      )
-      .returning({ id: conversationTable.id });
+  export async function remove(conversationID: string | undefined) {
+    const conditions = [
+      eq(conversationTable.userId, Actor.userID()),
+      eq(conversationTable.status, "none"),
+    ];
 
-    if (rows.length !== 1) {
-      throw new Error("expected one row to be affected");
+    if (conversationID) {
+      conditions.push(eq(conversationTable.id, conversationID));
     }
 
-    return rows[0].id;
+    await db
+      .update(conversationTable)
+      .set({ status: "deleted" })
+      .where(and(...conditions));
   }
 }

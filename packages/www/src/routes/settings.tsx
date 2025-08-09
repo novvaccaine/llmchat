@@ -10,6 +10,7 @@ import { providersQueryOptions, useUpdateProvider } from "@/utils/provider";
 import { LoadingIcon } from "@/components/LoadingIcon";
 import { toast } from "sonner";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { DeleteAllConversation } from "@/components/DeleteAllConversation";
 
 export const Route = createFileRoute("/settings")({
   component: RouteComponent,
@@ -103,37 +104,40 @@ function RouteComponent() {
         </div>
 
         <div>
-          <p className="text-xl font-semibold mb-5">API Keys</p>
-          <div className="border border-border p-4 rounded-md">
-            <form className="flex flex-col" onSubmit={onSubmit}>
-              <label
-                className="self-start inline-flex gap-3 items-center mb-3"
-                htmlFor="openrouterAPIKey"
-              >
-                <KeyIcon size={16} />
-                <span>OpenRouter API Key</span>
-              </label>
-              <input
-                autoComplete="off"
-                name="openrouterAPIKey"
-                id="openrouterAPIKey"
-                className="w-full bg-bg-2 p-2 rounded-md focus:outline-none"
-                placeholder="Enter API Key"
-                type="password"
-                defaultValue={openrouterAPIKey}
-              />
-              <button
-                disabled={isPending}
-                type="submit"
-                className="flex gap-2 items-center self-end px-4 py-1 bg-brand rounded-md mt-4 text-black"
-              >
-                {isPending && (
-                  <LoadingIcon className="text-black/40 fill-black" />
-                )}
-                <span>Save</span>
-              </button>
-            </form>
+          <div className="mb-8">
+            <p className="text-xl font-semibold mb-5">API Keys</p>
+            <div className="border border-border p-4 rounded-md">
+              <form className="flex flex-col" onSubmit={onSubmit}>
+                <label
+                  className="self-start inline-flex gap-3 items-center mb-3"
+                  htmlFor="openrouterAPIKey"
+                >
+                  <KeyIcon size={16} />
+                  <span>OpenRouter API Key</span>
+                </label>
+                <input
+                  autoComplete="off"
+                  name="openrouterAPIKey"
+                  id="openrouterAPIKey"
+                  className="w-full bg-bg-2 p-2 rounded-md focus:outline-none"
+                  placeholder="Enter API Key"
+                  type="password"
+                  defaultValue={openrouterAPIKey}
+                />
+                <button
+                  disabled={isPending}
+                  type="submit"
+                  className="flex gap-2 items-center self-end px-4 py-1 bg-brand rounded-md mt-4 text-black"
+                >
+                  {isPending && (
+                    <LoadingIcon className="text-black/40 fill-black" />
+                  )}
+                  <span>Save</span>
+                </button>
+              </form>
+            </div>
           </div>
+          <DeleteAllConversation />
         </div>
       </div>
     </div>

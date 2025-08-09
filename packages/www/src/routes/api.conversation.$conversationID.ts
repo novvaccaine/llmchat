@@ -8,8 +8,8 @@ export const ServerRoute = createServerFileRoute(
   "/api/conversation/$conversationID",
 ).methods((api) => ({
   DELETE: api.middleware([authMiddleware]).handler(async ({ params }) => {
-    const conversationID = await Conversation.remove(params.conversationID);
-    return json({ conversationID });
+    await Conversation.remove(params.conversationID);
+    return json({ message: "ok" });
   }),
 
   PUT: api

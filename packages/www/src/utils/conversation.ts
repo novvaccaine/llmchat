@@ -39,7 +39,15 @@ async function deleteConversation(conversationID: string) {
     body: JSON.stringify({ conversationID }),
   });
   const data = await res.json();
-  return data.conversationID as string;
+  return data.message as string;
+}
+
+async function deleteAllConversation() {
+  const res = await fetch(`/api/conversation`, {
+    method: "DELETE",
+  });
+  const data = await res.json();
+  return data.message as string;
 }
 
 export function conversationQueryOptions() {
@@ -65,6 +73,18 @@ export function useDeleteConveration() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (conversationID: string) => deleteConversation(conversationID),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["conversation"],
+      });
+    },
+  });
+}
+
+export function useDeleteAllConveration() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteAllConversation,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["conversation"],

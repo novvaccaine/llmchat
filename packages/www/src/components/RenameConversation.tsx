@@ -53,7 +53,7 @@ export function RenameConversation(props: Props) {
       <Dialog.Trigger className="hidden" />
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-bg/75" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 max-w-lg w-full rounded-md bg-sidebar p-4 -translate-x-1/2 -translate-y-1/2 border border-bg-2 focus:outline-none">
+        <Dialog.Content className="fixed top-1/2 left-1/2 max-w-lg w-[95%] rounded-md bg-sidebar p-4 -translate-x-1/2 -translate-y-1/2 border border-bg-2 focus:outline-none">
           <Dialog.Title className="text-lg font-semibold">
             Rename Conversation
           </Dialog.Title>
