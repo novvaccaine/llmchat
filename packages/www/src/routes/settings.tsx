@@ -74,7 +74,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-8">
+    <div className="max-w-7xl mx-auto p-3 md:p-8">
       <div className="flex items-center justify-between">
         <Link
           to="/"
@@ -91,7 +91,7 @@ function RouteComponent() {
         </button>
       </div>
 
-      <div className="grid grid-cols-[200px_1fr] mt-8 gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] mt-8 gap-12">
         <div className="flex flex-col items-center gap-4">
           <img
             className="size-[160px] rounded-full"
