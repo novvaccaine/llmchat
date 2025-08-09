@@ -34,8 +34,8 @@ export function DeleteConversation(props: Props) {
             Delete Conversation
           </Dialog.Title>
           <Dialog.Description className="mt-2 text-muted">
-            <span>Are you sure you want to delete "{conversation.title}"</span>
-            <span>This action cannot be undone.</span>
+            Are you sure you want to delete "{conversation.title}". This action
+            cannot be undone.
           </Dialog.Description>
           <div className="mt-6 flex justify-end gap-4">
             <button

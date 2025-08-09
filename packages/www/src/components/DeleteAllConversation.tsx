@@ -23,8 +23,8 @@ export function DeleteAllConversation() {
             Are you absolutely sure?
           </Dialog.Title>
           <Dialog.Description className="mt-2 text-muted">
-            <span>This will permanently delete all your chat history.</span>
-            <span>This action cannot be undone.</span>
+            This will permanently delete all your chat history. This action
+            cannot be undone.
           </Dialog.Description>
           <div className="mt-6 flex justify-end gap-4">
             <button
