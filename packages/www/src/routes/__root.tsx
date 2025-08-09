@@ -14,6 +14,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { ws } from "@/utils/ws";
 import { NotFound } from "@/components/NotFound";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const getUser = createServerFn().handler(async () => {
   const { headers } = getWebRequest();
@@ -51,6 +52,7 @@ export const Route = createRootRouteWithContext<{
   }),
   component: RootComponent,
   notFoundComponent: NotFound,
+  errorComponent: ErrorBoundary,
   beforeLoad: async () => {
     const user = await getUser();
     return {
