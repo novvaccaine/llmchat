@@ -12,7 +12,6 @@ import { getCookie } from "@tanstack/react-start/server";
 import { cn } from "@/utils";
 import { motion } from "motion/react";
 import { env } from "@llmchat/core/env";
-import { useEffect } from "react";
 import { Logo } from "./Logo";
 
 type Props = {

@@ -56,7 +56,7 @@ export function Sidebar(props: Props) {
             <ConversationLink
               key={c.id}
               conversation={{ ...c, title }}
-              isGenerating={Boolean(entry)}
+              generating={entry?.generating}
             />
           );
         })}
@@ -94,11 +94,11 @@ export function Sidebar(props: Props) {
 
 type ConversationProps = {
   conversation: Conversation.Entity;
-  isGenerating: boolean;
+  generating: boolean;
 };
 
 function ConversationLink(props: ConversationProps) {
-  const { conversation, isGenerating } = props;
+  const { conversation, generating } = props;
   const [ref, hovering] = useHover();
   const [open, setOpen] = useState(false);
 
@@ -125,11 +125,11 @@ function ConversationLink(props: ConversationProps) {
           </Tooltip.Portal>
         </Tooltip.Root>
       </Tooltip.Provider>
-      {isGenerating && (
+      {generating && (
         <LoadingIcon className="shrink-0 text-brand/40 fill-white ml-auto" />
       )}
       <AnimatePresence>
-        {(hovering || open) && !isGenerating && (
+        {(hovering || open) && !generating && (
           <ConversationOptions setOpen={setOpen} conversation={conversation} />
         )}
       </AnimatePresence>
