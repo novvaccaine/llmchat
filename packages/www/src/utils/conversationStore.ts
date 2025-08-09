@@ -15,6 +15,8 @@ type State = {
 
 type Action = {
   requestGenerateContent: (conversationID: string) => void;
+  rename: (conversationID: string, title: string) => void;
+  // events
   onGeneratingContent: (data: Event.EventData<"generating_content">) => void;
   onGeneratingTitle: (data: Event.EventData<"generated_title">) => void;
   onGeneratedContent: (data: Event.EventData<"generating_content">) => void;
@@ -34,6 +36,14 @@ export const useConversationStore = create<State & Action>()(
             content: "",
             status: "waiting",
           };
+        }
+      }),
+
+    rename: (conversationID, title) =>
+      set((state) => {
+        const conversation = state.conversation[conversationID];
+        if (conversation) {
+          conversation.title = title;
         }
       }),
 

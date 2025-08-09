@@ -44,7 +44,7 @@ function RouteComponent() {
   const title = useConversationStore().conversation[conversation.id]?.title;
   return (
     <>
-      {title && <title>{title}</title>}
+      {title && <title>{titleTag(title)}</title>}
       <Conversation messages={conversation.messages} />
     </>
   );
