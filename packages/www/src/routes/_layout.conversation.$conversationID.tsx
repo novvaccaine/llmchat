@@ -1,5 +1,6 @@
 import { Conversation } from "@/components/Conversation";
 import { titleTag } from "@/utils";
+import { useConversationStore } from "@/utils/conversationStore";
 import { messagesQueryOptions } from "@/utils/message";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
@@ -40,5 +41,11 @@ function RouteComponent() {
   const { data: conversation } = useSuspenseQuery(
     messagesQueryOptions(conversationID),
   );
-  return <Conversation messages={conversation.messages} />;
+  const title = useConversationStore().conversation[conversation.id]?.title;
+  return (
+    <>
+      {title && <title>{title}</title>}
+      <Conversation messages={conversation.messages} />
+    </>
+  );
 }

@@ -18,9 +18,10 @@ export const useConversationStore = create<State & Action>()(
 
     onGeneratingContent: (data) =>
       set((state) => {
+        const conversation = state.conversation[data.conversationID];
         state.conversation[data.conversationID] = {
           content: data.content,
-          title: data.title,
+          title: data.title ?? conversation.title,
         };
       }),
 
@@ -38,7 +39,10 @@ export const useConversationStore = create<State & Action>()(
 
     onGeneratedContent: (data) =>
       set((state) => {
-        delete state.conversation[data.conversationID];
+        const conversation = state.conversation[data.conversationID];
+        if (conversation) {
+          conversation.content = "";
+        }
       }),
   })),
 );
