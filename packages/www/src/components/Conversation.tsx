@@ -13,6 +13,7 @@ import { cn } from "@/utils";
 import { motion } from "motion/react";
 import { env } from "@llmchat/core/env";
 import { useEffect } from "react";
+import { Logo } from "./Logo";
 
 type Props = {
   messages: Message.Entity[];
@@ -108,6 +109,7 @@ export function Conversation(props: Props) {
           }}
           className="max-w-2xl w-full flex flex-col items-center justify-center gap-3"
         >
+          <Logo className="size-10 fill-brand" />
           <p className="text-2xl sm:text-3xl font-semibold">
             How can I assist you today?
           </p>
