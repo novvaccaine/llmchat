@@ -20,7 +20,7 @@ const getORPCClient = createIsomorphicFn()
       url: `${window.location.origin}/api/rpc`,
       interceptors: [
         onError((error) => {
-          console.log("interceptor error", error);
+          console.error("rpc client error", error);
         }),
       ],
     });

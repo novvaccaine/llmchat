@@ -55,8 +55,7 @@ export namespace AI {
       }
 
       const chat = createOpenRouter({
-        // apiKey: env.OPENROUTER_API_KEY,
-        apiKey: env.OPENROUTER_API_KEY + "fuck",
+        apiKey: env.OPENROUTER_API_KEY,
       });
 
       let streamError: unknown | null = null;
@@ -102,7 +101,7 @@ export namespace AI {
   // TODO: improve the system prompt
   export async function generateTitle(content: string) {
     const chat = createOpenRouter({
-      apiKey: env.OPENROUTER_API_KEY + "fuck",
+      apiKey: env.OPENROUTER_API_KEY,
     });
 
     const res = await generateText({
