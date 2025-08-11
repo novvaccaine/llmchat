@@ -1,10 +1,14 @@
-import { cn } from "@/utils";
+import { cn } from "@/lib/utils";
 import { marked } from "marked";
 import { memo, useId, useMemo, useState } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
-import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "./CodeBlock";
+import {
+  CodeBlock,
+  CodeBlockCode,
+  CodeBlockGroup,
+} from "@/components/CodeBlock";
 import { Copy as CopyIcon, Check as CheckIcon } from "lucide-react";
 import { toast } from "sonner";
 

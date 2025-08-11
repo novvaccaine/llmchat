@@ -1,7 +1,8 @@
 import { Event } from "@llmchat/core/event";
 import { WebSocket } from "partysocket";
-import { useConversationStore } from "./conversationStore";
+import { useConversationStore } from "@/stores/conversationStore";
 import { QueryClient } from "@tanstack/react-query";
+import { orpc } from "@/orpc/client";
 
 export class WS {
   socket: WebSocket | null = null;
@@ -26,8 +27,7 @@ export class WS {
           case "generated_content": {
             queryClient
               .invalidateQueries({
-                queryKey: ["conversation"],
-                refetchType: "all",
+                queryKey: orpc.key(),
               })
               .then(() => {
                 useConversationStore.getState().onGeneratedContent(event.data);

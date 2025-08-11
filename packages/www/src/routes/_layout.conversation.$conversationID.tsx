@@ -1,7 +1,7 @@
 import { Conversation } from "@/components/Conversation";
-import { titleTag } from "@/utils";
-import { useConversationStore } from "@/utils/conversationStore";
-import { messagesQueryOptions } from "@/utils/message";
+import { titleTag } from "@/lib/utils";
+import { useConversationStore } from "@/stores/conversationStore";
+import { messagesQueryOptions } from "@/query/message";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   AnyRouteMatch,

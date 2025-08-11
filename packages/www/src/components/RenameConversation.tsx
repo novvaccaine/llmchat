@@ -1,10 +1,10 @@
-import { useUIStore } from "@/utils/uiStore";
+import { useUIStore } from "@/stores/uiStore";
 import { Conversation } from "@llmchat/core/conversation/conversation";
 import * as Dialog from "@radix-ui/react-dialog";
 import { LoadingIcon } from "@/components/LoadingIcon";
-import { useUpdateConversation } from "@/utils/conversation";
+import { useUpdateConversation } from "@/query/conversation";
 import { toast } from "sonner";
-import { useConversationStore } from "@/utils/conversationStore";
+import { useConversationStore } from "@/stores/conversationStore";
 
 type Props = {
   conversation: Conversation.Entity;

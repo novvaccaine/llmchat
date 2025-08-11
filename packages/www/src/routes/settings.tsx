@@ -1,4 +1,4 @@
-import { authClient } from "@/utils";
+import { authClient } from "@/lib/utils";
 import {
   createFileRoute,
   Link,
@@ -6,7 +6,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { ArrowLeft as LeftIcon, Key as KeyIcon } from "lucide-react";
-import { providersQueryOptions, useUpdateProvider } from "@/utils/provider";
+import { providersQueryOptions, useUpdateProvider } from "@/query/provider";
 import { LoadingIcon } from "@/components/LoadingIcon";
 import { toast } from "sonner";
 import { useSuspenseQuery } from "@tanstack/react-query";

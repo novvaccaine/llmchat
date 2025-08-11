@@ -1,4 +1,5 @@
 import { createContext } from "./context";
+import { AppError, errorCodes } from "./error";
 
 export namespace Actor {
   export type User = {
@@ -20,7 +21,11 @@ export namespace Actor {
   export function userID() {
     const actor = context.use();
     if (!("userID" in actor.properties)) {
-      throw new Error("no userID found");
+      throw new AppError(
+        "authentication",
+        errorCodes.authentication.UNAUTHORIZED,
+        "You don't have permission to access this resource",
+      );
     }
     return actor.properties.userID;
   }

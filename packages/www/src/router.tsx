@@ -1,29 +1,28 @@
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
-import { routeTree } from "./routeTree.gen";
+import { routeTree } from "@/routeTree.gen";
 import { routerWithQueryClient } from "@tanstack/react-router-with-query";
-import { QueryClient } from "@tanstack/react-query";
-import { useUIStore } from "./utils/uiStore";
+import { useUIStore } from "@/stores//uiStore";
+import * as TanstackQuery from "@/query";
 
 export function createRouter() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        refetchOnWindowFocus: false,
-      },
-    },
-  });
-
+  const rqContext = TanstackQuery.getContext();
   return routerWithQueryClient(
     createTanStackRouter({
       routeTree,
-      context: { queryClient },
+      context: { ...rqContext },
       defaultPreload: "intent",
       hydrate() {
         useUIStore.getState().setHasHydrated(true);
       },
+      Wrap: (props: { children: React.ReactNode }) => {
+        return (
+          <TanstackQuery.Provider {...rqContext}>
+            {props.children}
+          </TanstackQuery.Provider>
+        );
+      },
     }),
-    queryClient,
+    rqContext.queryClient,
   );
 }
 

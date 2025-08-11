@@ -5,6 +5,7 @@ import { and, asc, eq, ne } from "drizzle-orm";
 import { conversationTable } from "../conversation/conversation.sql";
 import { Actor } from "../actor";
 import { ulid } from "ulid";
+import { AppError, errorCodes } from "../error";
 
 export namespace Message {
   export const Entity = z.object({
@@ -34,7 +35,11 @@ export namespace Message {
           ),
         );
       if (!rows.length) {
-        throw new Error("invalid conversationID");
+        throw new AppError(
+          "not_found",
+          errorCodes.notFound.RESOURCE_NOT_FOUND,
+          "Conversation not found",
+        );
       }
       const conversation = rows[0];
 
@@ -73,7 +78,11 @@ export namespace Message {
         ),
       );
     if (!rows.length) {
-      throw new Error("conversation not found");
+      throw new AppError(
+        "not_found",
+        errorCodes.notFound.RESOURCE_NOT_FOUND,
+        "Conversation not found",
+      );
     }
     const conversation = rows[0];
 

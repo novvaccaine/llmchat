@@ -15,11 +15,8 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout.index'
 import { Route as LayoutConversationConversationIDRouteImport } from './routes/_layout.conversation.$conversationID'
-import { ServerRoute as ApiProviderServerRouteImport } from './routes/api.provider'
-import { ServerRoute as ApiConversationServerRouteImport } from './routes/api.conversation'
-import { ServerRoute as ApiConversationConversationIDServerRouteImport } from './routes/api.conversation.$conversationID'
+import { ServerRoute as ApiRpcSplatServerRouteImport } from './routes/api.rpc.$'
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api.auth.$'
-import { ServerRoute as ApiConversationConversationIDMessageServerRouteImport } from './routes/api.conversation.$conversationID.message'
 
 const rootServerRouteImport = createServerRootRoute()
 
@@ -43,33 +40,16 @@ const LayoutConversationConversationIDRoute =
     path: '/conversation/$conversationID',
     getParentRoute: () => LayoutRoute,
   } as any)
-const ApiProviderServerRoute = ApiProviderServerRouteImport.update({
-  id: '/api/provider',
-  path: '/api/provider',
+const ApiRpcSplatServerRoute = ApiRpcSplatServerRouteImport.update({
+  id: '/api/rpc/$',
+  path: '/api/rpc/$',
   getParentRoute: () => rootServerRouteImport,
 } as any)
-const ApiConversationServerRoute = ApiConversationServerRouteImport.update({
-  id: '/api/conversation',
-  path: '/api/conversation',
-  getParentRoute: () => rootServerRouteImport,
-} as any)
-const ApiConversationConversationIDServerRoute =
-  ApiConversationConversationIDServerRouteImport.update({
-    id: '/$conversationID',
-    path: '/$conversationID',
-    getParentRoute: () => ApiConversationServerRoute,
-  } as any)
 const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootServerRouteImport,
 } as any)
-const ApiConversationConversationIDMessageServerRoute =
-  ApiConversationConversationIDMessageServerRouteImport.update({
-    id: '/message',
-    path: '/message',
-    getParentRoute: () => ApiConversationConversationIDServerRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
@@ -106,55 +86,29 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
 }
 export interface FileServerRoutesByFullPath {
-  '/api/conversation': typeof ApiConversationServerRouteWithChildren
-  '/api/provider': typeof ApiProviderServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
-  '/api/conversation/$conversationID': typeof ApiConversationConversationIDServerRouteWithChildren
-  '/api/conversation/$conversationID/message': typeof ApiConversationConversationIDMessageServerRoute
+  '/api/rpc/$': typeof ApiRpcSplatServerRoute
 }
 export interface FileServerRoutesByTo {
-  '/api/conversation': typeof ApiConversationServerRouteWithChildren
-  '/api/provider': typeof ApiProviderServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
-  '/api/conversation/$conversationID': typeof ApiConversationConversationIDServerRouteWithChildren
-  '/api/conversation/$conversationID/message': typeof ApiConversationConversationIDMessageServerRoute
+  '/api/rpc/$': typeof ApiRpcSplatServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
-  '/api/conversation': typeof ApiConversationServerRouteWithChildren
-  '/api/provider': typeof ApiProviderServerRoute
   '/api/auth/$': typeof ApiAuthSplatServerRoute
-  '/api/conversation/$conversationID': typeof ApiConversationConversationIDServerRouteWithChildren
-  '/api/conversation/$conversationID/message': typeof ApiConversationConversationIDMessageServerRoute
+  '/api/rpc/$': typeof ApiRpcSplatServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths:
-    | '/api/conversation'
-    | '/api/provider'
-    | '/api/auth/$'
-    | '/api/conversation/$conversationID'
-    | '/api/conversation/$conversationID/message'
+  fullPaths: '/api/auth/$' | '/api/rpc/$'
   fileServerRoutesByTo: FileServerRoutesByTo
-  to:
-    | '/api/conversation'
-    | '/api/provider'
-    | '/api/auth/$'
-    | '/api/conversation/$conversationID'
-    | '/api/conversation/$conversationID/message'
-  id:
-    | '__root__'
-    | '/api/conversation'
-    | '/api/provider'
-    | '/api/auth/$'
-    | '/api/conversation/$conversationID'
-    | '/api/conversation/$conversationID/message'
+  to: '/api/auth/$' | '/api/rpc/$'
+  id: '__root__' | '/api/auth/$' | '/api/rpc/$'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
-  ApiConversationServerRoute: typeof ApiConversationServerRouteWithChildren
-  ApiProviderServerRoute: typeof ApiProviderServerRoute
   ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
+  ApiRpcSplatServerRoute: typeof ApiRpcSplatServerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -191,26 +145,12 @@ declare module '@tanstack/react-router' {
 }
 declare module '@tanstack/react-start/server' {
   interface ServerFileRoutesByPath {
-    '/api/provider': {
-      id: '/api/provider'
-      path: '/api/provider'
-      fullPath: '/api/provider'
-      preLoaderRoute: typeof ApiProviderServerRouteImport
+    '/api/rpc/$': {
+      id: '/api/rpc/$'
+      path: '/api/rpc/$'
+      fullPath: '/api/rpc/$'
+      preLoaderRoute: typeof ApiRpcSplatServerRouteImport
       parentRoute: typeof rootServerRouteImport
-    }
-    '/api/conversation': {
-      id: '/api/conversation'
-      path: '/api/conversation'
-      fullPath: '/api/conversation'
-      preLoaderRoute: typeof ApiConversationServerRouteImport
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/api/conversation/$conversationID': {
-      id: '/api/conversation/$conversationID'
-      path: '/$conversationID'
-      fullPath: '/api/conversation/$conversationID'
-      preLoaderRoute: typeof ApiConversationConversationIDServerRouteImport
-      parentRoute: typeof ApiConversationServerRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -218,13 +158,6 @@ declare module '@tanstack/react-start/server' {
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatServerRouteImport
       parentRoute: typeof rootServerRouteImport
-    }
-    '/api/conversation/$conversationID/message': {
-      id: '/api/conversation/$conversationID/message'
-      path: '/message'
-      fullPath: '/api/conversation/$conversationID/message'
-      preLoaderRoute: typeof ApiConversationConversationIDMessageServerRouteImport
-      parentRoute: typeof ApiConversationConversationIDServerRoute
     }
   }
 }
@@ -242,35 +175,6 @@ const LayoutRouteChildren: LayoutRouteChildren = {
 const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
-interface ApiConversationConversationIDServerRouteChildren {
-  ApiConversationConversationIDMessageServerRoute: typeof ApiConversationConversationIDMessageServerRoute
-}
-
-const ApiConversationConversationIDServerRouteChildren: ApiConversationConversationIDServerRouteChildren =
-  {
-    ApiConversationConversationIDMessageServerRoute:
-      ApiConversationConversationIDMessageServerRoute,
-  }
-
-const ApiConversationConversationIDServerRouteWithChildren =
-  ApiConversationConversationIDServerRoute._addFileChildren(
-    ApiConversationConversationIDServerRouteChildren,
-  )
-
-interface ApiConversationServerRouteChildren {
-  ApiConversationConversationIDServerRoute: typeof ApiConversationConversationIDServerRouteWithChildren
-}
-
-const ApiConversationServerRouteChildren: ApiConversationServerRouteChildren = {
-  ApiConversationConversationIDServerRoute:
-    ApiConversationConversationIDServerRouteWithChildren,
-}
-
-const ApiConversationServerRouteWithChildren =
-  ApiConversationServerRoute._addFileChildren(
-    ApiConversationServerRouteChildren,
-  )
-
 const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
   SettingsRoute: SettingsRoute,
@@ -279,9 +183,8 @@ export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 const rootServerRouteChildren: RootServerRouteChildren = {
-  ApiConversationServerRoute: ApiConversationServerRouteWithChildren,
-  ApiProviderServerRoute: ApiProviderServerRoute,
   ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
+  ApiRpcSplatServerRoute: ApiRpcSplatServerRoute,
 }
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)

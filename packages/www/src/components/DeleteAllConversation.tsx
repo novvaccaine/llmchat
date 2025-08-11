@@ -1,6 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { LoadingIcon } from "@/components/LoadingIcon";
-import { useDeleteAllConveration } from "@/utils/conversation";
+import { useDeleteAllConveration } from "@/query/conversation";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Trash2 as DeleteIcon } from "lucide-react";
@@ -38,7 +38,7 @@ export function DeleteAllConversation() {
               className="rounded-md bg-danger text-white px-4 py-1.5 focus:outline-none flex gap-2 items-center"
               onClick={async () => {
                 try {
-                  await deleteAllConversation();
+                  await deleteAllConversation({});
                   toast.success("Deleted chat history");
                   setOpen(false);
                 } catch (err) {

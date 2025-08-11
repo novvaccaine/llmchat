@@ -1,14 +1,14 @@
-import { cn } from '@/utils'
+import { cn } from "@/lib/utils";
 
 type Props = {
-  className?: string
-}
+  className?: string;
+};
 
 export function LoadingIcon(props: Props) {
   return (
     <svg
       aria-hidden="true"
-      className={cn('w-4 h-4 text-white animate-spin', props.className ?? '')}
+      className={cn("w-4 h-4 text-white animate-spin", props.className ?? "")}
       viewBox="0 0 100 101"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -22,5 +22,5 @@ export function LoadingIcon(props: Props) {
         fill="currentFill"
       />
     </svg>
-  )
+  );
 }

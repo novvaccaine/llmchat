@@ -1,8 +1,8 @@
-import { useUIStore } from "@/utils/uiStore";
+import { useUIStore } from "@/stores/uiStore";
 import { Conversation } from "@llmchat/core/conversation/conversation";
 import * as Dialog from "@radix-ui/react-dialog";
 import { LoadingIcon } from "@/components/LoadingIcon";
-import { useDeleteConveration } from "@/utils/conversation";
+import { useDeleteConveration } from "@/query/conversation";
 import { toast } from "sonner";
 import { useRouter } from "@tanstack/react-router";
 
@@ -49,7 +49,7 @@ export function DeleteConversation(props: Props) {
               className="rounded-md bg-danger text-white px-4 py-1.5 focus:outline-none flex gap-2 items-center"
               onClick={async () => {
                 try {
-                  await deleteConversation(conversation.id);
+                  await deleteConversation({ conversationID: conversation.id });
                   setDialog(null);
                   router.invalidate();
                 } catch (err) {

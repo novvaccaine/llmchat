@@ -1,21 +1,16 @@
-import {
-  createFileRoute,
-  HeadContent,
-  Outlet,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { Sidebar } from "@/components/Sidebar";
-import { conversationQueryOptions } from "@/utils/conversation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useUIStore } from "@/utils/uiStore";
+import { useUIStore } from "@/stores/uiStore";
 import { DeleteConversation } from "@/components/DeleteConversation";
 import { RenameConversation } from "@/components/RenameConversation";
 import { motion, AnimatePresence } from "motion/react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { conversationQueryOptions } from "@/query/conversation";
 
 const hotKeysOptions = {
   preventDefault: true,

@@ -41,12 +41,13 @@ export namespace Conversation {
     });
   }
 
-  export function list() {
-    return db
+  export async function list() {
+    const rows = await db
       .select({
         id: conversationTable.id,
         title: conversationTable.title,
         lastMessageAt: conversationTable.lastMessageAt,
+        status: conversationTable.status,
       })
       .from(conversationTable)
       .where(
@@ -57,6 +58,13 @@ export namespace Conversation {
       )
       .orderBy(desc(conversationTable.lastMessageAt))
       .limit(MESSAGES_LIMIT); // TODO: pagination
+
+    return rows.map((input) => ({
+      id: input.id,
+      title: input.title ?? undefined,
+      status: input.status,
+      lastMessageAt: input.lastMessageAt.toJSON(),
+    }));
   }
 
   type UpdateInput = Partial<Pick<Entity, "title" | "status">>;
@@ -81,10 +89,6 @@ export namespace Conversation {
         ),
       )
       .returning({ id: conversationTable.id });
-
-    if (rows.length !== 1) {
-      throw new Error("expected one row to be affected");
-    }
 
     return rows[0].id;
   }

@@ -1,18 +1,18 @@
+import z from "zod";
 import { Messages } from "@/components/Messages";
 import { ChatInput } from "@/components/ChatInput";
 import type { Message } from "@llmchat/core/messsage/message";
-import { useCreateConversation } from "@/utils/conversation";
-import { useUpdateMessages } from "@/utils/message";
+import { useCreateConversation } from "@/query/conversation";
+import { useUpdateMessages } from "@/query/message";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import z from "zod";
 import { getCookie } from "@tanstack/react-start/server";
-import { cn } from "@/utils";
+import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { env } from "@llmchat/core/env";
-import { Logo } from "./Logo";
-import { useConversationStore } from "@/utils/conversationStore";
+import { Logo } from "@/components/Logo";
+import { useConversationStore } from "@/stores/conversationStore";
 
 type Props = {
   messages: Message.Entity[];
@@ -62,12 +62,12 @@ export function Conversation(props: Props) {
     try {
       let cID = conversationID;
       if (!conversationID) {
-        cID = await createConversation(content);
+        const res = await createConversation({ content });
+        cID = res.conversationID;
       } else {
         await updateMessages({
           content,
           conversationID: cID!,
-          role: "user",
         });
       }
 

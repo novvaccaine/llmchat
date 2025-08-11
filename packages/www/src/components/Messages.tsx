@@ -1,8 +1,8 @@
 import type { Message } from "@llmchat/core/messsage/message";
-import { cn } from "@/utils";
+import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
-import { TypingIndicator } from "./TypingIndicator";
-import { useConversationStore } from "@/utils/conversationStore";
+import { TypingIndicator } from "@/components/TypingIndicator";
+import { useConversationStore } from "@/stores/conversationStore";
 import { Markdown } from "@/components/Markdown";
 
 type MessagesProps = {

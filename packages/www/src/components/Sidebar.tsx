@@ -1,4 +1,4 @@
-import { authClient, splitConversationsByDate } from "@/utils";
+import { authClient, splitConversationsByDate } from "@/lib/utils";
 import { LogIn as LoginIcon } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Route } from "@/routes/__root";
@@ -11,9 +11,9 @@ import { useHover } from "@uidotdev/usehooks";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useMemo, useState } from "react";
 import { Trash2 as DeleteIcon, SquarePen as EditIcon } from "lucide-react";
-import { useUIStore } from "@/utils/uiStore";
-import { SidebarToggle } from "./SidebarToggle";
-import { useConversationStore } from "@/utils/conversationStore";
+import { useUIStore } from "@/stores/uiStore";
+import { SidebarToggle } from "@/components/SidebarToggle";
+import { useConversationStore } from "@/stores/conversationStore";
 
 type Props = {
   conversation: Conversation.Entity[];

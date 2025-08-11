@@ -11,6 +11,9 @@
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
     "@llmchat/core": "workspace:*",
+    "@orpc/client": "^1.7.11",
+    "@orpc/server": "^1.7.11",
+    "@orpc/tanstack-query": "^1.7.11",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-tooltip": "^1.2.7",
@@ -31,7 +34,6 @@
     "react-dom": "^19.1.0",
     "react-hotkeys-hook": "^5.1.0",
     "react-markdown": "^10.1.0",
-    "react-query": "link:@@tanstack/react-query",
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "shiki": "^3.9.2",

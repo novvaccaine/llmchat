@@ -1,5 +1,5 @@
-import { cn } from "@/utils";
-import { useConversationStore } from "@/utils/conversationStore";
+import { cn } from "@/lib/utils";
+import { useConversationStore } from "@/stores/conversationStore";
 import React, { useEffect, useRef, useState } from "react";
 
 type ChatInputProps = {

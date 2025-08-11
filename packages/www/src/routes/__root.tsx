@@ -6,13 +6,13 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from "@tanstack/react-router";
-import appCss from "../styles/app.css?url";
+import appCss from "@/styles/app.css?url";
 import { createServerFn } from "@tanstack/react-start";
 import { auth } from "@llmchat/core/auth/index";
 import { getWebRequest } from "@tanstack/react-start/server";
 import type { QueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
-import { ws } from "@/utils/ws";
+import { ws } from "@/lib/ws";
 import { NotFound } from "@/components/NotFound";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
