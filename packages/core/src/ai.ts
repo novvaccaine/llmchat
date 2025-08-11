@@ -13,6 +13,7 @@ export namespace AI {
     conversationID: string;
     onFinish: (content: string, title: string | undefined) => void;
     onTitleGenerate: (title: string) => void;
+    onError: () => void;
   };
 
   const GENERATE_TITLE_MODEL = "openai/gpt-4.1-mini";
@@ -36,51 +37,72 @@ export namespace AI {
     }
 
     let title: string | undefined = undefined;
-    if (messages.length === 1) {
-      title = await generateTitle(messages[0].content);
-      await Conversation.update(input.conversationID, {
-        title,
-        status: "streaming",
-      });
-      input.onTitleGenerate(title);
-    }
 
-    if (!title) {
-      await Conversation.update(input.conversationID, { status: "streaming" });
-    }
-
-    const chat = createOpenRouter({
-      apiKey: env.OPENROUTER_API_KEY,
-    });
-
-    const stream = streamText({
-      model: chat(input.model),
-      messages: messages.map((m) => ({ role: m.role, content: m.content })),
-      onError: (event) => {
-        console.error("failed to generate content", event.error);
-      },
-      onFinish: async (event) => {
-        await Message.create({
-          content: event.text,
-          conversationID: input.conversationID,
-          role: "assistant",
-          model: input.model,
+    try {
+      if (messages.length === 1) {
+        title = await generateTitle(messages[0].content);
+        await Conversation.update(input.conversationID, {
+          title,
+          status: "streaming",
         });
-        input.onFinish(event.text, title);
-      },
-    });
+        input.onTitleGenerate(title);
+      }
 
-    for await (const content of stream.textStream) {
-      yield {
-        content,
-        title,
-      };
+      if (!title) {
+        await Conversation.update(input.conversationID, {
+          status: "streaming",
+        });
+      }
+
+      const chat = createOpenRouter({
+        // apiKey: env.OPENROUTER_API_KEY,
+        apiKey: env.OPENROUTER_API_KEY + "fuck",
+      });
+
+      let streamError: unknown | null = null;
+      const stream = streamText({
+        model: chat(input.model),
+        messages: messages.map((m) => ({ role: m.role, content: m.content })),
+        onError: (event) => {
+          streamError = event.error;
+        },
+        onFinish: async (event) => {
+          await Message.create({
+            content: event.text,
+            conversationID: input.conversationID,
+            role: "assistant",
+            model: input.model,
+          });
+          input.onFinish(event.text, title);
+        },
+      });
+
+      for await (const content of stream.textStream) {
+        if (streamError) {
+          throw streamError;
+        }
+        yield {
+          content,
+          title,
+        };
+      }
+
+      if (streamError) {
+        throw streamError;
+      }
+    } catch (err) {
+      console.error("failed to generate content", err);
+      await Conversation.update(input.conversationID, {
+        status: "none",
+      });
+      input.onError();
     }
   }
 
+  // TODO: improve the system prompt
   export async function generateTitle(content: string) {
     const chat = createOpenRouter({
-      apiKey: env.OPENROUTER_API_KEY,
+      apiKey: env.OPENROUTER_API_KEY + "fuck",
     });
 
     const res = await generateText({

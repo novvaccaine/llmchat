@@ -28,51 +28,57 @@ export class StreamDO extends DurableObject {
 
   async generateContent(conversationID: string, userID: string, model: string) {
     Actor.provide("user", { userID }, async () => {
-      try {
-        const stream = AI.generateContent({
-          conversationID,
-          model,
+      const stream = AI.generateContent({
+        conversationID,
+        model,
 
-          onFinish: (content: string, title: string | undefined) => {
-            this.publishEvent({
-              type: "generated_content",
-              data: {
-                content,
-                conversationID,
-                title,
-              },
-            });
-            delete this.conversation[conversationID];
-          },
-
-          onTitleGenerate: (title) => {
-            this.publishEvent({
-              type: "generated_title",
-              data: {
-                title,
-                conversationID,
-              },
-            });
-          },
-        });
-
-        for await (const data of stream) {
-          if (!this.conversation[conversationID]) {
-            this.conversation[conversationID] = data.content;
-          } else {
-            this.conversation[conversationID] += data.content;
-          }
+        onFinish: (content, title) => {
           this.publishEvent({
-            type: "generating_content",
+            type: "generated_content",
             data: {
+              content,
               conversationID,
-              content: this.conversation[conversationID],
-              title: data.title,
+              title,
             },
           });
+          delete this.conversation[conversationID];
+        },
+
+        onTitleGenerate: (title) => {
+          this.publishEvent({
+            type: "generated_title",
+            data: {
+              title,
+              conversationID,
+            },
+          });
+        },
+
+        onError: () => {
+          this.publishEvent({
+            type: "error_generating_content",
+            data: {
+              conversationID,
+            },
+          });
+          delete this.conversation[conversationID];
+        },
+      });
+
+      for await (const data of stream) {
+        if (!this.conversation[conversationID]) {
+          this.conversation[conversationID] = data.content;
+        } else {
+          this.conversation[conversationID] += data.content;
         }
-      } catch (err) {
-        console.error("failed to generate content", err);
+        this.publishEvent({
+          type: "generating_content",
+          data: {
+            conversationID,
+            content: this.conversation[conversationID],
+            title: data.title,
+          },
+        });
       }
     });
   }

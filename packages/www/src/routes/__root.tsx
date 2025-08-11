@@ -91,6 +91,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       </head>
       <body>
         <Toaster
+          position="top-right"
           duration={1500}
           toastOptions={{
             style: {

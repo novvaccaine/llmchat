@@ -3,6 +3,7 @@ import { WebSocket } from "partysocket";
 import { useConversationStore } from "@/stores/conversationStore";
 import { QueryClient } from "@tanstack/react-query";
 import { orpc } from "@/orpc/client";
+import { toast } from "sonner";
 
 export class WS {
   socket: WebSocket | null = null;
@@ -40,6 +41,11 @@ export class WS {
           }
           case "generated_title": {
             useConversationStore.getState().onGeneratedTitle(event.data);
+            break;
+          }
+          case "error_generating_content": {
+            useConversationStore.getState().onError(event.data);
+            toast.error("Failed to generate content");
             break;
           }
           default: {

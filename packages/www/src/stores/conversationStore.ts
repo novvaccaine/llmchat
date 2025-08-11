@@ -8,7 +8,7 @@ type State = {
     {
       content: string;
       title?: string;
-      status: "waiting" | "generating" | "generated";
+      status: "waiting" | "generating" | "generated" | "error";
     }
   >;
 };
@@ -20,6 +20,7 @@ type Action = {
   onGeneratingContent: (data: Event.EventData<"generating_content">) => void;
   onGeneratedTitle: (data: Event.EventData<"generated_title">) => void;
   onGeneratedContent: (data: Event.EventData<"generating_content">) => void;
+  onError: (data: Event.EventData<"error_generating_content">) => void;
 };
 
 export const useConversationStore = create<State & Action>()(
@@ -54,6 +55,14 @@ export const useConversationStore = create<State & Action>()(
           content: data.content,
           title: data.title ?? conversation.title,
           status: "generating",
+        };
+      }),
+
+    onError: (data) =>
+      set((state) => {
+        state.conversation[data.conversationID] = {
+          content: "",
+          status: "error",
         };
       }),
 

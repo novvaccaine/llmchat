@@ -23,7 +23,18 @@ export namespace Event {
     };
   };
 
-  export type Event = GeneratingContent | GeneratedContent | GeneratedTitle;
+  export type ErrorGeneratingContent = {
+    type: "error_generating_content";
+    data: {
+      conversationID: string;
+    };
+  };
+
+  export type Event =
+    | GeneratingContent
+    | GeneratedContent
+    | GeneratedTitle
+    | ErrorGeneratingContent;
 
   export type EventData<T extends Event["type"]> = Extract<
     Event,

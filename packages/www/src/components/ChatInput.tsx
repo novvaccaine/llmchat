@@ -16,7 +16,10 @@ export function ChatInput(props: ChatInputProps) {
 
   async function handleSubmit() {
     const input = content.trim();
-    if (!input.length || (status && status !== "generated")) {
+    if (
+      !input.length ||
+      (status && (status === "generating" || status === "waiting"))
+    ) {
       return;
     }
     setContent("");
