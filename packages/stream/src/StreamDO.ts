@@ -54,11 +54,12 @@ export class StreamDO extends DurableObject {
           });
         },
 
-        onError: () => {
+        onError: (message) => {
           this.publishEvent({
             type: "error_generating_content",
             data: {
               conversationID,
+              message,
             },
           });
           delete this.conversation[conversationID];

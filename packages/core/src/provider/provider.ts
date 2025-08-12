@@ -2,7 +2,7 @@ import z from "zod";
 import { db } from "../drizzle";
 import { providerTable } from "./provider.sql";
 import { Actor } from "../actor";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export namespace Provider {
   export const Entity = z.object({
@@ -33,5 +33,20 @@ export namespace Provider {
       })
       .from(providerTable)
       .where(eq(providerTable.userId, Actor.userID()));
+  }
+
+  export async function apiKey() {
+    return db
+      .select({
+        apiKey: providerTable.apiKey,
+      })
+      .from(providerTable)
+      .where(
+        and(
+          eq(providerTable.userId, Actor.userID()),
+          eq(providerTable.provider, "openrouter"),
+        ),
+      )
+      .then((row) => row.at(0)?.apiKey);
   }
 }

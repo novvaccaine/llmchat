@@ -27,6 +27,7 @@ export namespace Event {
     type: "error_generating_content";
     data: {
       conversationID: string;
+      message: string;
     };
   };
 

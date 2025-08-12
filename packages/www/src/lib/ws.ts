@@ -45,7 +45,7 @@ export class WS {
           }
           case "error_generating_content": {
             useConversationStore.getState().onError(event.data);
-            toast.error("Failed to generate content");
+            toast.error(event.data.message);
             break;
           }
           default: {

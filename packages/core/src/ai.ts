@@ -1,9 +1,12 @@
-import { streamText, generateText } from "ai";
+import { streamText, generateText, APICallError } from "ai";
 import { Message } from "./messsage/message";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import {
+  createOpenRouter,
+  OpenRouterProvider,
+} from "@openrouter/ai-sdk-provider";
 import { Conversation } from "./conversation/conversation";
-import { env } from "./env";
 import { AppError, errorCodes } from "./error";
+import { Provider } from "./provider/provider";
 
 // TODO: use the user provided api key, cache in KV for quick lookup
 // daily 25 free messages for each user, use system api key if not configured
@@ -13,34 +16,48 @@ export namespace AI {
     conversationID: string;
     onFinish: (content: string, title: string | undefined) => void;
     onTitleGenerate: (title: string) => void;
-    onError: () => void;
+    onError: (message: string) => void;
   };
 
   const GENERATE_TITLE_MODEL = "openai/gpt-4.1-mini";
 
   export async function* generateContent(input: GenerateContentInput) {
-    // TODO: use `exists` to optimize this
-    const { messages } = await Message.list(input.conversationID);
-    if (!messages.length) {
-      throw new AppError(
-        "not_found",
-        errorCodes.notFound.RESOURCE_NOT_FOUND,
-        "No messages found",
-      );
-    }
-    if (messages.at(-1)?.role !== "user") {
-      throw new AppError(
-        "validation",
-        errorCodes.validation.INVALID_STATE,
-        "Last message should be from user",
-      );
-    }
-
-    let title: string | undefined = undefined;
-
     try {
+      // TODO cache this value in kv?
+      const apiKey = await Provider.apiKey();
+      if (!apiKey) {
+        throw new AppError(
+          "validation",
+          errorCodes.validation.INVALID_STATE,
+          "OpenRouter API key is not configured",
+        );
+      }
+
+      // TODO: use `exists` to optimize this
+      const { messages } = await Message.list(input.conversationID);
+      if (!messages.length) {
+        throw new AppError(
+          "not_found",
+          errorCodes.notFound.RESOURCE_NOT_FOUND,
+          "No messages found",
+        );
+      }
+      if (messages.at(-1)?.role !== "user") {
+        throw new AppError(
+          "validation",
+          errorCodes.validation.INVALID_STATE,
+          "Last message should be from user",
+        );
+      }
+
+      const chat = createOpenRouter({
+        apiKey,
+      });
+
+      let title: string | undefined = undefined;
+
       if (messages.length === 1) {
-        title = await generateTitle(messages[0].content);
+        title = await generateTitle(chat, messages[0].content);
         await Conversation.update(input.conversationID, {
           title,
           status: "streaming",
@@ -53,10 +70,6 @@ export namespace AI {
           status: "streaming",
         });
       }
-
-      const chat = createOpenRouter({
-        apiKey: env.OPENROUTER_API_KEY,
-      });
 
       let streamError: unknown | null = null;
       const stream = streamText({
@@ -94,16 +107,23 @@ export namespace AI {
       await Conversation.update(input.conversationID, {
         status: "none",
       });
-      input.onError();
+      let message = "Failed to generate content";
+      if (err instanceof AppError) {
+        message = err.message;
+      } else if (err instanceof APICallError) {
+        if (err.statusCode === 401) {
+          message = "OpenRouter API key is invalid";
+        }
+      }
+      input.onError(message);
     }
   }
 
   // TODO: improve the system prompt
-  export async function generateTitle(content: string) {
-    const chat = createOpenRouter({
-      apiKey: env.OPENROUTER_API_KEY,
-    });
-
+  export async function generateTitle(
+    chat: OpenRouterProvider,
+    content: string,
+  ) {
     const res = await generateText({
       model: chat(GENERATE_TITLE_MODEL),
       prompt: [
