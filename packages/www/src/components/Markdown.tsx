@@ -84,6 +84,13 @@ const INITIAL_COMPONENTS: Partial<Components> = {
   pre: function PreComponent({ children }) {
     return <>{children}</>;
   },
+  a: function LinkComponent({ href, children }) {
+    return (
+      <a href={href} target="_blank">
+        {children}
+      </a>
+    );
+  },
 };
 
 const MemoizedMarkdownBlock = memo(
