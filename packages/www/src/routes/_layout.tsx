@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { Sidebar } from "@/components/Sidebar";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useUIStore } from "@/stores/uiStore";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_layout")({
     if (!context.user) {
       return [];
     }
-    return context.queryClient.fetchQuery(conversationQueryOptions());
+    return context.queryClient.fetchQuery(conversationQueryOptions(true));
   },
 });
 
@@ -38,7 +38,10 @@ function RouteComponent() {
 }
 
 function Content() {
-  const { data: conversation } = useSuspenseQuery(conversationQueryOptions());
+  const user = Route.useRouteContext().user;
+  const { data: conversation } = useQuery(
+    conversationQueryOptions(Boolean(user)),
+  );
   const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
   const toggleSidebar = useUIStore().toggleSidebar;
   const sidebarOpen = useUIStore().sidebarOpen;
@@ -93,7 +96,7 @@ function Content() {
                       Select Conversation or Create New Chat
                     </Dialog.Title>
                   </VisuallyHidden.Root>
-                  <Sidebar conversation={conversation} />
+                  <Sidebar conversation={conversation ?? []} />
                 </motion.div>
               </Dialog.Content>
             </Dialog.Portal>
@@ -110,7 +113,7 @@ function Content() {
             className="overflow-hidden"
           >
             <div className="w-[270px] h-full">
-              <Sidebar conversation={conversation} />
+              <Sidebar conversation={conversation ?? []} />
             </div>
           </motion.div>
         )}
