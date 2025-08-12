@@ -27,8 +27,8 @@ export namespace AI {
       const apiKey = await Provider.apiKey();
       if (!apiKey) {
         throw new AppError(
-          "validation",
-          errorCodes.validation.INVALID_STATE,
+          "not_found",
+          errorCodes.notFound.API_KEY_NOT_FOUND,
           "OpenRouter API key is not configured",
         );
       }
