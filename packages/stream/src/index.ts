@@ -27,7 +27,9 @@ app.post(
 
     const doID = c.env.STREAM_DO.idFromName(Actor.userID());
     const stub = c.env.STREAM_DO.get(doID);
-    stub.generateContent(conversationID, Actor.userID(), model);
+    c.executionCtx.waitUntil(
+      stub.generateContent(conversationID, Actor.userID(), model),
+    );
 
     return c.json({ message: "ok" });
   },
