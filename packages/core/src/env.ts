@@ -3,6 +3,7 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
+    WEB_URL: z.string(),
     STREAM_URL: z.string(),
 
     TURSO_CONNECTION_URL: z.string(),

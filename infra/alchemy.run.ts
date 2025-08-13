@@ -6,7 +6,8 @@ const app = await alchemy("soonagi", {
 });
 
 const envVars = {
-  STREAM_URL: "https://stream.soonagi.com",
+  STREAM_URL: process.env.STREAM_URL!,
+  WEB_URL: process.env.WEB_URL!,
   TURSO_CONNECTION_URL: secret(process.env.TURSO_CONNECTION_URL),
   TURSO_AUTH_TOKEN: secret(process.env.TURSO_AUTH_TOKEN),
   BETTER_AUTH_SECRET: secret(process.env.BETTER_AUTH_SECRET),
