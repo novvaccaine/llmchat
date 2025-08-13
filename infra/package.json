@@ -1,0 +1,10 @@
+{
+  "name": "infra",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {},
+  "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "alchemy": "^0.60.2"
+  }
+}
