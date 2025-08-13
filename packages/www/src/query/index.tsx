@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StandardRPCJsonSerializer } from "@orpc/client/standard";
 
+// TODO: is this needed?
 const serializer = new StandardRPCJsonSerializer({
   customJsonSerializers: [
     // put custom serializers here
@@ -12,6 +13,7 @@ export function getContext() {
     defaultOptions: {
       queries: {
         retry: false,
+        // TODO: in prod set this value to true
         refetchOnWindowFocus: false,
       },
       dehydrate: {

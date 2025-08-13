@@ -13,8 +13,8 @@ export class WS {
       return;
     }
 
-    // TODO: handle this via config
-    const socket = new WebSocket("ws://localhost:8787/ws");
+    // TODO: how about import.meta.PUBLIC_WS_URL?
+    const socket = new WebSocket(`wss://stream.${window.location.host}/ws`);
     this.socket = socket;
 
     socket.addEventListener("open", function () {
