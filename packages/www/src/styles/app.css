@@ -63,3 +63,12 @@ textarea::placeholder, input::placeholder {
 button {
   @apply cursor-pointer;
 }
+
+
+#nprogress .bar {
+  background: var(--color-brand) !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px var(--color-brand), 0 0 5px var(--color-brand) !important;
+}
