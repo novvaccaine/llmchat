@@ -1,6 +1,5 @@
 import type { Message } from "@llmchat/core/messsage/message";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef } from "react";
 import { TypingIndicator } from "@/components/TypingIndicator";
 import { useConversationStore } from "@/stores/conversationStore";
 import { Markdown } from "@/components/Markdown";
@@ -8,6 +7,7 @@ import { Markdown } from "@/components/Markdown";
 type MessagesProps = {
   conversationID: string;
   messages: Message.Entity[];
+  widthRef: React.RefObject<HTMLDivElement | null>;
 };
 
 export function Messages(props: MessagesProps) {
@@ -18,17 +18,8 @@ export function Messages(props: MessagesProps) {
   const streamingStatus =
     useConversationStore().conversation[conversationID]?.status;
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!messagesEndRef.current) {
-      return;
-    }
-    messagesEndRef.current.scrollIntoView();
-  }, [props.messages, streamingContent]);
-
   return (
-    <div className="flex-1 flex flex-col gap-8 pb-10">
+    <div className="flex-1 flex flex-col gap-8" ref={props.widthRef}>
       {messages.map((message) => {
         return (
           <div
@@ -53,8 +44,6 @@ export function Messages(props: MessagesProps) {
           {streamingContent}
         </Markdown>
       )}
-
-      <div ref={messagesEndRef} />
     </div>
   );
 }

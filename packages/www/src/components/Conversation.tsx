@@ -13,6 +13,12 @@ import { motion } from "motion/react";
 import { env } from "@llmchat/core/env";
 import { Logo } from "@/components/Logo";
 import { useConversationStore } from "@/stores/conversationStore";
+import {
+  ChatContainerRoot,
+  ChatContainerContent,
+} from "@/components/ChatContainer";
+import useWidth from "@/lib/useWidth";
+import { ScrollToBottom } from "@/components/ScrollToBottom";
 
 type Props = {
   messages: Message.Entity[];
@@ -54,6 +60,7 @@ export function Conversation(props: Props) {
   const { mutateAsync: updateMessages } = useUpdateMessages();
   const navigate = useNavigate();
   const requestGenerateContent = useConversationStore().requestGenerateContent;
+  const [widthRef, width] = useWidth();
 
   async function onNewMessage(
     content: string,
@@ -94,8 +101,8 @@ export function Conversation(props: Props) {
   }
 
   return (
-    <div
-      className={cn("h-full px-4 pt-8 overflow-auto flex flex-col", {
+    <ChatContainerRoot
+      className={cn("h-full overflow-auto flex flex-col relative", {
         "items-center justify-center": !conversationID,
       })}
     >
@@ -107,23 +114,35 @@ export function Conversation(props: Props) {
             duration: 0.3,
             ease: "easeInOut",
           }}
-          className="max-w-2xl w-full flex flex-col items-center justify-center gap-3"
+          className="max-w-2xl w-full flex flex-col items-center gap-3 px-4"
         >
           <Logo className="size-10 fill-brand" />
           <p className="text-2xl sm:text-3xl font-semibold">
             How can I assist you today?
           </p>
-          <ChatInput onNewMessage={onNewMessage} isNewConversation />
+          <ChatInput
+            onNewMessage={onNewMessage}
+            className="sticky bottom-0 rounded-md w-full mx-2"
+          />
         </motion.div>
       ) : (
-        <div className="w-full max-w-3xl mx-auto flex flex-col flex-1">
-          <Messages messages={messages} conversationID={conversationID!} />
+        <ChatContainerContent className="w-full max-w-3xl mx-auto px-4 pt-8 mb-[165px]">
+          <Messages
+            messages={messages}
+            conversationID={conversationID!}
+            widthRef={widthRef}
+          />
           <ChatInput
             onNewMessage={onNewMessage}
             conversationID={conversationID}
+            width={width}
+            className="fixed bottom-0 rounded-t-md"
           />
-        </div>
+          <div className="absolute bottom-[125px] left-1/2 -translate-x-[50%]">
+            <ScrollToBottom />
+          </div>
+        </ChatContainerContent>
       )}
-    </div>
+    </ChatContainerRoot>
   );
 }

@@ -6,8 +6,9 @@ import React, { useEffect, useRef, useState } from "react";
 
 type ChatInputProps = {
   onNewMessage: (content: string, onError: (content: string) => void) => void;
-  isNewConversation?: boolean;
   conversationID?: string;
+  className?: string;
+  width?: number;
 };
 
 export function ChatInput(props: ChatInputProps) {
@@ -49,14 +50,18 @@ export function ChatInput(props: ChatInputProps) {
     textareaRef.current.focus();
   }, [props.conversationID]);
 
+  const style: React.CSSProperties = {};
+  if (props.width) {
+    style.width = props.width;
+  }
+
   return (
     <textarea
       ref={textareaRef}
+      style={style}
       className={cn(
-        "bg-bg-2/80 backdrop-blur-lg sticky bottom-0 rounded-t-md border border-border w-full p-2 resize-none focus:outline-none",
-        {
-          "rounded-md": props.isNewConversation,
-        },
+        "bg-bg-2/80 backdrop-blur-lg border border-border p-2 resize-none focus:outline-none",
+        props.className ?? "",
       )}
       rows={4}
       placeholder="Type your message here..."
