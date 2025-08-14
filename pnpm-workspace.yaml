@@ -1,7 +1,13 @@
 packages:
-  - "packages/*"
+  - packages/*
+
+injectWorkspacePackages: true
+
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@tailwindcss/oxide'
+  - cbor-extract
+  - esbuild
 
 syncInjectedDepsAfterScripts:
   - build
-
-injectWorkspacePackages: true

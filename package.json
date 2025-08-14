@@ -4,11 +4,12 @@
   "scripts": {},
   "packageManager": "pnpm@10.13.1",
   "devDependencies": {
+    "@rivetkit/actor": "^0.9.9",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^24.1.0",
     "better-auth": "^1.3.4",
     "typescript": "^5.8.3",
-    "zod": "^4.0.14",
-    "@rivetkit/actor": "^0.9.9"
+    "vite": "^7.1.2",
+    "zod": "^4.0.14"
   }
 }

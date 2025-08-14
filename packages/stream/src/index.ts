@@ -21,4 +21,5 @@ app.use(
 );
 
 const { serve } = registry.createServer();
-serve(app);
+
+export default serve(app);

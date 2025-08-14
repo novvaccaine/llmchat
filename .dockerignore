@@ -1,0 +1,9 @@
+.env
+.wranger
+.tanstack
+.nitro
+.output
+.git
+.gitignore
+Dockerfile
+.dockerignore
