@@ -1,4 +1,4 @@
-import { authClient, splitConversationsByDate } from "@/lib/utils";
+import { splitConversationsByDate } from "@/lib/utils";
 import { LogIn as LoginIcon } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Route } from "@/routes/__root";
@@ -7,6 +7,8 @@ import { useMemo } from "react";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { useConversationStore } from "@/stores/conversationStore";
 import { ConversationLink } from "@/components/ConversationLink";
+import { useLogin } from "@/query/auth";
+import { LoadingIcon } from "./LoadingIcon";
 
 type Props = {
   conversation: Conversation.Entity[];
@@ -22,12 +24,7 @@ const indexDateMap = {
 export function Sidebar(props: Props) {
   const user = Route.useRouteContext().user;
   const conversationStore = useConversationStore().conversation;
-
-  const signIn = async () => {
-    await authClient.signIn.social({
-      provider: "google",
-    });
-  };
+  const { mutateAsync: login, isPending } = useLogin();
 
   const conversation = useMemo(() => {
     return splitConversationsByDate(props.conversation);
@@ -98,11 +95,15 @@ export function Sidebar(props: Props) {
           </Link>
         ) : (
           <button
-            onClick={signIn}
+            onClick={() => login()}
             className="flex gap-3 items-center hover:bg-bg w-full px-4 py-2 rounded-md"
           >
             <span>
-              <LoginIcon size={16} />
+              {isPending ? (
+                <LoadingIcon className="text-white/40 fill-white" />
+              ) : (
+                <LoginIcon size={16} />
+              )}
             </span>
             <span>Login</span>
           </button>

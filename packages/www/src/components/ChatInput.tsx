@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useConversationStore } from "@/stores/conversationStore";
+import { useUIStore } from "@/stores/uiStore";
+import { useRouteContext } from "@tanstack/react-router";
 import React, { useEffect, useRef, useState } from "react";
 
 type ChatInputProps = {
@@ -9,12 +11,19 @@ type ChatInputProps = {
 };
 
 export function ChatInput(props: ChatInputProps) {
+  const user = useRouteContext({ from: "__root__" }).user;
   const [content, setContent] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const status =
     useConversationStore().conversation[props.conversationID!]?.status;
+  const setDialog = useUIStore().setDialog;
 
   async function handleSubmit() {
+    if (!user) {
+      setDialog({ type: "login_alert" });
+      return;
+    }
+
     const input = content.trim();
     if (
       !input.length ||

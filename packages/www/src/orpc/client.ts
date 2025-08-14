@@ -1,5 +1,5 @@
 import { createRouterClient } from "@orpc/server";
-import { createORPCClient, onError } from "@orpc/client";
+import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { getHeaders } from "@tanstack/react-start/server";
@@ -18,11 +18,6 @@ const getORPCClient = createIsomorphicFn()
   .client((): RouterClient<typeof router> => {
     const link = new RPCLink({
       url: `${window.location.origin}/api/rpc`,
-      interceptors: [
-        onError((error) => {
-          console.error("rpc client error", error);
-        }),
-      ],
     });
     return createORPCClient(link);
   });

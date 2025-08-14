@@ -4,21 +4,21 @@
   "main": "src/index.ts",
   "compatibility_date": "2025-07-26",
   "compatibility_flags": ["nodejs_compat"],
-   "migrations": [
+  "migrations": [
+    {
+      "new_sqlite_classes": ["StreamDO"],
+      "tag": "v1",
+    },
+  ],
+  "durable_objects": {
+    "bindings": [
       {
-        "new_sqlite_classes": ["StreamDO"],
-        "tag": "v1",
+        "class_name": "StreamDO",
+        "name": "STREAM_DO",
       },
     ],
-    "durable_objects": {
-      "bindings": [
-        {
-          "class_name": "StreamDO",
-          "name": "STREAM_DO",
-        },
-      ],
-    },
-    "observability": {
-      "enabled": true,
-    },
+  },
+  "observability": {
+    "enabled": true,
+  },
 }

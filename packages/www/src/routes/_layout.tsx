@@ -6,6 +6,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useUIStore } from "@/stores/uiStore";
 import { DeleteConversation } from "@/components/DeleteConversation";
 import { RenameConversation } from "@/components/RenameConversation";
+import { LoginAlert } from "@/components/LoginAlert";
 import { motion, AnimatePresence } from "motion/react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useMediaQuery } from "@uidotdev/usehooks";
@@ -73,6 +74,8 @@ function Content() {
       {dialog?.type === "rename_conversation" && (
         <RenameConversation conversation={dialog.data} />
       )}
+
+      {dialog?.type === "login_alert" && <LoginAlert />}
 
       <Dialog.Root
         open={sidebarOpen && isSmallDevice}

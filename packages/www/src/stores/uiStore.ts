@@ -10,6 +10,9 @@ type Dialog =
   | {
       type: "rename_conversation";
       data: Conversation.Entity;
+    }
+  | {
+      type: "login_alert";
     };
 
 type State = {
