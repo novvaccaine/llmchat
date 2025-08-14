@@ -7,20 +7,12 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import appCss from "@/styles/app.css?url";
-import { createServerFn } from "@tanstack/react-start";
-import { auth } from "@llmchat/core/auth/index";
-import { getWebRequest } from "@tanstack/react-start/server";
 import type { QueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
-import { ws } from "@/lib/ws";
+import { actor } from "@/lib/Actor";
 import { NotFound } from "@/components/NotFound";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-
-export const getUser = createServerFn().handler(async () => {
-  const { headers } = getWebRequest();
-  const session = await auth.api.getSession({ headers });
-  return session?.user ?? null;
-});
+import { getUser } from "@/lib/utils";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -73,7 +65,7 @@ function RootComponent() {
     if (!user) {
       return;
     }
-    ws.init(queryClient);
+    actor.init(user.id, queryClient);
   }, [user, queryClient]);
 
   return (

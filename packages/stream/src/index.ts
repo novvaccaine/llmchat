@@ -1,48 +1,24 @@
-import { Hono, MiddlewareHandler } from "hono";
-import { auth } from "@llmchat/core/auth/index";
-import { Actor } from "@llmchat/core/actor";
-export { StreamDO } from "./StreamDO";
-import { zValidator } from "@hono/zod-validator";
-import z from "zod";
+import { Hono } from "hono";
+import { registry } from "./registry.js";
+import { cors } from "hono/cors";
+import { ALLOWED_PUBLIC_HEADERS } from "@rivetkit/actor";
+import { env } from "@llmchat/core/env";
 
-const app = new Hono<{
-  Bindings: Cloudflare.Env & { OPENROUTER_API_KEY: string };
-}>();
+export { registry };
 
-const authMiddleware: MiddlewareHandler = async (c, next) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
-  if (!session?.user) {
-    return c.json({ message: "unauthorized" }, 401);
-  }
-  return Actor.provide("user", { userID: session.user.id }, next);
-};
+const app = new Hono();
 
-app.post(
-  "/conversation/:conversationID/stream",
-  authMiddleware,
-  zValidator("json", z.object({ model: z.string() })),
-  async (c) => {
-    const conversationID = c.req.param("conversationID");
-    const model = c.req.valid("json").model;
-
-    const doID = c.env.STREAM_DO.idFromName(Actor.userID());
-    const stub = c.env.STREAM_DO.get(doID);
-    c.executionCtx.waitUntil(
-      stub.generateContent(conversationID, Actor.userID(), model),
-    );
-
-    return c.json({ message: "ok" });
-  },
+app.use(
+  "*",
+  cors({
+    origin: [env.WEB_URL],
+    allowHeaders: ["Authorization", ...ALLOWED_PUBLIC_HEADERS],
+    allowMethods: ["POST", "GET", "OPTIONS"],
+    exposeHeaders: ["Content-Length"],
+    maxAge: 600,
+    credentials: true,
+  }),
 );
 
-app.get("/ws", authMiddleware, (c) => {
-  const upgradeHeader = c.req.header("Upgrade");
-  if (!upgradeHeader || upgradeHeader !== "websocket") {
-    return c.text("Expected websocket", 400);
-  }
-  const doID = c.env.STREAM_DO.idFromName(Actor.userID());
-  const stub = c.env.STREAM_DO.get(doID);
-  return stub.fetch(c.req.raw);
-});
-
-export default app;
+const { serve } = registry.createServer();
+serve(app);

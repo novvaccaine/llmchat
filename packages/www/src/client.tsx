@@ -11,11 +11,9 @@ NProgress.configure({ showSpinner: false });
 const router = createRouter();
 
 router.subscribe("onBeforeLoad", ({ fromLocation, pathChanged }) => {
-  console.log("route start");
   fromLocation && pathChanged && NProgress.start();
 });
 router.subscribe("onLoad", () => {
-  console.log("route done");
   NProgress.done();
 });
 

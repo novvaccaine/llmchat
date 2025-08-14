@@ -9,6 +9,7 @@ type ErrorType =
 export const errorCodes = {
   validation: {
     INVALID_STATE: "invalid_state",
+    INVALID_PARAMETERS: "invalid_parameters",
   },
   notFound: {
     RESOURCE_NOT_FOUND: "resource_not_found",

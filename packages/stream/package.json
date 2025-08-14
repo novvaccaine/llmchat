@@ -2,18 +2,23 @@
   "name": "@llmchat/stream",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
-    "symlink-dev-vars": "ln -s ../../.env .dev.vars"
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "exports": {
+    "./*": "./src/index.ts"
   },
   "dependencies": {
-    "@hono/zod-validator": "^0.7.2",
-    "@llmchat/core": "workspace:*",
-    "hono": "^4.8.10",
-    "zod": "*"
+    "@hono/node-server": "^1.18.2",
+    "@hono/node-ws": "^1.2.0",
+    "@rivetkit/actor": "*",
+    "hono": "^4.9.1",
+    "@llmchat/core": "workspace:*"
   },
   "devDependencies": {
-    "wrangler": "^4.26.1"
+    "@types/node": "*",
+    "tsx": "^4.7.1",
+    "typescript": "*"
   }
 }

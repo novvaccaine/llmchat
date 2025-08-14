@@ -12,12 +12,12 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "stream": "node:stream",
+      stream: "node:stream",
     },
   },
   plugins: [
     tsConfigPaths(),
-    tanstackStart({ customViteReactPlugin: true, target: "cloudflare-module" }),
+    tanstackStart({ customViteReactPlugin: true }),
     viteReact(),
     tailwindcss(),
   ],

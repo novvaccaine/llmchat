@@ -1,4 +1,3 @@
-import z from "zod";
 import { Messages } from "@/components/Messages";
 import { ChatInput } from "@/components/ChatInput";
 import type { Message } from "@llmchat/core/messsage/message";
@@ -6,11 +5,8 @@ import { useCreateConversation } from "@/query/conversation";
 import { useUpdateMessages } from "@/query/message";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { getCookie } from "@tanstack/react-start/server";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
-import { env } from "@llmchat/core/env";
 import { Logo } from "@/components/Logo";
 import { useConversationStore } from "@/stores/conversationStore";
 import {
@@ -19,6 +15,7 @@ import {
 } from "@/components/ChatContainer";
 import useWidth from "@/lib/useWidth";
 import { ScrollToBottom } from "@/components/ScrollToBottom";
+import { actor } from "@/lib/Actor";
 
 type Props = {
   messages: Message.Entity[];
@@ -26,33 +23,6 @@ type Props = {
 };
 
 const model = "openai/gpt-4.1-mini";
-
-const startStream = createServerFn({ method: "POST" })
-  .validator(
-    z.object({
-      conversationID: z.string(),
-      model: z.string(),
-    }),
-  )
-  .handler(async ({ data }) => {
-    // TODO: accessing cookie like this feels ugly, can you do better?
-    const cookie = getCookie("better-auth.session_token");
-    const res = await fetch(
-      env.STREAM_URL + `/conversation/${data.conversationID}/stream`,
-      {
-        method: "POST",
-        body: JSON.stringify({ model: data.model }),
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: `better-auth.session_token=${cookie}`,
-        },
-      },
-    );
-    if (!res.ok) {
-      throw new Error("failed to start stream");
-    }
-    return res.json();
-  });
 
 export function Conversation(props: Props) {
   const { messages, conversationID } = props;
@@ -78,12 +48,10 @@ export function Conversation(props: Props) {
         });
       }
 
-      await startStream({
-        data: {
-          conversationID: cID!,
-          model,
-        },
-      });
+      // NOTE: welp
+      (
+        actor.conn as { generateContent: (...args: any) => void }
+      ).generateContent({ conversationID: cID, model });
 
       requestGenerateContent(cID!);
 
@@ -138,6 +106,7 @@ export function Conversation(props: Props) {
             width={width}
             className="fixed bottom-0 rounded-t-md"
           />
+          {/* NOTE: magic 125px value (ChatInput height) */}
           <div className="absolute bottom-[125px] left-1/2 -translate-x-[50%]">
             <ScrollToBottom />
           </div>

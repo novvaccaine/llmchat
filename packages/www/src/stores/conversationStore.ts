@@ -53,7 +53,7 @@ export const useConversationStore = create<State & Action>()(
         const conversation = state.conversation[data.conversationID];
         state.conversation[data.conversationID] = {
           content: data.content,
-          title: data.title ?? conversation.title,
+          title: data.title ?? conversation?.title,
           status: "generating",
         };
       }),

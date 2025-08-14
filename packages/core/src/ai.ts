@@ -1,4 +1,4 @@
-import { streamText, generateText, APICallError } from "ai";
+import { streamText, generateText, APICallError, smoothStream } from "ai";
 import { Message } from "./messsage/message";
 import {
   createOpenRouter,
@@ -7,6 +7,7 @@ import {
 import { Conversation } from "./conversation/conversation";
 import { AppError, errorCodes } from "./error";
 import { Provider } from "./provider/provider";
+import { markdownJoinerTransform } from "./utils";
 
 // TODO: use the user provided api key, cache in KV for quick lookup
 // daily 25 free messages for each user, use system api key if not configured

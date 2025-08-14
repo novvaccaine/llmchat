@@ -1,4 +1,4 @@
-import { getUser } from "@/routes/__root";
+import { getUser } from "@/lib/utils";
 import { Actor } from "@llmchat/core/actor";
 import { ORPCError, os } from "@orpc/server";
 
