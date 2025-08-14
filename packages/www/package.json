@@ -5,12 +5,12 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "deploy": "pnpm build && wrangler deploy",
-    "cf-typegen": "wrangler types --env-interface Env"
+    "start": "node .output/server/index.mjs"
   },
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
     "@llmchat/core": "workspace:*",
+    "@llmchat/stream": "workspace:*",
     "@orpc/client": "^1.7.11",
     "@orpc/server": "^1.7.11",
     "@orpc/tanstack-query": "^1.7.11",
@@ -18,6 +18,7 @@
     "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@radix-ui/react-visually-hidden": "^1.2.3",
+    "@rivetkit/actor": "*",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.83.0",
     "@tanstack/react-router": "^1.130.1",
@@ -44,9 +45,7 @@
     "tailwindcss": "^4.1.11",
     "use-stick-to-bottom": "^1.1.1",
     "vite": "^7.0.6",
-    "zustand": "^5.0.7",
-    "@llmchat/stream": "workspace:*",
-    "@rivetkit/actor": "*"
+    "zustand": "^5.0.7"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
@@ -54,7 +53,6 @@
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.7.0",
     "typescript": "*",
-    "vite-tsconfig-paths": "^5.1.4",
-    "wrangler": "^4.26.1"
+    "vite-tsconfig-paths": "^5.1.4"
   }
 }

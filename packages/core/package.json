@@ -6,7 +6,9 @@
   "exports": {
     "./*": "./src/*.ts"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsc"
+  },
   "packageManager": "pnpm@10.13.1",
   "devDependencies": {
     "@tsconfig/node22": "*",

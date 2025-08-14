@@ -1,7 +1,7 @@
 packages:
-  - packages/*
+  - "packages/*"
 
-ignoredBuiltDependencies:
-  - esbuild
-  - sharp
-  - workerd
+syncInjectedDepsAfterScripts:
+  - build
+
+injectWorkspacePackages: true
