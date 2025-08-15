@@ -13,6 +13,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { DeleteAllConversation } from "@/components/DeleteAllConversation";
 import * as Switch from "@radix-ui/react-switch";
 import { useEffect, useState } from "react";
+import { useUIStore } from "@/stores/uiStore";
+import { Model } from "@soonagi/core/model";
 
 export const Route = createFileRoute("/settings")({
   component: RouteComponent,
@@ -30,6 +32,7 @@ function RouteComponent() {
   const router = useRouter();
   const { data: providers } = useSuspenseQuery(providersQueryOptions());
   const provider = providers.find((p) => p.provider === "openrouter");
+  const setModel = useUIStore().selectModel;
 
   const [state, setState] = useState({
     apiKey: provider?.apiKey ?? "",
@@ -68,6 +71,9 @@ function RouteComponent() {
     try {
       await updateProvider(input);
       toast.success("API key updated");
+      if (!input.enabled) {
+        setModel(Model.DEFAULT_MODEL);
+      }
     } catch (err) {
       console.error("failed to update api key", err);
       toast.error("Failed to update API key");

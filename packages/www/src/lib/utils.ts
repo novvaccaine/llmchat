@@ -5,8 +5,11 @@ import { Conversation } from "@soonagi/core/conversation/conversation";
 import { createServerFn } from "@tanstack/react-start";
 import { auth } from "@soonagi/core/auth/index";
 import { getWebRequest } from "@tanstack/react-start/server";
+import { customSessionClient } from "better-auth/client/plugins";
 
-export const authClient = createAuthClient();
+export const authClient = createAuthClient({
+  plugins: [customSessionClient<typeof auth>()],
+});
 
 export function cn(...inputs: any[]) {
   return twMerge(clsx(inputs));

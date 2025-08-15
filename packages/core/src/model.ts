@@ -43,4 +43,34 @@ export namespace Model {
       },
     },
   };
+
+  export const freeModels = modelOptions()
+    .filter((opt) => opt.free)
+    .map((opt) => opt.value);
+
+  export const availableModels = modelOptions().map((opt) => opt.value);
+
+  type Option = {
+    label: string;
+    value: string;
+    free?: boolean;
+  };
+
+  export function modelOptions() {
+    const options: Option[] = [];
+
+    for (const provider in models) {
+      const providerModels = (models as Models)[provider];
+      for (const modelKey in providerModels) {
+        const model = providerModels[modelKey];
+        options.push({
+          label: model.label,
+          value: `${provider}/${modelKey}`,
+          free: model.free,
+        });
+      }
+    }
+
+    return options;
+  }
 }

@@ -7,9 +7,13 @@ import { Model } from "@soonagi/core/model";
 import { ChevronDown as DownIcon, Check as CheckIcon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useRouteContext } from "@tanstack/react-router";
 
 export function ModelPicker() {
-  const options = modelOptions(Model.models);
+  const user = useRouteContext({ from: "__root__" }).user;
+  let options = Model.modelOptions();
+  options = user?.apiKey ? options : options.filter((opt) => opt.free);
+
   const model = useUIStore().selectedModel;
   const selectModel = useUIStore().selectModel;
   const [open, setOpen] = useState(false);
@@ -67,27 +71,3 @@ export function ModelPicker() {
     </Select.Root>
   );
 }
-
-function modelOptions(
-  models: Model.Models,
-): { label: string; value: string }[] {
-  const options: Option[] = [];
-
-  for (const provider in models) {
-    const providerModels = models[provider];
-    for (const modelKey in providerModels) {
-      const model = providerModels[modelKey];
-      options.push({
-        label: model.label,
-        value: `${provider}/${modelKey}`,
-      });
-    }
-  }
-
-  return options;
-}
-
-type Option = {
-  label: string;
-  value: string;
-};

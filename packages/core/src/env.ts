@@ -6,6 +6,8 @@ export const env = createEnv({
     WEB_URL: z.string(),
     STREAM_URL: z.string(),
     DB_URL: z.string(),
+    OPENROUTER_API_KEY: z.string(),
+    REDIS_URL: z.string(),
     BETTER_AUTH_SECRET: z.string(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),

@@ -12,5 +12,12 @@ services:
       - "5432:5432"
     restart: unless-stopped
 
+  cache:
+    image: redis:7.2
+    container_name: soonagi-cache
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
 volumes:
   pgdata:

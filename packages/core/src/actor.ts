@@ -33,7 +33,11 @@ export namespace Actor {
   export function provide<
     T extends Info["type"],
     Next extends (...args: any) => any,
-  >(type: T, properties: Extract<Info, { type: T }>["properties"], fn: Next) {
+  >(
+    type: T,
+    properties: Extract<Info, { type: T }>["properties"],
+    fn: Next,
+  ): ReturnType<Next> {
     return context.provide({ type, properties } as any, fn);
   }
 }

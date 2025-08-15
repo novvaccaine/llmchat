@@ -6,9 +6,8 @@ import { Conversation } from "./conversation/conversation";
 import { AppError, errorCodes } from "./error";
 import { Provider } from "./provider/provider";
 import { Model } from "./model";
+import { env } from "./env";
 
-// TODO: use the user provided api key, cache in KV for quick lookup
-// daily 25 free messages for each user, use system api key if not configured
 export namespace AI {
   type GenerateContentInput = {
     model: string;
@@ -20,13 +19,28 @@ export namespace AI {
 
   export async function* generateContent(input: GenerateContentInput) {
     try {
-      // TODO cache this value in kv?
-      const apiKey = await Provider.apiKey();
+      let apiKey = await Provider.apiKey();
+      let models = Model.availableModels;
+
       if (!apiKey) {
+        const canUse = await Message.canUseFreeMessages();
+        if (canUse) {
+          apiKey = env.OPENROUTER_API_KEY;
+          models = Model.freeModels;
+        } else {
+          throw new AppError(
+            "rate_limit",
+            errorCodes.rateLimit.RESOURCE_EXHAUSTED,
+            `${Message.FREE_MESSAGES_PER_DAY} free messages used. Configure OpenRouter or wait until tomorrow.`,
+          );
+        }
+      }
+
+      if (!models.includes(input.model)) {
         throw new AppError(
-          "not_found",
-          errorCodes.notFound.API_KEY_NOT_FOUND,
-          "OpenRouter API key is not configured",
+          "validation",
+          errorCodes.validation.INVALID_PARAMETERS,
+          `Invalid model ${input.model}`,
         );
       }
 
@@ -76,6 +90,9 @@ export namespace AI {
           streamError = event.error;
         },
         onFinish: async (event) => {
+          if (apiKey === env.OPENROUTER_API_KEY) {
+            await Message.increamentFreeMessagesCount();
+          }
           await Message.create({
             content: event.text,
             conversationID: input.conversationID,

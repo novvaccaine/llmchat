@@ -44,12 +44,17 @@ function CodeBlockCode({
         return;
       }
 
-      const html = await codeToHtml(code, {
-        lang: language,
-        theme,
-        colorReplacements: { "#1a1b26": "var(--color-code-bg)" },
-      });
-      setHighlightedHtml(html);
+      try {
+        const html = await codeToHtml(code, {
+          lang: language,
+          theme,
+          colorReplacements: { "#1a1b26": "var(--color-code-bg)" },
+        });
+        setHighlightedHtml(html);
+      } catch (_err) {
+        // NOTE: i think its ok to not log this
+        // mostly the error is related to language not being in the bundle
+      }
     }
     highlight();
   }, [code, language, theme]);

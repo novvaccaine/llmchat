@@ -15,6 +15,9 @@ export const errorCodes = {
     RESOURCE_NOT_FOUND: "resource_not_found",
     API_KEY_NOT_FOUND: "api_key_not_found",
   },
+  rateLimit: {
+    RESOURCE_EXHAUSTED: "resource_exhaused",
+  },
   authentication: {
     UNAUTHORIZED: "unauthorized",
   },

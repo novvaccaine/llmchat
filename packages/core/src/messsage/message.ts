@@ -6,6 +6,8 @@ import { conversationTable } from "../conversation/conversation.sql";
 import { Actor } from "../actor";
 import { ulid } from "ulid";
 import { AppError, errorCodes } from "../error";
+import { storage } from "../storage";
+import { getTodayDateUTC } from "../utils";
 
 export namespace Message {
   export const Entity = z.object({
@@ -103,4 +105,31 @@ export namespace Message {
       messages,
     };
   }
+
+  // free messages
+
+  export const FREE_MESSAGES_PER_DAY = 100;
+  const CACHE_EXPIRY = 24 * 60 * 60; // 24h
+
+  const cacheKey = (userID: string) =>
+    `free_messages_count:${userID}:${getTodayDateUTC()}`;
+
+  async function freeMessagesCount() {
+    const key = cacheKey(Actor.userID());
+    const value = await storage.getItem<number>(key);
+    return value ?? 0;
+  }
+
+  export async function increamentFreeMessagesCount() {
+    const currentCount = await freeMessagesCount();
+    const key = cacheKey(Actor.userID());
+    await storage.setItem(key, currentCount + 1, { ttl: CACHE_EXPIRY });
+  }
+
+  export async function canUseFreeMessages() {
+    const currentCount = await freeMessagesCount();
+    return currentCount < FREE_MESSAGES_PER_DAY;
+  }
+
+  // ---
 }
