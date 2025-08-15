@@ -70,7 +70,7 @@ export function Conversation(props: Props) {
 
   return (
     <ChatContainerRoot
-      className={cn("h-full overflow-auto flex flex-col relative", {
+      className={cn("h-svh overflow-auto flex flex-col relative", {
         "items-center justify-center": !conversationID,
       })}
     >

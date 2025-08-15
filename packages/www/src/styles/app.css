@@ -17,8 +17,10 @@
   --color-code-header: hsl(235deg, 22.28%, 21%);
 }
 
-html, body, #root {
-  @apply h-full;
+html,
+body,
+#root {
+  @apply h-svh;
 }
 
 body {
@@ -52,7 +54,8 @@ a {
   @apply bg-bg-2 rounded-md;
 }
 
-textarea::placeholder, input::placeholder {
+textarea::placeholder,
+input::placeholder {
   @apply text-muted resize-none;
 }
 
@@ -64,11 +67,12 @@ button {
   @apply cursor-pointer;
 }
 
-
 #nprogress .bar {
   background: var(--color-brand) !important;
 }
 
 #nprogress .peg {
-  box-shadow: 0 0 10px var(--color-brand), 0 0 5px var(--color-brand) !important;
+  box-shadow:
+    0 0 10px var(--color-brand),
+    0 0 5px var(--color-brand) !important;
 }

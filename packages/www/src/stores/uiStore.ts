@@ -18,11 +18,14 @@ type Dialog =
 type State = {
   _hasHydrated: boolean;
   sidebarOpen: boolean;
+  sidebarDrawerOpen: boolean;
   dialog: Dialog | null;
 };
 
 type Action = {
   toggleSidebar: () => void;
+  toggleDrawerSidebar: () => void;
+  closeDrawer: () => void;
   setHasHydrated: (hydrated: boolean) => void;
   setDialog: (dialog: Dialog | null) => void;
 };
@@ -31,14 +34,17 @@ export const useUIStore = create<State & Action>()(
   persist(
     (set, get) => ({
       sidebarOpen: true,
+      sidebarDrawerOpen: false,
       _hasHydrated: false,
       dialog: null,
 
-      setHasHydrated: (hydrated) => set(() => ({ _hasHydrated: hydrated })),
-
-      setDialog: (dialog) => set(() => ({ dialog })),
-
       toggleSidebar: () => set(() => ({ sidebarOpen: !get().sidebarOpen })),
+      toggleDrawerSidebar: () =>
+        set((state) => ({ sidebarDrawerOpen: !state.sidebarDrawerOpen })),
+      closeDrawer: () => set(() => ({ sidebarDrawerOpen: false })),
+
+      setHasHydrated: (hydrated) => set(() => ({ _hasHydrated: hydrated })),
+      setDialog: (dialog) => set(() => ({ dialog })),
     }),
     {
       name: "uiStore",
