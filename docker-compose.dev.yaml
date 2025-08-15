@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: soonagi-db
+    environment:
+      POSTGRES_USER: soonagi
+      POSTGRES_PASSWORD: theaichatapp
+      POSTGRES_DB: soonagi
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  pgdata:

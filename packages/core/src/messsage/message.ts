@@ -1,5 +1,5 @@
 import z from "zod";
-import { db } from "../drizzle";
+import { db } from "../db";
 import { messageTable } from "./message.sql";
 import { and, asc, eq, ne } from "drizzle-orm";
 import { conversationTable } from "../conversation/conversation.sql";

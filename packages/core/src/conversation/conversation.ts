@@ -1,5 +1,5 @@
 import z from "zod";
-import { db } from "../drizzle";
+import { db } from "../db";
 import { ulid } from "ulid";
 import { conversationTable } from "./conversation.sql";
 import { messageTable } from "../messsage/message.sql";

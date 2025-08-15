@@ -1,5 +1,5 @@
 import z from "zod";
-import { db } from "../drizzle";
+import { db } from "../db";
 import { providerTable } from "./provider.sql";
 import { Actor } from "../actor";
 import { and, eq } from "drizzle-orm";

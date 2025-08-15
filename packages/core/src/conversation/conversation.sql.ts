@@ -1,9 +1,9 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { timestamps } from "../drizzle/types";
+import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { timestamps } from "../db/types";
 import { userTable } from "../auth/auth.sql";
 import { Conversation } from "./conversation";
 
-export const conversationTable = sqliteTable("conversation", {
+export const conversationTable = pgTable("conversation", {
   id: text("id").primaryKey(),
   title: text("title"),
   status: text("status")
@@ -11,7 +11,7 @@ export const conversationTable = sqliteTable("conversation", {
     .notNull()
     .default("streaming"),
 
-  lastMessageAt: integer("last_message_at", { mode: "timestamp" }).notNull(),
+  lastMessageAt: timestamp("last_message_at").notNull(),
   createdAt: timestamps.createdAt,
 
   userId: text("user_id")

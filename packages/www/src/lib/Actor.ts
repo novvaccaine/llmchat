@@ -5,6 +5,7 @@ import { useConversationStore } from "@/stores/conversationStore";
 import { orpc } from "@/orpc/client";
 // TODO: ugly import path
 import type { registry } from "@llmchat/stream/index";
+import { toast } from "sonner";
 
 export class Actor {
   conn: unknown | null = null;
@@ -51,6 +52,7 @@ export class Actor {
       "error_generating_content",
       (data: Event.EventData<"error_generating_content">) => {
         useConversationStore.getState().onError(data);
+        toast.error(data.message);
       },
     );
   }

@@ -1,9 +1,9 @@
-import { sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { timestamps } from "../drizzle/types";
-import { Message } from './message'
+import { pgTable, text } from "drizzle-orm/pg-core";
+import { timestamps } from "../db/types";
+import { Message } from "./message";
 import { conversationTable } from "../conversation/conversation.sql";
 
-export const messageTable = sqliteTable("message", {
+export const messageTable = pgTable("message", {
   id: text("id").primaryKey(),
   content: text("content").notNull(),
   role: text("role").$type<Message.Entity["role"]>().notNull(),
