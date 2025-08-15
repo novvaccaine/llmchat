@@ -4,11 +4,10 @@ packages:
 injectWorkspacePackages: true
 
 onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@tailwindcss/oxide'
+  - "@parcel/watcher"
+  - "@tailwindcss/oxide"
   - cbor-extract
   - esbuild
-  - libpq
 
 syncInjectedDepsAfterScripts:
   - build

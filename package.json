@@ -2,7 +2,7 @@
   "name": "llmchat",
   "version": "0.0.1",
   "scripts": {},
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "devDependencies": {
     "@rivetkit/actor": "^0.9.9",
     "@tsconfig/node22": "^22.0.2",
