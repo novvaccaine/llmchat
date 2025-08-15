@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Conversation } from "@soonagi/core/conversation/conversation";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { LoadingIcon } from "./LoadingIcon";
+import { LoadingIcon } from "@/icons/LoadingIcon";
 import { EllipsisVertical as OptionsIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useHover } from "@uidotdev/usehooks";

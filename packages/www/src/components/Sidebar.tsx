@@ -8,7 +8,7 @@ import { SidebarToggle } from "@/components/SidebarToggle";
 import { useConversationStore } from "@/stores/conversationStore";
 import { ConversationLink } from "@/components/ConversationLink";
 import { useLogin } from "@/query/auth";
-import { LoadingIcon } from "./LoadingIcon";
+import { LoadingIcon } from "@/icons/LoadingIcon";
 
 type Props = {
   conversation: Conversation.Entity[];

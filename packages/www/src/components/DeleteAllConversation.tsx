@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { LoadingIcon } from "@/components/LoadingIcon";
+import { LoadingIcon } from "@/icons/LoadingIcon";
 import { useDeleteAllConveration } from "@/query/conversation";
 import { toast } from "sonner";
 import { useState } from "react";

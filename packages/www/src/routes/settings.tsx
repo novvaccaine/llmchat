@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { ArrowLeft as LeftIcon, Key as KeyIcon } from "lucide-react";
 import { providersQueryOptions, useUpdateProvider } from "@/query/provider";
-import { LoadingIcon } from "@/components/LoadingIcon";
+import { LoadingIcon } from "@/icons/LoadingIcon";
 import { toast } from "sonner";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { DeleteAllConversation } from "@/components/DeleteAllConversation";

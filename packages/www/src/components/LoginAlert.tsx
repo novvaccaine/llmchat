@@ -1,6 +1,6 @@
 import { useUIStore } from "@/stores/uiStore";
 import * as Dialog from "@radix-ui/react-dialog";
-import { LoadingIcon } from "@/components/LoadingIcon";
+import { LoadingIcon } from "@/icons/LoadingIcon";
 import { toast } from "sonner";
 import { useLogin } from "@/query/auth";
 

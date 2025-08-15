@@ -12,8 +12,6 @@ type ChatInputProps = {
   width?: number;
 };
 
-const SMALL_DEVICE_BREAKPOINT = 640;
-
 export function ChatInput(props: ChatInputProps) {
   const user = useRouteContext({ from: "__root__" }).user;
   const [content, setContent] = useState("");
@@ -54,7 +52,7 @@ export function ChatInput(props: ChatInputProps) {
   }, [props.conversationID]);
 
   const style: React.CSSProperties = {};
-  if (props.width && props.width > SMALL_DEVICE_BREAKPOINT) {
+  if (props.width) {
     style.width = props.width;
   }
 
@@ -64,10 +62,6 @@ export function ChatInput(props: ChatInputProps) {
       className={cn(
         "bg-bg-2/80 backdrop-blur-lg border border-border p-2",
         props.className ?? "",
-        {
-          "fixed bottom-0 left-0 w-full rounded-t-2xl":
-            props.width && props.width < SMALL_DEVICE_BREAKPOINT,
-        },
       )}
     >
       <textarea

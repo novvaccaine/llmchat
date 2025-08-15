@@ -1,7 +1,7 @@
 import { useUIStore } from "@/stores/uiStore";
 import { Conversation } from "@soonagi/core/conversation/conversation";
 import * as Dialog from "@radix-ui/react-dialog";
-import { LoadingIcon } from "@/components/LoadingIcon";
+import { LoadingIcon } from "@/icons/LoadingIcon";
 import { useUpdateConversation } from "@/query/conversation";
 import { toast } from "sonner";
 import { useConversationStore } from "@/stores/conversationStore";

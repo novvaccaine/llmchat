@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
-import { Logo } from "@/components/Logo";
+import { Logo } from "@/icons/Logo";
 import { useConversationStore } from "@/stores/conversationStore";
 import {
   ChatContainerRoot,
