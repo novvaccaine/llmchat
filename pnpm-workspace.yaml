@@ -8,6 +8,7 @@ onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - cbor-extract
   - esbuild
+  - libpq
 
 syncInjectedDepsAfterScripts:
   - build
