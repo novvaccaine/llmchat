@@ -40,7 +40,7 @@ export const useUIStore = create<State & Action>()(
       sidebarDrawerOpen: false,
       _hasHydrated: false,
       dialog: null,
-      selectedModel: Model.defaultModel,
+      selectedModel: Model.DEFAULT_MODEL,
 
       toggleSidebar: () => set(() => ({ sidebarOpen: !get().sidebarOpen })),
       toggleDrawerSidebar: () =>

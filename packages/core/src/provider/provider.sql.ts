@@ -8,7 +8,7 @@ export const providerTable = pgTable(
   {
     ...timestamps,
     provider: text("provider").$type<Provider.Entity["provider"]>().notNull(),
-    active: boolean("active").notNull(),
+    enabled: boolean("enabled").notNull(),
     apiKey: text("api_key").notNull(),
     userId: text("user_id")
       .notNull()

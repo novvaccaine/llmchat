@@ -8,7 +8,9 @@ export namespace Model {
     };
   };
 
-  export const defaultModel = "google/gemini-2.5-flash";
+  export const DEFAULT_MODEL = "google/gemini-2.5-flash";
+
+  export const GENERATE_TITLE_MODEL = "openai/gpt-4.1-mini";
 
   export const models = {
     openai: {

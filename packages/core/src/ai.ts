@@ -5,6 +5,7 @@ import type { OpenRouterProvider } from "@openrouter/ai-sdk-provider";
 import { Conversation } from "./conversation/conversation";
 import { AppError, errorCodes } from "./error";
 import { Provider } from "./provider/provider";
+import { Model } from "./model";
 
 // TODO: use the user provided api key, cache in KV for quick lookup
 // daily 25 free messages for each user, use system api key if not configured
@@ -16,8 +17,6 @@ export namespace AI {
     onTitleGenerate: (title: string) => void;
     onError: (message: string) => void;
   };
-
-  const GENERATE_TITLE_MODEL = "openai/gpt-4.1-mini";
 
   export async function* generateContent(input: GenerateContentInput) {
     try {
@@ -123,7 +122,7 @@ export namespace AI {
     content: string,
   ) {
     const res = await generateText({
-      model: chat(GENERATE_TITLE_MODEL),
+      model: chat(Model.GENERATE_TITLE_MODEL),
       prompt: [
         "Given the following user message, generate a short, descriptive title:",
         content,
