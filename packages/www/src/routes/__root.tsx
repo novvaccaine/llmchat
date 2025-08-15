@@ -81,7 +81,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-[url(/noise.png)] bg-repeat bg-auto">
+      <body>
         <Toaster
           position="top-right"
           duration={1500}
