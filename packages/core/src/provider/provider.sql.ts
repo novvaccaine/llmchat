@@ -1,4 +1,4 @@
-import { pgTable, text, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, text, primaryKey, boolean } from "drizzle-orm/pg-core";
 import { userTable } from "../auth/auth.sql";
 import { timestamps } from "../db/types";
 import { Provider } from "./provider";
@@ -8,6 +8,7 @@ export const providerTable = pgTable(
   {
     ...timestamps,
     provider: text("provider").$type<Provider.Entity["provider"]>().notNull(),
+    active: boolean("active").notNull(),
     apiKey: text("api_key").notNull(),
     userId: text("user_id")
       .notNull()

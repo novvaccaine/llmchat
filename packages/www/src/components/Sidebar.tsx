@@ -44,7 +44,7 @@ export function Sidebar(props: Props) {
 
       <Link
         to="/"
-        className="mt-4 bg-brand text-black px-4 py-2 rounded-md text-center"
+        className="mt-4 bg-brand text-gray-900 px-4 py-2 rounded-md text-center"
       >
         New Chat
       </Link>

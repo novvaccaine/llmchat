@@ -8,7 +8,7 @@ export function NotFound() {
         <p className="mb-5 text-muted">
           The page you are looking for does not exist.
         </p>
-        <Link className="px-4 py-2 bg-brand rounded-md text-black" to="/">
+        <Link className="px-4 py-2 bg-brand rounded-md text-gray-900" to="/">
           Go to Home
         </Link>
       </div>

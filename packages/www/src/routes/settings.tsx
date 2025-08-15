@@ -11,6 +11,7 @@ import { LoadingIcon } from "@/icons/LoadingIcon";
 import { toast } from "sonner";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { DeleteAllConversation } from "@/components/DeleteAllConversation";
+import * as Switch from "@radix-ui/react-switch";
 
 export const Route = createFileRoute("/settings")({
   component: RouteComponent,
@@ -27,8 +28,7 @@ export const Route = createFileRoute("/settings")({
 function RouteComponent() {
   const router = useRouter();
   const { data: providers } = useSuspenseQuery(providersQueryOptions());
-  const openrouterAPIKey =
-    providers.find((p) => p.provider === "openrouter")?.apiKey ?? "";
+  const provider = providers.find((p) => p.provider === "openrouter");
 
   const user = Route.useRouteContext().user!;
   const image = user.image!.replace(/=.+$/, "");
@@ -51,6 +51,7 @@ function RouteComponent() {
 
     const formData = new FormData(e.currentTarget);
     const key = formData.get("openrouterAPIKey");
+    const enable = formData.get("openrouterEnable");
     if (!key) {
       return;
     }
@@ -63,6 +64,7 @@ function RouteComponent() {
     const input = {
       apiKey: apiKey.trim(),
       provider: "openrouter",
+      active: enable === "on",
     } as const;
 
     try {
@@ -108,13 +110,24 @@ function RouteComponent() {
             <p className="text-xl font-semibold mb-5">API Keys</p>
             <div className="border border-border p-4 rounded-md">
               <form className="flex flex-col" onSubmit={onSubmit}>
-                <label
-                  className="self-start inline-flex gap-3 items-center mb-3"
-                  htmlFor="openrouterAPIKey"
-                >
-                  <KeyIcon size={16} />
-                  <span>OpenRouter API Key</span>
-                </label>
+                <div className="flex items-center justify-between gap-4 my-2">
+                  <p className="flex items-center gap-2.5">
+                    <KeyIcon size={16} />
+                    <span>OpenRouter API Key</span>
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <label htmlFor="openrouterEnable">Enable</label>
+                    <Switch.Root
+                      defaultChecked={provider?.active ?? false}
+                      className="relative w-[42px] h-[20px] rounded-full bg-muted/20 outline-none data-[state=checked]:bg-brand"
+                      name="openrouterEnable"
+                      id="openrouterEnable"
+                    >
+                      <Switch.Thumb className="block size-[15px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[25px] data-[state=checked]:bg-gray-900" />
+                    </Switch.Root>
+                  </div>
+                </div>
+
                 <input
                   autoComplete="off"
                   name="openrouterAPIKey"
@@ -122,15 +135,15 @@ function RouteComponent() {
                   className="w-full bg-bg-2 p-2 rounded-md focus:outline-none"
                   placeholder="Enter API Key"
                   type="password"
-                  defaultValue={openrouterAPIKey}
+                  defaultValue={provider?.apiKey ?? ""}
                 />
                 <button
                   disabled={isPending}
                   type="submit"
-                  className="flex gap-2 items-center self-end px-4 py-1 bg-brand rounded-md mt-4 text-black"
+                  className="flex gap-2 items-center self-end px-4 py-1 bg-brand rounded-md mt-4 text-gray-900"
                 >
                   {isPending && (
-                    <LoadingIcon className="text-black/40 fill-black" />
+                    <LoadingIcon className="text-gray-900/40 fill-black" />
                   )}
                   <span>Save</span>
                 </button>

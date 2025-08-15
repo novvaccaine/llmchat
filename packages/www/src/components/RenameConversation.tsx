@@ -77,10 +77,10 @@ export function RenameConversation(props: Props) {
               </button>
               <button
                 disabled={isPending}
-                className="rounded-md bg-brand text-black px-4 py-1.5 focus:outline-none flex gap-2 items-center"
+                className="rounded-md bg-brand text-gray-900 px-4 py-1.5 focus:outline-none flex gap-2 items-center"
               >
                 {isPending && (
-                  <LoadingIcon className="text-black/40 fill-black" />
+                  <LoadingIcon className="text-gray-900/40 fill-black" />
                 )}
                 <span>Save</span>
               </button>
