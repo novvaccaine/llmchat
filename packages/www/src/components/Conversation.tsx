@@ -16,13 +16,12 @@ import {
 import useWidth from "@/lib/useWidth";
 import { ScrollToBottom } from "@/components/ScrollToBottom";
 import { actor } from "@/lib/Actor";
+import { useUIStore } from "@/stores/uiStore";
 
 type Props = {
   messages: Message.Entity[];
   conversationID?: string;
 };
-
-const model = "openai/gpt-4.1-mini";
 
 export function Conversation(props: Props) {
   const { messages, conversationID } = props;
@@ -31,6 +30,7 @@ export function Conversation(props: Props) {
   const navigate = useNavigate();
   const requestGenerateContent = useConversationStore().requestGenerateContent;
   const [widthRef, width] = useWidth();
+  const model = useUIStore().selectedModel;
 
   async function onNewMessage(
     content: string,

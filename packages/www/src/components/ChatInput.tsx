@@ -3,6 +3,7 @@ import { useConversationStore } from "@/stores/conversationStore";
 import { useUIStore } from "@/stores/uiStore";
 import { useRouteContext } from "@tanstack/react-router";
 import React, { useEffect, useRef, useState } from "react";
+import { ModelPicker } from "./ModelPicker";
 
 type ChatInputProps = {
   onNewMessage: (content: string, onError: (content: string) => void) => void;
@@ -58,22 +59,27 @@ export function ChatInput(props: ChatInputProps) {
   }
 
   return (
-    <textarea
-      ref={textareaRef}
+    <div
       style={style}
       className={cn(
-        "bg-bg-2/80 backdrop-blur-lg border border-border p-2 resize-none focus:outline-none",
+        "bg-bg-2/80 backdrop-blur-lg border border-border p-2",
         props.className ?? "",
         {
           "fixed bottom-0 left-0 w-full rounded-t-2xl":
             props.width && props.width < SMALL_DEVICE_BREAKPOINT,
         },
       )}
-      rows={4}
-      placeholder="Type your message here..."
-      value={content}
-      onChange={(e) => setContent(e.target.value)}
-      onKeyDown={handleKeyDown}
-    />
+    >
+      <textarea
+        className="w-full resize-none focus:outline-none"
+        ref={textareaRef}
+        rows={3}
+        placeholder="Type your message here..."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        onKeyDown={handleKeyDown}
+      />
+      <ModelPicker />
+    </div>
   );
 }
