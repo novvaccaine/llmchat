@@ -90,7 +90,7 @@ function Content() {
               <Dialog.Overlay className="fixed inset-0 bg-bg/75" />
               <Dialog.Content asChild>
                 <motion.div
-                  className="fixed top-0 left-0 w-[270px] focus:outline-none h-svh"
+                  className="fixed top-0 left-0 w-[270px] focus:outline-none h-dvh"
                   initial={{ x: -270 }}
                   animate={{ x: 0 }}
                   exit={{ x: -270 }}

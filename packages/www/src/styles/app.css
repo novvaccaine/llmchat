@@ -20,7 +20,7 @@
 html,
 body,
 #root {
-  @apply h-svh;
+  @apply h-dvh;
 }
 
 body {
