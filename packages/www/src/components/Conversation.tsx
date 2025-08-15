@@ -1,6 +1,6 @@
 import { Messages } from "@/components/Messages";
 import { ChatInput } from "@/components/ChatInput";
-import type { Message } from "@llmchat/core/messsage/message";
+import type { Message } from "@soonagi/core/messsage/message";
 import { useCreateConversation } from "@/query/conversation";
 import { useUpdateMessages } from "@/query/message";
 import { toast } from "sonner";

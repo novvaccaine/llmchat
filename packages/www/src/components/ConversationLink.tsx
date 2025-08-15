@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Conversation } from "@llmchat/core/conversation/conversation";
+import { Conversation } from "@soonagi/core/conversation/conversation";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { LoadingIcon } from "./LoadingIcon";
 import { EllipsisVertical as OptionsIcon } from "lucide-react";

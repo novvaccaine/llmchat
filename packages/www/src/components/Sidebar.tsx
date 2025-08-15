@@ -2,7 +2,7 @@ import { splitConversationsByDate } from "@/lib/utils";
 import { LogIn as LoginIcon } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Route } from "@/routes/__root";
-import { Conversation } from "@llmchat/core/conversation/conversation";
+import { Conversation } from "@soonagi/core/conversation/conversation";
 import { useMemo } from "react";
 import { SidebarToggle } from "@/components/SidebarToggle";
 import { useConversationStore } from "@/stores/conversationStore";
@@ -38,7 +38,7 @@ export function Sidebar(props: Props) {
           className="flex-1 text-center text-lg font-semibold text-center"
           to="/"
         >
-          LLM Chat
+          Soon AGI
         </Link>
       </div>
 

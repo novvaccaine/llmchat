@@ -1,4 +1,4 @@
-import type { Message } from "@llmchat/core/messsage/message";
+import type { Message } from "@soonagi/core/messsage/message";
 import { cn } from "@/lib/utils";
 import { TypingIndicator } from "@/components/TypingIndicator";
 import { useConversationStore } from "@/stores/conversationStore";
@@ -30,7 +30,7 @@ export function Messages(props: MessagesProps) {
                 message.role === "user",
             })}
           >
-            <Markdown className="prose prose-llmchat max-w-none">
+            <Markdown className="prose prose-soonagi max-w-none">
               {message.content}
             </Markdown>
           </div>
@@ -40,7 +40,7 @@ export function Messages(props: MessagesProps) {
       {streamingStatus === "waiting" && <TypingIndicator />}
 
       {streamingContent && (
-        <Markdown className="prose prose-llmchat max-w-none">
+        <Markdown className="prose prose-soonagi max-w-none">
           {streamingContent}
         </Markdown>
       )}

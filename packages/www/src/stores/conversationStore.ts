@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Event } from "@llmchat/core/event";
+import { Event } from "@soonagi/core/event";
 import { immer } from "zustand/middleware/immer";
 
 type State = {

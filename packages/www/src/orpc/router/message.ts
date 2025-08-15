@@ -1,4 +1,4 @@
-import { Message } from "@llmchat/core/messsage/message";
+import { Message } from "@soonagi/core/messsage/message";
 import { os } from "@orpc/server";
 import z from "zod";
 

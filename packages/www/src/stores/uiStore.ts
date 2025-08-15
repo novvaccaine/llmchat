@@ -1,4 +1,4 @@
-import { Conversation } from "@llmchat/core/conversation/conversation";
+import { Conversation } from "@soonagi/core/conversation/conversation";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

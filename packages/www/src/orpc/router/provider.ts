@@ -1,5 +1,5 @@
 import { os } from "@orpc/server";
-import { Provider } from "@llmchat/core/provider/provider";
+import { Provider } from "@soonagi/core/provider/provider";
 import z from "zod";
 import { OKOutput } from "@/orpc/output";
 

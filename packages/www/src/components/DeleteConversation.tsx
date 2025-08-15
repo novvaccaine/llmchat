@@ -1,5 +1,5 @@
 import { useUIStore } from "@/stores/uiStore";
-import { Conversation } from "@llmchat/core/conversation/conversation";
+import { Conversation } from "@soonagi/core/conversation/conversation";
 import * as Dialog from "@radix-ui/react-dialog";
 import { LoadingIcon } from "@/components/LoadingIcon";
 import { useDeleteConveration } from "@/query/conversation";

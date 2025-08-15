@@ -1,5 +1,5 @@
 {
-  "name": "@llmchat/www",
+  "name": "@soonagi/www",
   "version": "0.0.1",
   "type": "module",
   "scripts": {
@@ -9,8 +9,8 @@
   },
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
-    "@llmchat/core": "workspace:*",
-    "@llmchat/stream": "workspace:*",
+    "@soonagi/core": "workspace:*",
+    "@soonagi/stream": "workspace:*",
     "@orpc/client": "^1.7.11",
     "@orpc/server": "^1.7.11",
     "@orpc/tanstack-query": "^1.7.11",

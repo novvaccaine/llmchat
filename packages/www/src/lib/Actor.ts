@@ -1,10 +1,10 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { createClient } from "@rivetkit/actor/client";
-import { Event } from "@llmchat/core/event";
+import { Event } from "@soonagi/core/event";
 import { useConversationStore } from "@/stores/conversationStore";
 import { orpc } from "@/orpc/client";
 // TODO: ugly import path
-import type { registry } from "@llmchat/stream/index";
+import type { registry } from "@soonagi/stream/index";
 import { toast } from "sonner";
 
 export class Actor {

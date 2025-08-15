@@ -1,4 +1,4 @@
-# LLM Chat
+# Soon AGI
 
 Work in progress...
 

@@ -1,5 +1,5 @@
 import { getUser } from "@/lib/utils";
-import { Actor } from "@llmchat/core/actor";
+import { Actor } from "@soonagi/core/actor";
 import { ORPCError, os } from "@orpc/server";
 
 export const authMiddleware = os.middleware(async ({ next }) => {

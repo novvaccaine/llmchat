@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { registry } from "./registry";
 import { cors } from "hono/cors";
 import { ALLOWED_PUBLIC_HEADERS } from "@rivetkit/actor";
-import { env } from "@llmchat/core/env";
+import { env } from "@soonagi/core/env";
 
 export { registry };
 

@@ -1,12 +1,12 @@
 import { actor, setup, UserError } from "@rivetkit/actor";
-import { auth } from "@llmchat/core/auth/index";
+import { auth } from "@soonagi/core/auth/index";
 import { Unauthorized } from "@rivetkit/actor/errors";
-import { AI } from "@llmchat/core/ai";
-import type { Event } from "@llmchat/core/event";
+import { AI } from "@soonagi/core/ai";
+import type { Event } from "@soonagi/core/event";
 import { z } from "zod";
 // oopsie, this is different actor (no relation with rivet actor)
-import { Actor } from "@llmchat/core/actor";
-import { errorCodes } from "@llmchat/core/error";
+import { Actor } from "@soonagi/core/actor";
+import { errorCodes } from "@soonagi/core/error";
 
 const generateContentActionInput = z.object({
   conversationID: z.string(),

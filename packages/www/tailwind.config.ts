@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       typography: () => ({
-        llmchat: {
+        soonagi: {
           css: {
             "--tw-prose-body": "var(--color-fg)",
             "--tw-prose-headings": "var(--color-fg)",
