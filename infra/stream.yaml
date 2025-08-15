@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: soonagi
+  name: stream-deploy
+  labels:
+    app: stream
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stream
+  template:
+    metadata:
+      labels:
+        app: stream
+    spec:
+      containers:
+        - name: stream-pod
+          image: novvaccaine/soonagi-stream
+          ports:
+            - containerPort: 8080
+          env:
+            - name: $name
+              value: $value
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: soonagi
+  name: stream-svc
+  labels:
+    app: stream
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: stream

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: soonagi
+  name: www-deploy
+  labels:
+    app: www
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: www
+  template:
+    metadata:
+      labels:
+        app: www
+    spec:
+      containers:
+        - name: www-pod
+          image: novvaccaine/soonagi-www
+          ports:
+            - containerPort: 3000
+          env:
+            - name: $name
+              value: $value
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: soonagi
+  name: www-svc
+  labels:
+    app: www
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: www
