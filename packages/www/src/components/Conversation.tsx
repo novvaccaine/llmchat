@@ -107,7 +107,7 @@ export function Conversation(props: Props) {
             className="fixed bottom-0 rounded-t-md"
           />
           {/* NOTE: magic 125px value (ChatInput height) */}
-          <div className="absolute bottom-[125px] left-1/2 -translate-x-[50%]">
+          <div className="absolute bottom-[135px] left-1/2 -translate-x-[50%]">
             <ScrollToBottom />
           </div>
         </ChatContainerContent>
