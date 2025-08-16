@@ -118,11 +118,11 @@ function RouteComponent() {
         </div>
 
         <div>
-          <div className="mb-8">
-            <p className="text-xl font-semibold mb-5">API Keys</p>
+          <div className="mb-7.5">
+            <p className="text-xl font-semibold mb-2.5">API Keys</p>
             <div className="border border-border p-4 rounded-md">
               <form className="flex flex-col" onSubmit={onSubmit}>
-                <div className="flex items-center justify-between gap-4 my-2">
+                <div className="flex items-center justify-between flex-wrap gap-4 my-2">
                   <p className="flex items-center gap-2.5">
                     <KeyIcon size={16} />
                     <span>OpenRouter API Key</span>
