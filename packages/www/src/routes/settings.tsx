@@ -49,6 +49,7 @@ function RouteComponent() {
       {},
       {
         onSuccess: () => {
+          setModel(Model.DEFAULT_MODEL);
           router.invalidate();
         },
       },
