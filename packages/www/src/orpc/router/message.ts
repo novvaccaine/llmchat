@@ -1,6 +1,7 @@
 import { Message } from "@soonagi/core/messsage/message";
 import { os } from "@orpc/server";
 import z from "zod";
+import { OKOutput } from "../output";
 
 export const message = {
   list: os
@@ -44,5 +45,19 @@ export const message = {
     .handler(async ({ input }) => {
       const messageID = await Message.edit(input);
       return { messageID };
+    }),
+
+  retry: os
+    .input(
+      z.object({
+        messageID: z.string(),
+        conversationID: z.string(),
+        model: z.string().optional(),
+      }),
+    )
+    .output(OKOutput)
+    .handler(async ({ input }) => {
+      await Message.retry(input);
+      return { message: "ok" };
     }),
 };

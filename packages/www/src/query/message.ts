@@ -32,3 +32,16 @@ export function useEditMessage() {
     }),
   );
 }
+
+export function useRetryMessage() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    orpc.message.retry.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: orpc.message.key(),
+        });
+      },
+    }),
+  );
+}

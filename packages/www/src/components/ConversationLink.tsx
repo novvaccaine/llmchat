@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { Conversation } from "@soonagi/core/conversation/conversation";
-import * as Tooltip from "@radix-ui/react-tooltip";
 import { LoadingIcon } from "@/icons/LoadingIcon";
 import { EllipsisVertical as OptionsIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -9,6 +8,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { memo, useState } from "react";
 import { Trash2 as DeleteIcon, SquarePen as EditIcon } from "lucide-react";
 import { useUIStore } from "@/stores/uiStore";
+import { Tooltip } from "@/components/Tooltip";
 
 type Props = {
   conversation: Conversation.Entity;
@@ -28,21 +28,9 @@ export function Component(props: Props) {
       params={{ conversationID: conversation.id }}
       activeProps={{ className: "bg-bg" }}
     >
-      <Tooltip.Provider>
-        <Tooltip.Root>
-          <Tooltip.Trigger asChild>
-            <span className="truncate">{conversation.title}</span>
-          </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Content
-              className="bg-bg px-2 py-1 rounded-md border border-border max-w-[320px]"
-              side="bottom"
-            >
-              {conversation.title}
-            </Tooltip.Content>
-          </Tooltip.Portal>
-        </Tooltip.Root>
-      </Tooltip.Provider>
+      <Tooltip content={conversation.title!}>
+        <span className="truncate">{conversation.title}</span>
+      </Tooltip>
       {generating && (
         <LoadingIcon className="shrink-0 text-brand/40 fill-white ml-auto" />
       )}

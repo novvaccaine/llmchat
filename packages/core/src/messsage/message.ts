@@ -1,21 +1,20 @@
 import z from "zod";
 import { db } from "../db";
 import { messageTable } from "./message.sql";
-import { and, asc, eq, gte, ne, or } from "drizzle-orm";
+import { and, asc, eq, gte, ne, sql } from "drizzle-orm";
 import { conversationTable } from "../conversation/conversation.sql";
 import { Actor } from "../actor";
 import { ulid } from "ulid";
 import { AppError, errorCodes } from "../error";
 import { storage } from "../storage";
 import { getTodayDateUTC, triggerStream } from "../utils";
-import { userTable } from "../auth/auth.sql";
 
 export namespace Message {
   export const Entity = z.object({
     id: z.string(),
     content: z.string(),
     role: z.enum(["assistant", "user"]),
-    model: z.string().optional(),
+    model: z.string().optional().nullable(),
   });
 
   export type Entity = z.infer<typeof Entity>;
@@ -61,7 +60,7 @@ export namespace Message {
           conversationID: conversation.id,
           content: input.content,
           role: input.role,
-          model: input.model,
+          model: input.role === "assistant" ? input.model : undefined,
         })
         .returning({ id: messageTable.id });
 
@@ -78,7 +77,7 @@ export namespace Message {
   export type EditInput = Omit<CreateInput, "role"> & { messageID: string };
 
   export async function edit(input: EditInput) {
-    const messageID = db.transaction(async (tx) => {
+    const messageID = await db.transaction(async (tx) => {
       const rows = await tx
         .select({ id: messageTable.id, createdAt: messageTable.createdAt })
         .from(messageTable)
@@ -117,7 +116,6 @@ export namespace Message {
           conversationID: input.conversationID,
           content: input.content,
           role: "user",
-          model: input.model,
         })
         .returning({ id: messageTable.id });
 
@@ -127,6 +125,71 @@ export namespace Message {
     await triggerStream(Actor.userID(), input.conversationID, input.model!);
 
     return messageID;
+  }
+
+  type RetryInput = Omit<EditInput, "content">;
+
+  export async function retry(input: RetryInput) {
+    let model = input.model;
+
+    await db.transaction(async (tx) => {
+      const rows = await tx
+        .select({
+          id: messageTable.id,
+          createdAt: messageTable.createdAt,
+          role: messageTable.role,
+          model: messageTable.model,
+        })
+        .from(messageTable)
+        .innerJoin(
+          conversationTable,
+          and(
+            eq(conversationTable.id, messageTable.conversationID),
+            eq(conversationTable.status, "none"),
+            eq(conversationTable.userId, Actor.userID()),
+          ),
+        )
+        .where(
+          and(
+            gte(
+              messageTable.createdAt,
+              sql`(SELECT ${messageTable.createdAt} FROM ${messageTable} WHERE id = ${input.messageID})`,
+            ),
+            eq(conversationTable.id, messageTable.conversationID),
+            eq(conversationTable.status, "none"),
+            eq(conversationTable.userId, Actor.userID()),
+          ),
+        )
+        .orderBy(messageTable.createdAt)
+        .limit(2);
+
+      if (!rows.length) {
+        throw new AppError(
+          "not_found",
+          errorCodes.notFound.RESOURCE_NOT_FOUND,
+          "Message not found",
+        );
+      }
+
+      const assistantMessage = rows.find((row) => row.role === "assistant");
+      if (!assistantMessage) {
+        throw new AppError(
+          "not_found",
+          errorCodes.notFound.RESOURCE_NOT_FOUND,
+          "Assistant message not found",
+        );
+      }
+
+      await tx
+        .delete(messageTable)
+        .where(gte(messageTable.createdAt, assistantMessage.createdAt));
+
+      if (!input.model) {
+        model = assistantMessage.model as string;
+      }
+    });
+
+    await triggerStream(Actor.userID(), input.conversationID, model!);
   }
 
   export async function list(conversationID: string) {
@@ -154,7 +217,7 @@ export namespace Message {
         id: messageTable.id,
         content: messageTable.content,
         role: messageTable.role,
-        model: messageTable.content,
+        model: messageTable.model,
       })
       .from(messageTable)
       .where(and(eq(messageTable.conversationID, conversationID)))
