@@ -22,7 +22,7 @@ export namespace Message {
   export type CreateInput = Omit<Entity, "id"> & { conversationID: string };
 
   export async function create(input: CreateInput) {
-    return db.transaction(async (tx) => {
+    const messageID = await db.transaction(async (tx) => {
       const rows = await tx
         .select({ id: conversationTable.id, status: conversationTable.status })
         .from(conversationTable)
@@ -64,12 +64,14 @@ export namespace Message {
         })
         .returning({ id: messageTable.id });
 
-      if (input.role === "user") {
-        await triggerStream(Actor.userID(), input.conversationID, input.model!);
-      }
-
       return messageRows[0].id;
     });
+
+    if (input.role === "user") {
+      await triggerStream(Actor.userID(), input.conversationID, input.model!);
+    }
+
+    return messageID;
   }
 
   export async function list(conversationID: string) {
