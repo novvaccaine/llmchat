@@ -42,4 +42,18 @@ export const conversation = {
     await Conversation.remove(undefined);
     return { message: "ok" };
   }),
+
+  branchOff: os
+    .input(
+      z.object({
+        messageID: z.string(),
+        conversationID: z.string(),
+        model: z.string().optional(),
+      }),
+    )
+    .output(z.object({ conversationID: z.string() }))
+    .handler(async ({ input }) => {
+      const conversationID = await Conversation.branchOff(input);
+      return { conversationID };
+    }),
 };

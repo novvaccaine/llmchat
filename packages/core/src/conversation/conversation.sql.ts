@@ -9,7 +9,7 @@ export const conversationTable = pgTable("conversation", {
   status: text("status")
     .$type<Conversation.Entity["status"]>()
     .notNull()
-    .default("streaming"),
+    .default("none"),
 
   lastMessageAt: timestamp("last_message_at").notNull(),
   createdAt: timestamps.createdAt,

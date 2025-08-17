@@ -4,8 +4,9 @@ import { ulid } from "ulid";
 import { conversationTable } from "./conversation.sql";
 import { messageTable } from "../messsage/message.sql";
 import { Actor } from "../actor";
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, asc, desc, eq, lte, ne, sql, gt } from "drizzle-orm";
 import { triggerStream } from "../utils";
+import { AppError, errorCodes } from "../error";
 
 export namespace Conversation {
   export const Entity = z.object({
@@ -112,5 +113,140 @@ export namespace Conversation {
       .update(conversationTable)
       .set({ status: "deleted" })
       .where(and(...conditions));
+  }
+
+  type BranchOffInput = {
+    conversationID: string;
+    messageID: string;
+    model?: string;
+  };
+
+  export async function branchOff(input: BranchOffInput) {
+    // get the conversation title
+    const result = await db.transaction(async (tx) => {
+      const rows = await tx
+        .select({
+          title: conversationTable.title,
+        })
+        .from(conversationTable)
+        .where(
+          and(
+            eq(conversationTable.id, input.conversationID),
+            eq(conversationTable.status, "none"),
+            eq(conversationTable.userId, Actor.userID()),
+          ),
+        );
+      if (!rows.length) {
+        throw new AppError(
+          "not_found",
+          errorCodes.notFound.RESOURCE_NOT_FOUND,
+          "Conversation not found",
+        );
+      }
+      const conversationTitle = rows[0].title;
+
+      // get messages to copy into the new conversation
+      const subquery = tx
+        .select({ createdAt: messageTable.createdAt })
+        .from(messageTable)
+        .where(
+          and(
+            eq(messageTable.conversationID, input.conversationID),
+            eq(messageTable.id, input.messageID),
+          ),
+        );
+
+      const messagesToCopy = await tx
+        .select()
+        .from(messageTable)
+        .where(
+          and(
+            eq(messageTable.conversationID, input.conversationID),
+            lte(messageTable.createdAt, sql`(${subquery})`),
+          ),
+        )
+        .orderBy(asc(messageTable.createdAt));
+
+      if (!messagesToCopy.length) {
+        throw new AppError(
+          "validation",
+          errorCodes.validation.INVALID_STATE,
+          "No messages found in conversation",
+        );
+      }
+
+      // create new conversation
+      const lastMessage = messagesToCopy[messagesToCopy.length - 1];
+      const newConversation = (
+        await tx
+          .insert(conversationTable)
+          .values({
+            id: ulid(),
+            userId: Actor.userID(),
+            lastMessageAt: lastMessage.createdAt,
+            title: conversationTitle,
+          })
+          .returning({ id: conversationTable.id })
+      )[0];
+
+      // copy all the messages into the new conversation
+      await tx.insert(messageTable).values(
+        messagesToCopy.map((message) => ({
+          id: ulid(),
+          conversationID: newConversation.id,
+          content: message.content,
+          role: message.role,
+          model: message.model,
+          createdAt: message.createdAt,
+        })),
+      );
+
+      await tx
+        .update(conversationTable)
+        .set({
+          lastMessageAt: new Date(),
+        })
+        .where(eq(conversationTable.id, newConversation.id));
+
+      // If the last message in the conversation is from the user,
+      // and the branching involves the same model, need to identify
+      // the model by inspecting the *next* message
+      let model = input.model;
+      if (!model && lastMessage.role === "user") {
+        const assistantMessage = await tx
+          .select({ model: messageTable.model })
+          .from(messageTable)
+          .where(
+            and(
+              eq(messageTable.conversationID, input.conversationID),
+              gt(messageTable.createdAt, lastMessage.createdAt),
+              eq(messageTable.role, "assistant"),
+            ),
+          )
+          .limit(1);
+
+        if (!assistantMessage.length) {
+          throw new AppError(
+            "validation",
+            errorCodes.validation.INVALID_STATE,
+            "Assistant message is missing",
+          );
+        }
+
+        model = assistantMessage[0].model!;
+      }
+
+      return {
+        conversationID: newConversation.id,
+        lastMessage,
+        model,
+      };
+    });
+
+    if (result.lastMessage.role === "user") {
+      await triggerStream(Actor.userID(), result.conversationID, result.model!);
+    }
+
+    return result.conversationID;
   }
 }

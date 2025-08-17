@@ -57,3 +57,16 @@ export function useUpdateConversation() {
     }),
   );
 }
+
+export function useBranchOff() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    orpc.conversation.branchOff.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: orpc.message.key(),
+        });
+      },
+    }),
+  );
+}

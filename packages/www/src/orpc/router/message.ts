@@ -41,10 +41,10 @@ export const message = {
         model: z.string(),
       }),
     )
-    .output(z.object({ messageID: z.string() }))
+    .output(OKOutput)
     .handler(async ({ input }) => {
-      const messageID = await Message.edit(input);
-      return { messageID };
+      await Message.edit(input);
+      return { message: "ok" };
     }),
 
   retry: os

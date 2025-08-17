@@ -48,7 +48,7 @@ export function Messages(props: MessagesProps) {
             ) : (
               <div
                 className={cn({
-                  "self-end border border-border rounded-md bg-bg-2 p-2 w-full":
+                  "max-w-full self-end border border-border rounded-md bg-bg-2 p-2":
                     message.role === "user",
                 })}
               >

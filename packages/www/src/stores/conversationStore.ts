@@ -45,6 +45,12 @@ export const useConversationStore = create<State & Action>()(
         const conversation = state.conversation[conversationID];
         if (conversation) {
           conversation.title = title;
+        } else {
+          state.conversation[conversationID] = {
+            content: "",
+            status: "generated",
+            title,
+          };
         }
       }),
 

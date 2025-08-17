@@ -77,7 +77,7 @@ export namespace Message {
   export type EditInput = Omit<CreateInput, "role"> & { messageID: string };
 
   export async function edit(input: EditInput) {
-    const messageID = await db.transaction(async (tx) => {
+    await db.transaction(async (tx) => {
       const rows = await tx
         .select({ id: messageTable.id, createdAt: messageTable.createdAt })
         .from(messageTable)
@@ -105,7 +105,7 @@ export namespace Message {
       }
       const message = rows[0];
 
-      const messageRows = await tx
+      await tx
         .update(messageTable)
         .set({ content: input.content })
         .where(eq(messageTable.id, message.id))
@@ -114,13 +114,9 @@ export namespace Message {
       await tx
         .delete(messageTable)
         .where(gt(messageTable.createdAt, message.createdAt));
-
-      return messageRows[0].id;
     });
 
     await triggerStream(Actor.userID(), input.conversationID, input.model!);
-
-    return messageID;
   }
 
   type RetryInput = Omit<EditInput, "content">;

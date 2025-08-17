@@ -4,7 +4,7 @@ import { SquarePen as EditIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SetState } from "@/types";
 import { Tooltip } from "@/components/Tooltip";
-import { RetryMessage } from "./RetryMessage";
+import { MessageActionPicker } from "./MessageActionPicker";
 import { Model } from "@soonagi/core/model";
 
 type Props = {
@@ -51,9 +51,18 @@ export function MessageActions(props: Props) {
         </Tooltip>
       )}
 
-      <RetryMessage
+      <MessageActionPicker
+        action="retry"
         messageID={message.id}
         conversationID={props.conversationID}
+        messageRole={message.role}
+      />
+
+      <MessageActionPicker
+        action="branchOff"
+        messageID={message.id}
+        conversationID={props.conversationID}
+        messageRole={message.role}
       />
 
       {messageModel && (
