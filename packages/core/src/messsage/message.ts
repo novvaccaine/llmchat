@@ -1,13 +1,14 @@
 import z from "zod";
 import { db } from "../db";
 import { messageTable } from "./message.sql";
-import { and, asc, eq, ne } from "drizzle-orm";
+import { and, asc, eq, gte, ne, or } from "drizzle-orm";
 import { conversationTable } from "../conversation/conversation.sql";
 import { Actor } from "../actor";
 import { ulid } from "ulid";
 import { AppError, errorCodes } from "../error";
 import { storage } from "../storage";
 import { getTodayDateUTC, triggerStream } from "../utils";
+import { userTable } from "../auth/auth.sql";
 
 export namespace Message {
   export const Entity = z.object({
@@ -70,6 +71,60 @@ export namespace Message {
     if (input.role === "user") {
       await triggerStream(Actor.userID(), input.conversationID, input.model!);
     }
+
+    return messageID;
+  }
+
+  export type EditInput = Omit<CreateInput, "role"> & { messageID: string };
+
+  export async function edit(input: EditInput) {
+    const messageID = db.transaction(async (tx) => {
+      const rows = await tx
+        .select({ id: messageTable.id, createdAt: messageTable.createdAt })
+        .from(messageTable)
+        .innerJoin(
+          conversationTable,
+          and(
+            eq(conversationTable.id, messageTable.conversationID),
+            eq(conversationTable.status, "none"),
+            eq(conversationTable.userId, Actor.userID()),
+          ),
+        )
+        .where(
+          and(
+            eq(messageTable.id, input.messageID),
+            eq(messageTable.role, "user"),
+          ),
+        );
+
+      if (!rows.length) {
+        throw new AppError(
+          "not_found",
+          errorCodes.notFound.RESOURCE_NOT_FOUND,
+          "Message not found",
+        );
+      }
+      const message = rows[0];
+
+      await tx
+        .delete(messageTable)
+        .where(gte(messageTable.createdAt, message.createdAt));
+
+      const messageRows = await tx
+        .insert(messageTable)
+        .values({
+          id: ulid(),
+          conversationID: input.conversationID,
+          content: input.content,
+          role: "user",
+          model: input.model,
+        })
+        .returning({ id: messageTable.id });
+
+      return messageRows[0].id;
+    });
+
+    await triggerStream(Actor.userID(), input.conversationID, input.model!);
 
     return messageID;
   }

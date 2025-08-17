@@ -30,4 +30,19 @@ export const message = {
       const messageID = await Message.create({ ...input, role: "user" });
       return { messageID };
     }),
+
+  edit: os
+    .input(
+      z.object({
+        content: z.string().min(1),
+        messageID: z.string(),
+        conversationID: z.string(),
+        model: z.string(),
+      }),
+    )
+    .output(z.object({ messageID: z.string() }))
+    .handler(async ({ input }) => {
+      const messageID = await Message.edit(input);
+      return { messageID };
+    }),
 };

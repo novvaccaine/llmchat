@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { marked } from "marked";
-import { memo, useId, useMemo, useState } from "react";
+import { memo, useId, useMemo } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
@@ -9,8 +9,7 @@ import {
   CodeBlockCode,
   CodeBlockGroup,
 } from "@/components/CodeBlock";
-import { Copy as CopyIcon, Check as CheckIcon } from "lucide-react";
-import { toast } from "sonner";
+import { CopyContent } from "@/components/CopyContent";
 
 export type MarkdownProps = {
   children: string;
@@ -36,8 +35,6 @@ const INITIAL_COMPONENTS: Partial<Components> = {
       !props.node?.position?.start.line ||
       props.node?.position?.start.line === props.node?.position?.end.line;
 
-    const [copied, setCopied] = useState(false);
-
     if (isInline) {
       return (
         <span
@@ -55,27 +52,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
       <CodeBlock className={className}>
         <CodeBlockGroup className="bg-code-header py-1 px-2.5">
           <p>{language}</p>
-          {copied ? (
-            <CheckIcon size={16} />
-          ) : (
-            <button
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(children as string);
-                  setCopied(true);
-                  toast.success("Copied to clipboard");
-                  setTimeout(() => {
-                    setCopied(false);
-                  }, 1500);
-                } catch (err) {
-                  console.error("failed to copy", err);
-                  toast.error("Failed to copy");
-                }
-              }}
-            >
-              <CopyIcon size={16} />
-            </button>
-          )}
+          <CopyContent content={children as string} />
         </CodeBlockGroup>
         <CodeBlockCode code={children as string} language={language} />
       </CodeBlock>

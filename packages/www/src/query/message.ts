@@ -19,3 +19,16 @@ export function useUpdateMessages() {
     }),
   );
 }
+
+export function useEditMessage() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    orpc.message.edit.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: orpc.message.key(),
+        });
+      },
+    }),
+  );
+}
