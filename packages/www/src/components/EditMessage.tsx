@@ -37,6 +37,7 @@ export function EditMessage(props: Props) {
         messageID: message.id,
         model,
       });
+      setEditing(null);
       requestGenerateContent(conversationID);
     } catch (err) {
       console.error("failed to edit message", err);

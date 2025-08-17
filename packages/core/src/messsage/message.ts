@@ -1,7 +1,7 @@
 import z from "zod";
 import { db } from "../db";
 import { messageTable } from "./message.sql";
-import { and, asc, eq, gte, ne, sql } from "drizzle-orm";
+import { and, asc, eq, gte, ne, sql, gt } from "drizzle-orm";
 import { conversationTable } from "../conversation/conversation.sql";
 import { Actor } from "../actor";
 import { ulid } from "ulid";
@@ -105,19 +105,15 @@ export namespace Message {
       }
       const message = rows[0];
 
+      const messageRows = await tx
+        .update(messageTable)
+        .set({ content: input.content })
+        .where(eq(messageTable.id, message.id))
+        .returning({ id: messageTable.id });
+
       await tx
         .delete(messageTable)
-        .where(gte(messageTable.createdAt, message.createdAt));
-
-      const messageRows = await tx
-        .insert(messageTable)
-        .values({
-          id: ulid(),
-          conversationID: input.conversationID,
-          content: input.content,
-          role: "user",
-        })
-        .returning({ id: messageTable.id });
+        .where(gt(messageTable.createdAt, message.createdAt));
 
       return messageRows[0].id;
     });
