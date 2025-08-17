@@ -5,6 +5,7 @@ import { conversationTable } from "./conversation.sql";
 import { messageTable } from "../messsage/message.sql";
 import { Actor } from "../actor";
 import { and, desc, eq, ne } from "drizzle-orm";
+import { triggerStream } from "../utils";
 
 export namespace Conversation {
   export const Entity = z.object({
@@ -18,8 +19,8 @@ export namespace Conversation {
 
   const MESSAGES_LIMIT = 50;
 
-  export function create(content: string) {
-    return db.transaction(async (tx) => {
+  export async function create(content: string, model: string) {
+    const conversationID = await db.transaction(async (tx) => {
       const rows = await tx
         .insert(conversationTable)
         .values({
@@ -39,6 +40,10 @@ export namespace Conversation {
 
       return conversationID;
     });
+
+    await triggerStream(Actor.userID(), conversationID, model);
+
+    return conversationID;
   }
 
   export async function list() {

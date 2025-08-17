@@ -1,14 +1,16 @@
-import { actor, setup, UserError } from "@rivetkit/actor";
+import { actor, setup } from "@rivetkit/actor";
 import { auth } from "@soonagi/core/auth/index";
 import { Unauthorized } from "@rivetkit/actor/errors";
 import { AI } from "@soonagi/core/ai";
 import type { Event } from "@soonagi/core/event";
 import { z } from "zod";
+import { env } from "@soonagi/core/env";
 // oopsie, this is different actor (no relation with rivet actor)
 import { Actor } from "@soonagi/core/actor";
-import { errorCodes } from "@soonagi/core/error";
 
-const generateContentActionInput = z.object({
+export const generateContentActionInput = z.object({
+  apiKey: z.string(),
+  userID: z.string(),
   conversationID: z.string(),
   model: z.string(),
 });
@@ -31,21 +33,16 @@ export const stream = actor({
 
   actions: {
     generateContent: (c, input: z.infer<typeof generateContentActionInput>) => {
+      if (input.apiKey !== env.SVC_API_KEY) {
+        throw new Unauthorized();
+      }
+
       // NOTE: skill issues in typescript, so defining this here
       function publishEvent(event: Event.Event) {
         c.broadcast(event.type, event.data);
       }
 
-      try {
-        input = generateContentActionInput.parse(input);
-      } catch (err) {
-        throw new UserError("Invalid parameters", {
-          code: errorCodes.validation.INVALID_PARAMETERS,
-        });
-      }
-
-      const userID = (c.conn.auth as { userID: string }).userID;
-      return Actor.provide("user", { userID }, async () => {
+      return Actor.provide("user", { userID: input.userID }, async () => {
         const { conversationID, model } = input;
 
         const stream = AI.generateContent({

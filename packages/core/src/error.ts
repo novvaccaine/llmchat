@@ -21,6 +21,9 @@ export const errorCodes = {
   authentication: {
     UNAUTHORIZED: "unauthorized",
   },
+  internal: {
+    DEPENDENCY_FAILURE: "dependency_failure",
+  },
 };
 
 export class AppError extends Error {

@@ -15,7 +15,6 @@ import {
 } from "@/components/ChatContainer";
 import useWidth from "@/lib/useWidth";
 import { ScrollToBottom } from "@/components/ScrollToBottom";
-import { actor } from "@/lib/Actor";
 import { useUIStore } from "@/stores/uiStore";
 
 type Props = {
@@ -39,19 +38,15 @@ export function Conversation(props: Props) {
     try {
       let cID = conversationID;
       if (!conversationID) {
-        const res = await createConversation({ content });
+        const res = await createConversation({ content, model });
         cID = res.conversationID;
       } else {
         await updateMessages({
           content,
           conversationID: cID!,
+          model,
         });
       }
-
-      // NOTE: welp
-      (
-        actor.conn as { generateContent: (...args: any) => void }
-      ).generateContent({ conversationID: cID, model });
 
       requestGenerateContent(cID!);
 

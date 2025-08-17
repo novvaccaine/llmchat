@@ -7,7 +7,7 @@ import { Actor } from "../actor";
 import { ulid } from "ulid";
 import { AppError, errorCodes } from "../error";
 import { storage } from "../storage";
-import { getTodayDateUTC } from "../utils";
+import { getTodayDateUTC, triggerStream } from "../utils";
 
 export namespace Message {
   export const Entity = z.object({
@@ -63,6 +63,10 @@ export namespace Message {
           model: input.model,
         })
         .returning({ id: messageTable.id });
+
+      if (input.role === "user") {
+        await triggerStream(Actor.userID(), input.conversationID, input.model!);
+      }
 
       return messageRows[0].id;
     });

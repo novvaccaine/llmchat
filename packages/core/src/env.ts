@@ -5,6 +5,7 @@ export const env = createEnv({
   server: {
     WEB_URL: z.string(),
     STREAM_URL: z.string(),
+    SVC_API_KEY: z.string(),
     DB_URL: z.string(),
     OPENROUTER_API_KEY: z.string(),
     REDIS_URL: z.string(),

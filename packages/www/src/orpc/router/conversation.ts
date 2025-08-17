@@ -5,10 +5,13 @@ import { OKOutput } from "@/orpc/output";
 
 export const conversation = {
   create: os
-    .input(z.object({ content: z.string() }))
+    .input(z.object({ content: z.string(), model: z.string() }))
     .output(z.object({ conversationID: z.string() }))
     .handler(async ({ input }) => {
-      const conversationID = await Conversation.create(input.content);
+      const conversationID = await Conversation.create(
+        input.content,
+        input.model,
+      );
       return { conversationID };
     }),
 

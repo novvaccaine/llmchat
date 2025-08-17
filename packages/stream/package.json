@@ -12,8 +12,9 @@
   "dependencies": {
     "@hono/node-server": "^1.18.2",
     "@hono/node-ws": "^1.2.0",
-    "@soonagi/core": "workspace:*",
+    "@hono/zod-validator": "^0.7.2",
     "@rivetkit/actor": "*",
+    "@soonagi/core": "workspace:*",
     "better-auth": "*",
     "hono": "^4.9.1",
     "zod": "*"
