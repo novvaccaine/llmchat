@@ -76,3 +76,5 @@ button {
     0 0 10px var(--color-brand),
     0 0 5px var(--color-brand) !important;
 }
+
+@custom-variant mobile-hover (&:hover);

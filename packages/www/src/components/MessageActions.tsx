@@ -22,7 +22,7 @@ export function MessageActions(props: Props) {
   return (
     <div
       className={cn(
-        "mt-4 flex items-center gap-2.5 invisible transition-delay-[300ms] group-hover:visible",
+        "mt-4 flex items-center gap-2.5 opacity-0 transition-opacity group-mobile-hover:opacity-100",
         {
           "self-end flex-row-reverse": message.role === "user",
         },
