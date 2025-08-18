@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Conversation } from "@soonagi/core/conversation/conversation";
 import { LoadingIcon } from "@/icons/LoadingIcon";
 import { EllipsisVertical as OptionsIcon } from "lucide-react";
@@ -9,6 +9,7 @@ import { memo, useState } from "react";
 import { Trash2 as DeleteIcon, SquarePen as EditIcon } from "lucide-react";
 import { useUIStore } from "@/stores/uiStore";
 import { Tooltip } from "@/components/Tooltip";
+import { Split as BranchOffIcon } from "lucide-react";
 
 type Props = {
   conversation: Conversation.Entity;
@@ -19,6 +20,7 @@ export function Component(props: Props) {
   const { conversation, generating } = props;
   const [ref, hovering] = useHover();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <Link
@@ -29,7 +31,23 @@ export function Component(props: Props) {
       activeProps={{ className: "bg-bg" }}
     >
       <Tooltip content={conversation.title!}>
-        <span className="truncate">{conversation.title}</span>
+        <div className="flex gap-2.5 items-center min-w-0">
+          {conversation.branchedFrom && (
+            <button
+              className="text-muted hover:text-brand shrink-0"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate({
+                  to: "/conversation/$conversationID",
+                  params: { conversationID: conversation.branchedFrom?.id! },
+                });
+              }}
+            >
+              <BranchOffIcon size={16} />
+            </button>
+          )}
+          <p className="truncate">{conversation.title}</p>
+        </div>
       </Tooltip>
       {generating && (
         <LoadingIcon className="shrink-0 text-brand/40 fill-white ml-auto" />

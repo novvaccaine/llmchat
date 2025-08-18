@@ -1,7 +1,7 @@
 import z from "zod";
 import { db } from "../db";
 import { messageTable } from "./message.sql";
-import { and, asc, eq, gte, ne, sql, gt } from "drizzle-orm";
+import { and, asc, eq, gte, sql, gt } from "drizzle-orm";
 import { conversationTable } from "../conversation/conversation.sql";
 import { Actor } from "../actor";
 import { ulid } from "ulid";
@@ -14,7 +14,7 @@ export namespace Message {
     id: z.string(),
     content: z.string(),
     role: z.enum(["assistant", "user"]),
-    model: z.string().optional().nullable(),
+    model: z.string().optional(),
   });
 
   export type Entity = z.infer<typeof Entity>;
@@ -190,7 +190,6 @@ export namespace Message {
         and(
           eq(conversationTable.userId, Actor.userID()),
           eq(conversationTable.id, conversationID),
-          ne(conversationTable.status, "deleted"),
         ),
       );
     if (!rows.length) {
@@ -211,7 +210,12 @@ export namespace Message {
       })
       .from(messageTable)
       .where(and(eq(messageTable.conversationID, conversationID)))
-      .orderBy(asc(messageTable.createdAt));
+      .orderBy(asc(messageTable.createdAt))
+      .then((rows) =>
+        // TODO: doing this transformation to satisfy the type
+        // how to share types seamlessly without doing these things?
+        rows.map((row) => ({ ...row, model: row.model ?? undefined })),
+      );
 
     return {
       id: conversation.id,

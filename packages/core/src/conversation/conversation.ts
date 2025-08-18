@@ -4,16 +4,23 @@ import { ulid } from "ulid";
 import { conversationTable } from "./conversation.sql";
 import { messageTable } from "../messsage/message.sql";
 import { Actor } from "../actor";
-import { and, asc, desc, eq, lte, ne, sql, gt } from "drizzle-orm";
+import { and, asc, desc, eq, lte, sql, gt } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { triggerStream } from "../utils";
 import { AppError, errorCodes } from "../error";
 
 export namespace Conversation {
   export const Entity = z.object({
     id: z.string(),
-    title: z.string().optional(),
-    status: z.enum(["none", "deleted", "streaming"]),
+    title: z.string().nullable(),
+    status: z.enum(["none", "streaming"]),
     lastMessageAt: z.string(),
+    branchedFrom: z
+      .object({
+        id: z.string(),
+        title: z.string().nullable(),
+      })
+      .nullable(),
   });
 
   export type Entity = z.infer<typeof Entity>;
@@ -48,27 +55,29 @@ export namespace Conversation {
   }
 
   export async function list() {
+    const branchedFromTable = alias(conversationTable, "branchedFrom");
     const rows = await db
       .select({
         id: conversationTable.id,
         title: conversationTable.title,
         lastMessageAt: conversationTable.lastMessageAt,
         status: conversationTable.status,
+        branchedFrom: {
+          id: branchedFromTable.id,
+          title: branchedFromTable.title,
+        },
       })
       .from(conversationTable)
-      .where(
-        and(
-          eq(conversationTable.userId, Actor.userID()),
-          ne(conversationTable.status, "deleted"),
-        ),
+      .leftJoin(
+        branchedFromTable,
+        eq(conversationTable.branchedFrom, branchedFromTable.id),
       )
+      .where(eq(conversationTable.userId, Actor.userID()))
       .orderBy(desc(conversationTable.lastMessageAt))
       .limit(MESSAGES_LIMIT); // TODO: pagination
 
     return rows.map((input) => ({
-      id: input.id,
-      title: input.title ?? undefined,
-      status: input.status,
+      ...input,
       lastMessageAt: input.lastMessageAt.toJSON(),
     }));
   }
@@ -91,7 +100,6 @@ export namespace Conversation {
         and(
           eq(conversationTable.userId, Actor.userID()),
           eq(conversationTable.id, conversationID),
-          ne(conversationTable.status, "deleted"),
         ),
       )
       .returning({ id: conversationTable.id });
@@ -109,10 +117,7 @@ export namespace Conversation {
       conditions.push(eq(conversationTable.id, conversationID));
     }
 
-    await db
-      .update(conversationTable)
-      .set({ status: "deleted" })
-      .where(and(...conditions));
+    await db.delete(conversationTable).where(and(...conditions));
   }
 
   type BranchOffInput = {
@@ -178,6 +183,7 @@ export namespace Conversation {
             userId: Actor.userID(),
             lastMessageAt: lastMessage.createdAt,
             title: conversationTitle,
+            branchedFrom: input.conversationID,
           })
           .returning({ id: conversationTable.id })
       )[0];
