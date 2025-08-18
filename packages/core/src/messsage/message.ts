@@ -143,13 +143,11 @@ export namespace Message {
         )
         .where(
           and(
+            eq(conversationTable.id, input.conversationID),
             gte(
               messageTable.createdAt,
-              sql`(SELECT ${messageTable.createdAt} FROM ${messageTable} WHERE id = ${input.messageID})`,
+              sql`(SELECT ${messageTable.createdAt} FROM ${messageTable} WHERE ${messageTable.id} = ${input.messageID})`,
             ),
-            eq(conversationTable.id, messageTable.conversationID),
-            eq(conversationTable.status, "none"),
-            eq(conversationTable.userId, Actor.userID()),
           ),
         )
         .orderBy(messageTable.createdAt)

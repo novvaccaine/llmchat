@@ -146,23 +146,16 @@ export namespace Conversation {
       const conversationTitle = rows[0].title;
 
       // get messages to copy into the new conversation
-      const subquery = tx
-        .select({ createdAt: messageTable.createdAt })
-        .from(messageTable)
-        .where(
-          and(
-            eq(messageTable.conversationID, input.conversationID),
-            eq(messageTable.id, input.messageID),
-          ),
-        );
-
       const messagesToCopy = await tx
         .select()
         .from(messageTable)
         .where(
           and(
             eq(messageTable.conversationID, input.conversationID),
-            lte(messageTable.createdAt, sql`(${subquery})`),
+            lte(
+              messageTable.createdAt,
+              sql`(SELECT ${messageTable.createdAt} FROM ${messageTable} WHERE ${messageTable.id} = ${input.messageID})`,
+            ),
           ),
         )
         .orderBy(asc(messageTable.createdAt));
