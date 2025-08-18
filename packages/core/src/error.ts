@@ -34,4 +34,21 @@ export class AppError extends Error {
   ) {
     super(message);
   }
+
+  statusCode() {
+    switch (this.type) {
+      case "validation":
+        return 400;
+      case "authentication":
+        return 401;
+      case "forbidden":
+        return 403;
+      case "not_found":
+        return 404;
+      case "rate_limit":
+        return 429;
+      case "internal":
+        return 500;
+    }
+  }
 }
