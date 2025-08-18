@@ -141,7 +141,19 @@ export namespace AI {
     const res = await generateText({
       model: chat(Model.GENERATE_TITLE_MODEL),
       prompt: [
-        "Given the following user message, generate a short, descriptive title:",
+        "You are a helpful assistant that generates concise, descriptive titles for user messages.",
+        "Create a short title (3-7 words) that summarizes the main idea of the message.",
+        "Examples:",
+        'User message: "Can you help me reset my password?"',
+        "Password Reset Assistance",
+        "",
+        'User message: "What are the best practices for writing clean code?"',
+        "Practices",
+        "",
+        'User message: "I need a recipe for a quick vegan dinner."',
+        "Quick Vegan Dinner Recipe",
+        "",
+        "Now, generate a title for the following message:",
         content,
       ].join("\n"),
     });
