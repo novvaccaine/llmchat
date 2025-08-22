@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_layout")({
     if (!context.user) {
       return [];
     }
-    return context.queryClient.fetchQuery(conversationQueryOptions(true));
+    return context.queryClient.ensureQueryData(conversationQueryOptions(true));
   },
 });
 

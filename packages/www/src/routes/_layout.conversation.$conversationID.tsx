@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_layout/conversation/$conversationID")({
     }
   },
   loader: async ({ params, context }) => {
-    return context.queryClient.fetchQuery(
+    return context.queryClient.ensureQueryData(
       messagesQueryOptions(params.conversationID),
     );
   },

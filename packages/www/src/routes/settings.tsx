@@ -24,7 +24,7 @@ export const Route = createFileRoute("/settings")({
     }
   },
   loader: async ({ context }) => {
-    return context.queryClient.fetchQuery(providersQueryOptions());
+    return context.queryClient.ensureQueryData(providersQueryOptions());
   },
 });
 
