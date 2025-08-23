@@ -33,6 +33,7 @@ function RouteComponent() {
   const { data: providers } = useSuspenseQuery(providersQueryOptions());
   const provider = providers.find((p) => p.provider === "openrouter");
   const setModel = useUIStore().selectModel;
+  const { queryClient } = Route.useRouteContext();
 
   const [state, setState] = useState({
     apiKey: provider?.apiKey ?? "",
@@ -50,6 +51,9 @@ function RouteComponent() {
       {
         onSuccess: () => {
           setModel(Model.DEFAULT_MODEL);
+          queryClient.removeQueries({
+            queryKey: ["authUser"],
+          });
           router.invalidate();
         },
       },
