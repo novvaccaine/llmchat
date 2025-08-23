@@ -15,11 +15,9 @@ export class Actor {
       return;
     }
 
-    // TODO: its annoying i have to do modify this when developing locally :(
-    // const client = createClient<typeof registry>(
-    //   `https://stream.${window.location.host}`,
-    // );
-    const client = createClient<typeof registry>(`http://localhost:8080`);
+    const client = createClient<typeof registry>(
+      `https://stream.${window.location.host}`,
+    );
 
     const conn = client.stream.getOrCreate(userID).connect();
     this.conn = conn;

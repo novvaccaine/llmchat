@@ -17,13 +17,13 @@ export const auth = betterAuth({
       verification: schema.verificationTable,
     },
   }),
-  // advanced: {
-  //   crossSubDomainCookies: {
-  //     enabled: true,
-  //     domain: new URL(env.WEB_URL).host,
-  //   },
-  // },
-  // trustedOrigins: [new URL(env.STREAM_URL).host],
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: true,
+      domain: new URL(env.WEB_URL).host,
+    },
+  },
+  trustedOrigins: [new URL(env.STREAM_URL).host],
   socialProviders: {
     google: {
       clientId: env.GOOGLE_CLIENT_ID,
