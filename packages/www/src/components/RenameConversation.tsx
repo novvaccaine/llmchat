@@ -4,7 +4,6 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { LoadingIcon } from "@/icons/LoadingIcon";
 import { useUpdateConversation } from "@/query/conversation";
 import { toast } from "sonner";
-import { useConversationStore } from "@/stores/conversationStore";
 
 type Props = {
   conversation: Conversation.Entity;
@@ -14,7 +13,6 @@ export function RenameConversation(props: Props) {
   const { conversation } = props;
   const dialog = useUIStore().dialog;
   const setDialog = useUIStore().setDialog;
-  const rename = useConversationStore().rename;
   const { mutateAsync: updateConversation, isPending } =
     useUpdateConversation();
 
@@ -34,7 +32,6 @@ export function RenameConversation(props: Props) {
     try {
       await updateConversation({ conversationID: conversation.id, title });
       setDialog(null);
-      rename(conversation.id, title);
     } catch (err) {
       console.error("failed to update conversation title", err);
       toast.error("Failed to update conversation title");
@@ -65,7 +62,7 @@ export function RenameConversation(props: Props) {
               className="w-full bg-bg-2 p-2 rounded-md focus:outline-none"
               placeholder="Enter title"
               type="text"
-              defaultValue={props.conversation.title}
+              defaultValue={props.conversation.title ?? ""}
             />
             <div className="mt-6 flex justify-end gap-4">
               <button

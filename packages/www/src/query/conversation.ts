@@ -14,7 +14,7 @@ export function useCreateConversation() {
     orpc.conversation.create.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: orpc.conversation.key(),
+          queryKey: orpc.conversation.list.key(),
         });
       },
     }),
@@ -27,7 +27,7 @@ export function useDeleteConveration() {
     orpc.conversation.delete.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: orpc.conversation.key(),
+          queryKey: orpc.conversation.list.key(),
         });
       },
     }),
@@ -40,7 +40,7 @@ export function useDeleteAllConveration() {
     orpc.conversation.deleteAll.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: orpc.conversation.key(),
+          queryKey: orpc.conversation.list.key(),
         });
       },
     }),
@@ -53,7 +53,7 @@ export function useUpdateConversation() {
     orpc.conversation.update.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: orpc.conversation.key(),
+          queryKey: orpc.conversation.list.key(),
         });
       },
     }),
@@ -66,7 +66,7 @@ export function useBranchOff() {
     orpc.conversation.branchOff.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: orpc.message.key(),
+          queryKey: orpc.conversation.list.key(),
         });
       },
     }),

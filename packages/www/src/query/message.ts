@@ -7,14 +7,15 @@ export function messagesQueryOptions(conversationID: string) {
   });
 }
 
-// TODO: function which abstracts the repeated logic here
 export function useUpdateMessages() {
   const queryClient = useQueryClient();
   return useMutation(
     orpc.message.create.mutationOptions({
-      onSuccess: () => {
+      onSuccess: (_, variables) => {
         queryClient.invalidateQueries({
-          queryKey: orpc.message.key(),
+          queryKey: orpc.message.list.key({
+            input: { conversationID: variables.conversationID },
+          }),
         });
       },
     }),
@@ -25,9 +26,11 @@ export function useEditMessage() {
   const queryClient = useQueryClient();
   return useMutation(
     orpc.message.edit.mutationOptions({
-      onSuccess: () => {
+      onSuccess: (_, variables) => {
         queryClient.invalidateQueries({
-          queryKey: orpc.message.key(),
+          queryKey: orpc.message.list.key({
+            input: { conversationID: variables.conversationID },
+          }),
         });
       },
     }),
@@ -38,9 +41,11 @@ export function useRetryMessage() {
   const queryClient = useQueryClient();
   return useMutation(
     orpc.message.retry.mutationOptions({
-      onSuccess: () => {
+      onSuccess: (_, variables) => {
         queryClient.invalidateQueries({
-          queryKey: orpc.message.key(),
+          queryKey: orpc.message.list.key({
+            input: { conversationID: variables.conversationID },
+          }),
         });
       },
     }),

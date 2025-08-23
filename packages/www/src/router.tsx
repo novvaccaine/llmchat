@@ -3,6 +3,7 @@ import { routeTree } from "@/routeTree.gen";
 import { routerWithQueryClient } from "@tanstack/react-router-with-query";
 import { useUIStore } from "@/stores//uiStore";
 import * as TanstackQuery from "@/query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export function createRouter() {
   const rqContext = TanstackQuery.getContext();
@@ -18,6 +19,7 @@ export function createRouter() {
         return (
           <TanstackQuery.Provider {...rqContext}>
             {props.children}
+            <ReactQueryDevtools initialIsOpen={false} />
           </TanstackQuery.Provider>
         );
       },

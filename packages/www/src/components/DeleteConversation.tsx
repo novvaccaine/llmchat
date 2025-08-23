@@ -4,7 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { LoadingIcon } from "@/icons/LoadingIcon";
 import { useDeleteConveration } from "@/query/conversation";
 import { toast } from "sonner";
-import { useRouter } from "@tanstack/react-router";
+import { useParams, useNavigate } from "@tanstack/react-router";
 
 type Props = {
   conversation: Conversation.Entity;
@@ -15,7 +15,11 @@ export function DeleteConversation(props: Props) {
   const dialog = useUIStore().dialog;
   const setDialog = useUIStore().setDialog;
   const { mutateAsync: deleteConversation, isPending } = useDeleteConveration();
-  const router = useRouter();
+
+  const { conversationID } = useParams({
+    strict: false,
+  });
+  const navigate = useNavigate();
 
   return (
     <Dialog.Root
@@ -51,7 +55,9 @@ export function DeleteConversation(props: Props) {
                 try {
                   await deleteConversation({ conversationID: conversation.id });
                   setDialog(null);
-                  router.invalidate();
+                  if (conversationID === conversation.id) {
+                    navigate({ to: "/" });
+                  }
                 } catch (err) {
                   console.error("failed to delete conversation", err);
                   toast.error("Failed to delete conversation");

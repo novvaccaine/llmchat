@@ -28,7 +28,9 @@ export class Actor {
       (data: Event.EventData<"generated_content">) => {
         queryClient
           .invalidateQueries({
-            queryKey: orpc.key(),
+            queryKey: orpc.message.list.queryKey({
+              input: { conversationID: data.conversationID },
+            }),
           })
           .then(() => {
             useConversationStore.getState().onGeneratedContent(data);

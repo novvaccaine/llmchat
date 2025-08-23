@@ -12,9 +12,9 @@ import { toast } from "sonner";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { DeleteAllConversation } from "@/components/DeleteAllConversation";
 import * as Switch from "@radix-ui/react-switch";
-import { useEffect, useState } from "react";
 import { useUIStore } from "@/stores/uiStore";
 import { Model } from "@soonagi/core/model";
+import { orpc } from "@/orpc/client";
 
 export const Route = createFileRoute("/settings")({
   component: RouteComponent,
@@ -35,11 +35,6 @@ function RouteComponent() {
   const setModel = useUIStore().selectModel;
   const { queryClient } = Route.useRouteContext();
 
-  const [state, setState] = useState({
-    apiKey: provider?.apiKey ?? "",
-    enable: provider?.enabled ?? false,
-  });
-
   const user = Route.useRouteContext().user!;
   const image = user.image!.replace(/=.+$/, "");
 
@@ -54,6 +49,9 @@ function RouteComponent() {
           queryClient.removeQueries({
             queryKey: ["authUser"],
           });
+          queryClient.removeQueries({
+            queryKey: orpc.conversation.list.queryKey(),
+          });
           router.invalidate();
         },
       },
@@ -62,15 +60,23 @@ function RouteComponent() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
 
-    if (!state.apiKey.trim().length) {
+    const apiKeyValue = formData.get("openrouterAPIKey");
+    if (!apiKeyValue) {
+      return;
+    }
+    const apiKey = String(apiKeyValue).trim();
+    if (!apiKey.length) {
       return;
     }
 
+    const enableValue = formData.get("openrouterEnable");
+
     const input = {
-      apiKey: state.apiKey.trim(),
+      apiKey,
       provider: "openrouter",
-      enabled: state.enable,
+      enabled: enableValue === "on",
     } as const;
 
     try {
@@ -84,13 +90,6 @@ function RouteComponent() {
       toast.error("Failed to update API key");
     }
   }
-
-  useEffect(() => {
-    setState({
-      apiKey: provider?.apiKey ?? "",
-      enable: provider?.enabled ?? false,
-    });
-  }, [provider]);
 
   return (
     <div className="max-w-7xl mx-auto p-3 md:p-8">
@@ -134,12 +133,10 @@ function RouteComponent() {
                   <div className="flex items-center gap-3">
                     <label htmlFor="openrouterEnable">Enable</label>
                     <Switch.Root
-                      checked={state.enable}
-                      onCheckedChange={(enable) =>
-                        setState({ ...state, enable })
-                      }
+                      defaultChecked={provider?.enabled ?? false}
                       className="relative w-[42px] h-[20px] rounded-full bg-muted/20 outline-none data-[state=checked]:bg-brand"
                       id="openrouterEnable"
+                      name="openrouterEnable"
                     >
                       <Switch.Thumb className="block size-[15px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[25px] data-[state=checked]:bg-gray-900" />
                     </Switch.Root>
@@ -149,13 +146,11 @@ function RouteComponent() {
                 <input
                   autoComplete="off"
                   id="openrouterAPIKey"
+                  name="openrouterAPIKey"
                   className="w-full bg-bg-2 p-2 rounded-md focus:outline-none"
                   placeholder="Enter API Key"
                   type="password"
-                  value={state.apiKey}
-                  onChange={(e) =>
-                    setState({ ...state, apiKey: e.target.value })
-                  }
+                  defaultValue={provider?.apiKey}
                 />
                 <button
                   disabled={isPending}
