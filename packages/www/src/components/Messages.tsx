@@ -1,4 +1,4 @@
-import type { Message } from "@soonagi/core/messsage/message";
+import type { Message as TMessage } from "@soonagi/core/messsage/message";
 import { cn } from "@/lib/utils";
 import { TypingIndicator } from "@/components/TypingIndicator";
 import { useConversationStore } from "@/stores/conversationStore";
@@ -6,10 +6,11 @@ import { Markdown } from "@/components/Markdown";
 import { MessageActions } from "@/components/MessageActions";
 import { useState } from "react";
 import { EditMessage } from "./EditMessage";
+import { Message } from "@/components/Message";
 
 type MessagesProps = {
   conversationID: string;
-  messages: Message.Entity[];
+  messages: TMessage.Entity[];
   widthRef: React.RefObject<HTMLDivElement | null>;
 };
 
@@ -25,6 +26,10 @@ export function Messages(props: MessagesProps) {
     useConversationStore().conversation[conversationID]?.content;
   const streamingStatus =
     useConversationStore().conversation[conversationID]?.status;
+
+  const hasContent =
+    streamingContent &&
+    (streamingContent.text || streamingContent.steps?.length);
 
   return (
     <div className="flex-1 flex flex-col gap-8" ref={props.widthRef}>
@@ -46,16 +51,7 @@ export function Messages(props: MessagesProps) {
                 setEditing={setEditing}
               />
             ) : (
-              <div
-                className={cn({
-                  "max-w-full self-end border border-border rounded-md bg-bg-2 p-2":
-                    message.role === "user",
-                })}
-              >
-                <Markdown className="prose prose-soonagi max-w-none">
-                  {message.content}
-                </Markdown>
-              </div>
+              <Message content={message.content} role={message.role} />
             )}
             <MessageActions
               message={message}
@@ -66,13 +62,12 @@ export function Messages(props: MessagesProps) {
         );
       })}
 
-      {streamingStatus === "waiting" && <TypingIndicator />}
-
-      {streamingContent && (
-        <Markdown className="prose prose-soonagi max-w-none">
-          {streamingContent}
-        </Markdown>
+      {(streamingStatus === "waiting" ||
+        (streamingStatus === "generating" && !hasContent)) && (
+        <TypingIndicator />
       )}
+
+      {hasContent && <Message content={streamingContent} role="assistant" />}
     </div>
   );
 }

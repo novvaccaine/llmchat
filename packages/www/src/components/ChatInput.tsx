@@ -3,6 +3,7 @@ import { useConversationStore } from "@/stores/conversationStore";
 import { useUIStore } from "@/stores/uiStore";
 import { useRouteContext } from "@tanstack/react-router";
 import React, { useEffect, useRef, useState } from "react";
+import { Globe as WebIcon } from "lucide-react";
 import { ModelPicker } from "./ModelPicker";
 
 type ChatInputProps = {
@@ -19,6 +20,8 @@ export function ChatInput(props: ChatInputProps) {
   const status =
     useConversationStore().conversation[props.conversationID!]?.status;
   const setDialog = useUIStore().setDialog;
+  const toggleWebSearch = useUIStore().toggleWebSearch;
+  const webSearch = useUIStore().webSearch;
 
   async function handleSubmit() {
     if (!user) {
@@ -73,7 +76,21 @@ export function ChatInput(props: ChatInputProps) {
         onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}
       />
-      <ModelPicker />
+      <div className="flex items-center gap-2">
+        <ModelPicker />
+        <button
+          onClick={toggleWebSearch}
+          className={cn(
+            "flex gap-2 items-center px-3 py-1 rounded-full border border-border transition-background duration-150",
+            {
+              "bg-brand-tint border-brand-tint": webSearch,
+            },
+          )}
+        >
+          <WebIcon size={16} />
+          <span>Search</span>
+        </button>
+      </div>
     </div>
   );
 }

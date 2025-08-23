@@ -27,7 +27,11 @@ export namespace Conversation {
 
   const MESSAGES_LIMIT = 50;
 
-  export async function create(content: string, model: string) {
+  export async function create(
+    content: string,
+    model: string,
+    webSearch: boolean,
+  ) {
     const conversationID = await db.transaction(async (tx) => {
       const rows = await tx
         .insert(conversationTable)
@@ -41,7 +45,7 @@ export namespace Conversation {
 
       await tx.insert(messageTable).values({
         id: ulid(),
-        content,
+        content: { text: content },
         role: "user",
         conversationID,
       });
@@ -49,7 +53,7 @@ export namespace Conversation {
       return conversationID;
     });
 
-    await triggerStream(Actor.userID(), conversationID, model);
+    await triggerStream(Actor.userID(), conversationID, model, webSearch);
 
     return conversationID;
   }
@@ -124,6 +128,7 @@ export namespace Conversation {
     conversationID: string;
     messageID: string;
     model?: string;
+    webSearch: boolean;
   };
 
   export async function branchOff(input: BranchOffInput) {
@@ -243,7 +248,12 @@ export namespace Conversation {
     });
 
     if (result.lastMessage.role === "user") {
-      await triggerStream(Actor.userID(), result.conversationID, result.model!);
+      await triggerStream(
+        Actor.userID(),
+        result.conversationID,
+        result.model!,
+        input.webSearch,
+      );
     }
 
     return result.conversationID;

@@ -17,6 +17,9 @@ export namespace Model {
       "gpt-5-chat": {
         label: "GPT 5 Chat",
       },
+      "gpt-5-mini": {
+        label: "GPT 5 Mini",
+      },
       "gpt-4.1": {
         label: "GPT 4.1",
       },

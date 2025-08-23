@@ -1,4 +1,4 @@
-import { getUser } from "@/lib/utils";
+import { getUser } from "@/query/auth";
 import { Actor } from "@soonagi/core/actor";
 import { ORPCError, os } from "@orpc/server";
 import { AppError } from "@soonagi/core/error";

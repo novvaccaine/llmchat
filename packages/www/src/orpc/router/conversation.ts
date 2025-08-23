@@ -5,12 +5,19 @@ import { OKOutput } from "@/orpc/output";
 
 export const conversation = {
   create: os
-    .input(z.object({ content: z.string(), model: z.string() }))
+    .input(
+      z.object({
+        content: z.string(),
+        model: z.string(),
+        webSearch: z.boolean(),
+      }),
+    )
     .output(z.object({ conversationID: z.string() }))
     .handler(async ({ input }) => {
       const conversationID = await Conversation.create(
         input.content,
         input.model,
+        input.webSearch,
       );
       return { conversationID };
     }),
@@ -49,6 +56,7 @@ export const conversation = {
         messageID: z.string(),
         conversationID: z.string(),
         model: z.string().optional(),
+        webSearch: z.boolean(),
       }),
     )
     .output(z.object({ conversationID: z.string() }))

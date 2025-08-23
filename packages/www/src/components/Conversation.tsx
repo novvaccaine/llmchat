@@ -30,6 +30,7 @@ export function Conversation(props: Props) {
   const requestGenerateContent = useConversationStore().requestGenerateContent;
   const [widthRef, width] = useWidth();
   const model = useUIStore().selectedModel;
+  const webSearch = useUIStore().webSearch;
 
   async function onNewMessage(
     content: string,
@@ -38,13 +39,14 @@ export function Conversation(props: Props) {
     try {
       let cID = conversationID;
       if (!conversationID) {
-        const res = await createConversation({ content, model });
+        const res = await createConversation({ content, model, webSearch });
         cID = res.conversationID;
       } else {
         await updateMessages({
           content,
           conversationID: cID!,
           model,
+          webSearch,
         });
       }
 

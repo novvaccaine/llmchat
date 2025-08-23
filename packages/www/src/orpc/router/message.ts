@@ -24,6 +24,7 @@ export const message = {
         content: z.string().min(1),
         conversationID: z.string(),
         model: z.string(),
+        webSearch: z.boolean(),
       }),
     )
     .output(z.object({ messageID: z.string() }))
@@ -39,6 +40,7 @@ export const message = {
         messageID: z.string(),
         conversationID: z.string(),
         model: z.string(),
+        webSearch: z.boolean(),
       }),
     )
     .output(OKOutput)
@@ -53,6 +55,7 @@ export const message = {
         messageID: z.string(),
         conversationID: z.string(),
         model: z.string().optional(),
+        webSearch: z.boolean(),
       }),
     )
     .output(OKOutput)

@@ -1,7 +1,9 @@
+import { Message } from "./messsage/message";
+
 export namespace Event {
   type ContentData = {
     conversationID: string;
-    content: string;
+    content: Message.Content;
     title?: string;
   };
 
@@ -15,14 +17,6 @@ export namespace Event {
     data: ContentData;
   };
 
-  export type GeneratedTitle = {
-    type: "generated_title";
-    data: {
-      conversationID: string;
-      title: string;
-    };
-  };
-
   export type ErrorGeneratingContent = {
     type: "error_generating_content";
     data: {
@@ -34,7 +28,6 @@ export namespace Event {
   export type Event =
     | GeneratingContent
     | GeneratedContent
-    | GeneratedTitle
     | ErrorGeneratingContent;
 
   export type EventData<T extends Event["type"]> = Extract<

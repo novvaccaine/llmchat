@@ -30,7 +30,7 @@ export function MessageActions(props: Props) {
     >
       <Tooltip content="Copy Message">
         <div className="flex items-center p-1.5 rounded-md hover:bg-bg-2">
-          <CopyContent content={message.content} />
+          <CopyContent content={message.content.text} />
         </div>
       </Tooltip>
 
@@ -42,7 +42,7 @@ export function MessageActions(props: Props) {
               setEditing((prev) =>
                 prev?.id === message.id
                   ? null
-                  : { id: message.id, content: message.content },
+                  : { id: message.id, content: message.content.text },
               )
             }
           >

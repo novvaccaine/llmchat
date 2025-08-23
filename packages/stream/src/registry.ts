@@ -5,6 +5,7 @@ import { AI } from "@soonagi/core/ai";
 import type { Event } from "@soonagi/core/event";
 import { z } from "zod";
 import { env } from "@soonagi/core/env";
+import { Message } from "@soonagi/core/messsage/message";
 // oopsie, this is different actor (no relation with rivet actor)
 import { Actor } from "@soonagi/core/actor";
 
@@ -13,11 +14,15 @@ export const generateContentActionInput = z.object({
   userID: z.string(),
   conversationID: z.string(),
   model: z.string(),
+  webSearch: z.boolean(),
 });
 
 export const stream = actor({
   state: {
-    conversation: {} as Record<string, string>,
+    conversation: {} as Record<
+      string,
+      { title?: string; content: Message.Content }
+    >,
   },
 
   onAuth: async (opts) => {
@@ -43,30 +48,38 @@ export const stream = actor({
       }
 
       return Actor.provide("user", { userID: input.userID }, async () => {
-        const { conversationID, model } = input;
+        const { conversationID, model, webSearch } = input;
 
         const stream = AI.generateContent({
           conversationID,
           model,
+          webSearch,
 
-          onFinish: (content, title) => {
+          onFinish: () => {
+            const conversation = c.state.conversation[conversationID];
             publishEvent({
               type: "generated_content",
               data: {
-                content,
                 conversationID,
-                title,
+                ...conversation,
               },
             });
             delete c.state.conversation[conversationID];
           },
 
           onTitleGenerate: (title) => {
+            const conversation = {
+              title,
+              content: {
+                text: "",
+              },
+            };
+            c.state.conversation[conversationID] = conversation;
             publishEvent({
-              type: "generated_title",
+              type: "generating_content",
               data: {
-                title,
                 conversationID,
+                ...conversation,
               },
             });
           },
@@ -83,18 +96,12 @@ export const stream = actor({
           },
         });
 
-        for await (const data of stream) {
-          if (!c.state.conversation[conversationID]) {
-            c.state.conversation[conversationID] = data.content;
-          } else {
-            c.state.conversation[conversationID] += data.content;
-          }
+        for await (const content of stream) {
           publishEvent({
             type: "generating_content",
             data: {
               conversationID,
-              content: c.state.conversation[conversationID],
-              title: data.title,
+              ...content,
             },
           });
         }

@@ -26,6 +26,7 @@ export function MessageActionPicker(props: Props) {
 
   const requestGenerateContent = useConversationStore().requestGenerateContent;
   const selectModel = useUIStore().selectModel;
+  const webSearch = useUIStore().webSearch;
 
   const user = useRouteContext({ from: "__root__" }).user;
   let options = Model.modelOptions();
@@ -42,12 +43,14 @@ export function MessageActionPicker(props: Props) {
           conversationID,
           messageID,
           model,
+          webSearch,
         });
       } else {
         const { conversationID: cID } = await branchOff({
           conversationID,
           messageID,
           model,
+          webSearch,
         });
         newConversationID = cID;
       }

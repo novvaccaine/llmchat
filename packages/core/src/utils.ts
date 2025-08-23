@@ -13,6 +13,7 @@ export async function triggerStream(
   userID: string,
   conversationID: string,
   model: string,
+  webSearch: boolean,
 ) {
   const url = env.STREAM_URL + "/api/stream";
 
@@ -22,7 +23,7 @@ export async function triggerStream(
       "Content-Type": "application/json",
       "X-API-KEY": env.SVC_API_KEY,
     },
-    body: JSON.stringify({ userID, conversationID, model }),
+    body: JSON.stringify({ userID, conversationID, model, webSearch }),
   });
 
   if (!res.ok) {

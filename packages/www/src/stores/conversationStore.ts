@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { Event } from "@soonagi/core/event";
 import { immer } from "zustand/middleware/immer";
+import { Message } from "@soonagi/core/messsage/message";
 
 type State = {
   conversation: Record<
     string,
     {
-      content: string;
+      content: Message.Content;
       title?: string;
       status: "waiting" | "generating" | "generated" | "error";
     }
@@ -18,7 +19,6 @@ type Action = {
   rename: (conversationID: string, title: string) => void;
   // events
   onGeneratingContent: (data: Event.EventData<"generating_content">) => void;
-  onGeneratedTitle: (data: Event.EventData<"generated_title">) => void;
   onGeneratedContent: (data: Event.EventData<"generating_content">) => void;
   onError: (data: Event.EventData<"error_generating_content">) => void;
 };
@@ -34,7 +34,9 @@ export const useConversationStore = create<State & Action>()(
           conversation.status = "waiting";
         } else {
           state.conversation[conversationID] = {
-            content: "",
+            content: {
+              text: "",
+            },
             status: "waiting",
           };
         }
@@ -47,7 +49,9 @@ export const useConversationStore = create<State & Action>()(
           conversation.title = title;
         } else {
           state.conversation[conversationID] = {
-            content: "",
+            content: {
+              text: "",
+            },
             status: "generated",
             title,
           };
@@ -67,17 +71,10 @@ export const useConversationStore = create<State & Action>()(
     onError: (data) =>
       set((state) => {
         state.conversation[data.conversationID] = {
-          content: "",
+          content: {
+            text: "",
+          },
           status: "error",
-        };
-      }),
-
-    onGeneratedTitle: (data) =>
-      set((state) => {
-        state.conversation[data.conversationID] = {
-          content: "",
-          title: data.title,
-          status: "generating",
         };
       }),
 
@@ -85,7 +82,9 @@ export const useConversationStore = create<State & Action>()(
       set((state) => {
         const conversation = state.conversation[data.conversationID];
         if (conversation) {
-          conversation.content = "";
+          conversation.content = {
+            text: "",
+          };
           conversation.status = "generated";
         }
       }),

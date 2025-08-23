@@ -2,9 +2,7 @@ import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { createAuthClient } from "better-auth/react";
 import { Conversation } from "@soonagi/core/conversation/conversation";
-import { createServerFn } from "@tanstack/react-start";
 import { auth } from "@soonagi/core/auth/index";
-import { getWebRequest } from "@tanstack/react-start/server";
 import { customSessionClient } from "better-auth/client/plugins";
 
 export const authClient = createAuthClient({
@@ -59,9 +57,3 @@ export function splitConversationsByDate(
 
   return [today, yesterday, last7Days, last30Days];
 }
-
-export const getUser = createServerFn().handler(async () => {
-  const { headers } = getWebRequest();
-  const session = await auth.api.getSession({ headers });
-  return session?.user ?? null;
-});

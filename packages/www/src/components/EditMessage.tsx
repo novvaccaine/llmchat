@@ -21,6 +21,7 @@ export function EditMessage(props: Props) {
   const requestGenerateContent = useConversationStore().requestGenerateContent;
   const { mutateAsync: editMessageMutate } = useEditMessage();
   const model = useUIStore().selectedModel;
+  const webSearch = useUIStore().webSearch;
 
   async function editMessage() {
     if (!editing) {
@@ -36,6 +37,7 @@ export function EditMessage(props: Props) {
         conversationID,
         messageID: message.id,
         model,
+        webSearch,
       });
       setEditing(null);
       requestGenerateContent(conversationID);

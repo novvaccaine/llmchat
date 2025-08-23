@@ -40,6 +40,7 @@ export function ModelPicker() {
         <Select.Content
           position="popper"
           className="bg-sidebar border border-border p-3 px-2 rounded-md flex flex-col gap-2"
+          sideOffset={8}
         >
           {options.map((option) => {
             return (

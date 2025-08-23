@@ -20,6 +20,7 @@ type State = {
   _hasHydrated: boolean;
   sidebarOpen: boolean;
   sidebarDrawerOpen: boolean;
+  webSearch: boolean;
   dialog: Dialog | null;
   selectedModel: string;
 };
@@ -27,6 +28,7 @@ type State = {
 type Action = {
   toggleSidebar: () => void;
   toggleDrawerSidebar: () => void;
+  toggleWebSearch: () => void;
   closeDrawer: () => void;
   selectModel: (model: string) => void;
   setHasHydrated: (hydrated: boolean) => void;
@@ -38,11 +40,13 @@ export const useUIStore = create<State & Action>()(
     (set, get) => ({
       sidebarOpen: true,
       sidebarDrawerOpen: false,
+      webSearch: false,
       _hasHydrated: false,
       dialog: null,
       selectedModel: Model.DEFAULT_MODEL,
 
       toggleSidebar: () => set(() => ({ sidebarOpen: !get().sidebarOpen })),
+      toggleWebSearch: () => set(() => ({ webSearch: !get().webSearch })),
       toggleDrawerSidebar: () =>
         set((state) => ({ sidebarDrawerOpen: !state.sidebarDrawerOpen })),
       closeDrawer: () => set(() => ({ sidebarDrawerOpen: false })),
@@ -57,6 +61,7 @@ export const useUIStore = create<State & Action>()(
       partialize: (state) => ({
         sidebarOpen: state.sidebarOpen,
         selectedModel: state.selectedModel,
+        webSearch: state.webSearch,
       }),
     },
   ),

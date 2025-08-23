@@ -10,16 +10,33 @@ import { storage } from "../storage";
 import { getTodayDateUTC, triggerStream } from "../utils";
 
 export namespace Message {
+  const Step = z.object({
+    id: z.string(),
+    type: z.enum(["reasoning", "tool"]),
+    data: z.record(z.string(), z.any()),
+  });
+
+  const Content = z.object({
+    text: z.string(),
+    steps: z.array(Step).optional(),
+  });
+
   export const Entity = z.object({
     id: z.string(),
-    content: z.string(),
+    content: Content,
     role: z.enum(["assistant", "user"]),
     model: z.string().optional(),
   });
 
   export type Entity = z.infer<typeof Entity>;
 
-  export type CreateInput = Omit<Entity, "id"> & { conversationID: string };
+  export type Content = z.infer<typeof Content>;
+
+  export type CreateInput = Omit<Entity, "id" | "content"> & {
+    conversationID: string;
+    content: string | Message.Content;
+    webSearch: boolean;
+  };
 
   export async function create(input: CreateInput) {
     const messageID = await db.transaction(async (tx) => {
@@ -58,7 +75,10 @@ export namespace Message {
         .values({
           id: ulid(),
           conversationID: conversation.id,
-          content: input.content,
+          content:
+            typeof input.content === "string"
+              ? { text: input.content }
+              : input.content,
           role: input.role,
           model: input.role === "assistant" ? input.model : undefined,
         })
@@ -68,13 +88,21 @@ export namespace Message {
     });
 
     if (input.role === "user") {
-      await triggerStream(Actor.userID(), input.conversationID, input.model!);
+      await triggerStream(
+        Actor.userID(),
+        input.conversationID,
+        input.model!,
+        input.webSearch,
+      );
     }
 
     return messageID;
   }
 
-  export type EditInput = Omit<CreateInput, "role"> & { messageID: string };
+  export type EditInput = Omit<CreateInput, "role" | "content"> & {
+    messageID: string;
+    content: string;
+  };
 
   export async function edit(input: EditInput) {
     await db.transaction(async (tx) => {
@@ -107,7 +135,7 @@ export namespace Message {
 
       await tx
         .update(messageTable)
-        .set({ content: input.content })
+        .set({ content: { text: input.content } })
         .where(eq(messageTable.id, message.id))
         .returning({ id: messageTable.id });
 
@@ -116,7 +144,12 @@ export namespace Message {
         .where(gt(messageTable.createdAt, message.createdAt));
     });
 
-    await triggerStream(Actor.userID(), input.conversationID, input.model!);
+    await triggerStream(
+      Actor.userID(),
+      input.conversationID,
+      input.model!,
+      input.webSearch,
+    );
   }
 
   type RetryInput = Omit<EditInput, "content">;
@@ -179,7 +212,12 @@ export namespace Message {
       }
     });
 
-    await triggerStream(Actor.userID(), input.conversationID, model!);
+    await triggerStream(
+      Actor.userID(),
+      input.conversationID,
+      model!,
+      input.webSearch,
+    );
   }
 
   export async function list(conversationID: string) {

@@ -12,7 +12,7 @@ import { Toaster } from "sonner";
 import { actor } from "@/lib/Actor";
 import { NotFound } from "@/components/NotFound";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { getUser } from "@/lib/utils";
+import { authQueryOptions } from "@/query/auth";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -50,8 +50,8 @@ export const Route = createRootRouteWithContext<{
   component: RootComponent,
   notFoundComponent: NotFound,
   errorComponent: ErrorBoundary,
-  beforeLoad: async () => {
-    const user = await getUser();
+  beforeLoad: async ({ context }) => {
+    const user = await context.queryClient.ensureQueryData(authQueryOptions());
     return {
       user,
     };
