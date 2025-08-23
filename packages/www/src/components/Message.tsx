@@ -139,17 +139,26 @@ function Tool(props: ToolProps) {
         <p>{tool.name === "webSearch" ? "Web Search" : "Scrape Content"}</p>
       </div>
       <div className="ml-[29px] mt-1.5">
-        <p className="inline-flex items-center gap-2 py-1 px-2 rounded-md bg-bg-2">
-          <SearchIcon size={16} />
-          <span className="truncate">
-            {props.tool.input.query ?? props.tool.input.url}
-          </span>
-        </p>
+        {tool.name === "webSearch" ? (
+          <p className="inline-flex items-center gap-2 py-1 px-2 rounded-md bg-bg-2">
+            <SearchIcon size={16} />
+            <span>{tool.input.query}</span>
+          </p>
+        ) : (
+          <a
+            href={tool.input.url}
+            target="_blank"
+            className="underline text-brand"
+          >
+            <span>Open Link</span>
+          </a>
+        )}
         {Array.isArray(tool.output) && (
           <div className="flex flex-col gap-3 mt-4 max-h-[250px] overflow-auto pr-1.5">
             {tool.output.map((item) => {
               return (
                 <a
+                  key={item.url}
                   target="_blank"
                   href={item.url}
                   className="flex flex-col rounded-md py-1 px-2 bg-sidebar relative"
