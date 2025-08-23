@@ -190,6 +190,12 @@ export namespace AI {
             }
             streamingContent.content.steps![index].data.output =
               part.toolName === "webSearch" ? part.output : {};
+            break;
+          }
+
+          case "tool-error": {
+            console.error("tool error", part);
+            break;
           }
         }
 

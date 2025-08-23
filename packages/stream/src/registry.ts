@@ -18,6 +18,11 @@ export const generateContentActionInput = z.object({
 });
 
 export const stream = actor({
+  options: {
+    action: {
+      timeout: 180000, // 3mins
+    },
+  },
   state: {
     conversation: {} as Record<
       string,

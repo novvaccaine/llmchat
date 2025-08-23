@@ -11,7 +11,7 @@ import {
   ArrowUpRight as OpenIcon,
   Hammer as ToolIcon,
 } from "lucide-react";
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { LoadingIcon } from "@/icons/LoadingIcon";
 
 type Props = {
@@ -63,14 +63,22 @@ export function Message(props: Props) {
             </Accordion.Trigger>
             <Accordion.Content
               ref={containerRef}
-              className="border border-border border-t-0 rounded-b-md px-4 py-2 w-full max-h-[450px] overflow-auto flex flex-col gap-5"
+              className="border border-border border-t-0 rounded-b-md px-4 py-2 w-full max-h-[450px] overflow-auto flex flex-col"
             >
-              {content.steps.map((s) => {
+              {content.steps.map((s, i) => {
+                const isLast = i === content.steps!.length - 1;
                 return (
-                  <React.Fragment key={s.id}>
-                    {s.type === "reasoning" && <Reasoning text={s.data.text} />}
-                    {s.type === "tool" && <Tool tool={s.data as any} />}
-                  </React.Fragment>
+                  <div key={s.id} className="relative pb-5">
+                    {!isLast && (
+                      <div className="absolute left-[7.5px] top-5 w-px h-[calc(100%-16px)] bg-border" />
+                    )}
+                    <div>
+                      {s.type === "reasoning" && (
+                        <Reasoning text={s.data.text} />
+                      )}
+                      {s.type === "tool" && <Tool tool={s.data as any} />}
+                    </div>
+                  </div>
                 );
               })}
             </Accordion.Content>
