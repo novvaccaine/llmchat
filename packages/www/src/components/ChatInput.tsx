@@ -81,7 +81,7 @@ export function ChatInput(props: ChatInputProps) {
         <button
           onClick={toggleWebSearch}
           className={cn(
-            "flex gap-2 items-center px-3 py-1 rounded-full border border-border transition-background duration-150",
+            "flex gap-2 items-center px-3 py-0.5 rounded-full border border-border transition-background duration-150",
             {
               "bg-brand-tint border-brand-tint": webSearch,
             },
