@@ -4,7 +4,6 @@ import { orpc } from "@/orpc/client";
 export function conversationQueryOptions(enabled: boolean) {
   return orpc.conversation.list.queryOptions({
     enabled,
-    queryKey: ["conversation"],
   });
 }
 
