@@ -13,6 +13,9 @@ export function useUpdateProvider() {
         queryClient.invalidateQueries({
           queryKey: orpc.provider.list.queryKey(),
         });
+        queryClient.removeQueries({
+          queryKey: ["authUser"],
+        });
       },
     }),
   );
