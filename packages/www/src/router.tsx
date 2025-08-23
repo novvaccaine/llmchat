@@ -10,7 +10,7 @@ export function createRouter() {
     createTanStackRouter({
       routeTree,
       context: { ...rqContext },
-      // defaultPreload: "intent",
+      defaultPreload: "intent",
       hydrate() {
         useUIStore.getState().setHasHydrated(true);
       },

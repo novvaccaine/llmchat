@@ -54,6 +54,7 @@ function RouteComponent() {
           queryClient.removeQueries({
             queryKey: ["authUser"],
           });
+          queryClient.setQueryData(["conversation"], () => []);
           router.invalidate();
         },
       },

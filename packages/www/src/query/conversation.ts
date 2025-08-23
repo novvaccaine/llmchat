@@ -2,7 +2,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "@/orpc/client";
 
 export function conversationQueryOptions(enabled: boolean) {
-  return orpc.conversation.list.queryOptions({ enabled });
+  return orpc.conversation.list.queryOptions({
+    enabled,
+    queryKey: ["conversation"],
+  });
 }
 
 // TODO: always invalidate when performing any mutations automagically?
