@@ -93,7 +93,7 @@ export namespace AI {
           content: m.content.text,
         })),
         tools: input.webSearch ? tools : {},
-        stopWhen: stepCountIs(5),
+        stopWhen: stepCountIs(20),
         onError: (event) => {
           streamError = event.error;
         },
