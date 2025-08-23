@@ -57,3 +57,70 @@ export function splitConversationsByDate(
 
   return [today, yesterday, last7Days, last30Days];
 }
+
+export function createSEOTags() {
+  const description = "Yet Another AI Chat App";
+  const title = "Soon AGI";
+
+  // TODO: how to get this from env? it should be
+  // process.env or import.meta.env?
+  const url = "https://soonagi.com/";
+  const image = "https://soonagi.com/og.png";
+
+  return {
+    title,
+    meta: [
+      {
+        charSet: "utf-8",
+      },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
+      },
+      {
+        name: "description",
+        content: description,
+      },
+      {
+        property: "og:type",
+        content: "website",
+      },
+      {
+        property: "og:url",
+        content: url,
+      },
+      {
+        property: "og:title",
+        content: title,
+      },
+      {
+        property: "og:description",
+        content: description,
+      },
+      {
+        property: "og:image",
+        content: image,
+      },
+      {
+        name: "twitter:card",
+        content: "summary_large_image",
+      },
+      {
+        name: "twitter:url",
+        content: url,
+      },
+      {
+        name: "twitter:title",
+        content: title,
+      },
+      {
+        name: "twitter:description",
+        content: description,
+      },
+      {
+        name: "twitter:image",
+        content: image,
+      },
+    ],
+  };
+}

@@ -13,40 +13,33 @@ import { actor } from "@/lib/Actor";
 import { NotFound } from "@/components/NotFound";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { authQueryOptions } from "@/query/auth";
+import { createSEOTags } from "@/lib/utils";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({
-  head: () => ({
-    meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: "Soon AGI",
-      },
-    ],
-    links: [
-      {
-        rel: "icon",
-        type: "image/svg+xml",
-        href: "/logo.svg",
-      },
-      { rel: "stylesheet", href: appCss },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Outfit:wght@100..900&display=swap",
-      },
-    ],
-  }),
+  head: () => {
+    const seoTags = createSEOTags();
+    return {
+      ...seoTags,
+      links: [
+        {
+          rel: "icon",
+          type: "image/svg+xml",
+          href: "/logo.svg",
+        },
+        { rel: "stylesheet", href: appCss },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap",
+        },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Outfit:wght@100..900&display=swap",
+        },
+      ],
+    };
+  },
   component: RootComponent,
   notFoundComponent: NotFound,
   errorComponent: ErrorBoundary,
