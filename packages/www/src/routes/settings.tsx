@@ -85,6 +85,9 @@ function RouteComponent() {
       if (!input.enabled) {
         setModel(Model.DEFAULT_MODEL);
       }
+      queryClient.invalidateQueries({
+        queryKey: ["authUser"],
+      });
     } catch (err) {
       console.error("failed to update api key", err);
       toast.error("Failed to update API key");
