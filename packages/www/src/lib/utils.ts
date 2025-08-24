@@ -68,8 +68,8 @@ export function createSEOTags() {
   const image = "https://soonagi.com/og.png";
 
   return {
-    title,
     meta: [
+      { title },
       {
         charSet: "utf-8",
       },
