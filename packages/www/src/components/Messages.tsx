@@ -16,8 +16,7 @@ type MessagesProps = {
 export function Messages(props: MessagesProps) {
   const { messages, conversationID, scrollRef } = props;
 
-  // always scroll the container so that the new
-  // user message appear at the top
+  // scroll whenever new user message arrives
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role === "user" && scrollRef.current) {
@@ -55,7 +54,7 @@ export function Messages(props: MessagesProps) {
             className={cn("flex flex-col group", {
               "self-end max-w-[80%]": message.role === "user",
               "w-full md:w-[70%]": editing?.id === message.id,
-              "min-h-[calc(100vh-20rem)]":
+              "min-h-[20rem]":
                 i === messages.length - 1 &&
                 message.role === "assistant" &&
                 streamingStatus, // do not set height for conversation that's not involved in streaming yet
@@ -83,7 +82,7 @@ export function Messages(props: MessagesProps) {
       })}
 
       {isStreaming && (
-        <div className="min-h-[calc(100vh-20rem)]">
+        <div className="min-h-[20rem]">
           {(streamingStatus === "waiting" ||
             (streamingStatus === "generating" && !hasContent)) && (
             <TypingIndicator />
