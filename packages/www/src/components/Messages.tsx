@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Message as TMessage } from "@soonagi/core/messsage/message";
 import { cn } from "@/lib/utils";
 import { TypingIndicator } from "@/components/TypingIndicator";
@@ -10,20 +10,10 @@ import { Message } from "@/components/Message";
 type MessagesProps = {
   conversationID: string;
   messages: TMessage.Entity[];
-  scrollRef: React.RefObject<HTMLDivElement | null>;
 };
 
 export function Messages(props: MessagesProps) {
-  const { messages, conversationID, scrollRef } = props;
-
-  // TODO: handle this in `useAutoScroll` hook?
-  // scroll to bottom when new user message arrives
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.role === "user" && scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
+  const { messages, conversationID } = props;
 
   const [editing, setEditing] = useState<{
     id: string;

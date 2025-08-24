@@ -98,11 +98,7 @@ export function Conversation(props: Props) {
         </motion.div>
       ) : (
         <div className="flex-1 flex flex-col w-full max-w-3xl mx-auto px-4 pt-8">
-          <Messages
-            messages={messages}
-            conversationID={conversationID!}
-            scrollRef={messagesRef}
-          />
+          <Messages messages={messages} conversationID={conversationID!} />
           <ChatInput
             onNewMessage={onNewMessage}
             conversationID={conversationID}

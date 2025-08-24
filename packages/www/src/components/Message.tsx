@@ -11,7 +11,7 @@ import {
   ArrowUpRight as OpenIcon,
   Hammer as ToolIcon,
 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { LoadingIcon } from "@/icons/LoadingIcon";
 import { useAutoScroll } from "@/hooks/useAutoScroll";
 
