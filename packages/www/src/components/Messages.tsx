@@ -53,7 +53,7 @@ export function Messages(props: MessagesProps) {
             className={cn("flex flex-col group", {
               "self-end max-w-[80%]": message.role === "user",
               "w-full md:w-[70%]": editing?.id === message.id,
-              "min-h-[20rem]":
+              "min-h-[calc(100vh-20rem)]":
                 i === messages.length - 1 && message.role === "assistant",
             })}
             data-message-id={message.id}
@@ -79,7 +79,7 @@ export function Messages(props: MessagesProps) {
       })}
 
       {isStreaming && (
-        <div className="min-h-[20rem]">
+        <div className="min-h-[calc(100vh-20rem)]">
           {(streamingStatus === "waiting" ||
             (streamingStatus === "generating" && !hasContent)) && (
             <TypingIndicator />
