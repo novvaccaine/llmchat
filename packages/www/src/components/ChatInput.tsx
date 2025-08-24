@@ -4,11 +4,14 @@ import { useUIStore } from "@/stores/uiStore";
 import { useRouteContext } from "@tanstack/react-router";
 import React, { useEffect, useRef, useState } from "react";
 import { Globe as WebIcon } from "lucide-react";
-import { ModelPicker } from "./ModelPicker";
+import { ModelPicker } from "@/components/ModelPicker";
+import { ScrollToBottom } from "@/components/ScrollToBottom";
 
 type ChatInputProps = {
   onNewMessage: (content: string, onError: (content: string) => void) => void;
   conversationID?: string;
+  isAtBottom: boolean;
+  scrollToBottom: () => void;
   className?: string;
 };
 
@@ -56,10 +59,18 @@ export function ChatInput(props: ChatInputProps) {
   return (
     <div
       className={cn(
-        "bg-bg-2/80 backdrop-blur-lg border border-border p-2",
+        "bg-bg-2/80 backdrop-blur-lg border border-border p-2 relative",
         props.className ?? "",
       )}
     >
+      {props.conversationID && (
+        <div className="absolute -top-10 left-1/2 -translate-x-[50%]">
+          <ScrollToBottom
+            isAtBottom={props.isAtBottom}
+            scrollToBottom={props.scrollToBottom}
+          />
+        </div>
+      )}
       <textarea
         className="w-full resize-none focus:outline-none"
         ref={textareaRef}

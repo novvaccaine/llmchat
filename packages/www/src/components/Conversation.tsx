@@ -10,6 +10,7 @@ import { motion } from "motion/react";
 import { Logo } from "@/icons/Logo";
 import { useConversationStore } from "@/stores/conversationStore";
 import { useUIStore } from "@/stores/uiStore";
+import { useAutoScroll } from "@/hooks/useAutoScroll";
 
 type Props = {
   messages: Message.Entity[];
@@ -58,8 +59,18 @@ export function Conversation(props: Props) {
     }
   }
 
+  const streamingContent =
+    useConversationStore().conversation[conversationID!]?.content;
+
+  const {
+    ref: messagesRef,
+    isAtBottom,
+    scrollToBottom,
+  } = useAutoScroll([messages, streamingContent]);
+
   return (
     <div
+      ref={messagesRef}
       className={cn("h-full overflow-auto flex flex-col", {
         "items-center justify-center": !conversationID,
       })}
@@ -80,16 +91,20 @@ export function Conversation(props: Props) {
           </p>
           <ChatInput
             onNewMessage={onNewMessage}
+            isAtBottom={isAtBottom}
+            scrollToBottom={scrollToBottom}
             className="sticky bottom-0 rounded-md w-full mx-2"
           />
         </motion.div>
       ) : (
-        <div className="flex-1 flex flex-col w-full max-w-3xl mx-auto px-4 pt-8 relative">
+        <div className="flex-1 flex flex-col w-full max-w-3xl mx-auto px-4 pt-8">
           <Messages messages={messages} conversationID={conversationID!} />
           <ChatInput
             onNewMessage={onNewMessage}
             conversationID={conversationID}
             className="sticky bottom-0 rounded-t-md sm:border-b-0"
+            isAtBottom={isAtBottom}
+            scrollToBottom={scrollToBottom}
           />
         </div>
       )}

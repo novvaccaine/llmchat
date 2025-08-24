@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { LoadingIcon } from "@/icons/LoadingIcon";
+import { useAutoScroll } from "@/hooks/useAutoScroll";
 
 type Props = {
   role: TMessage.Entity["role"];
@@ -23,13 +24,7 @@ type Props = {
 export function Message(props: Props) {
   const { role, content } = props;
   const [open, setOpen] = useState(props.streaming);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [content.steps]);
+  const { ref: containerRef } = useAutoScroll();
 
   return (
     <div

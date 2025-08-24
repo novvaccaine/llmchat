@@ -1,14 +1,15 @@
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
-import { useStickToBottomContext } from "use-stick-to-bottom";
 import { motion } from "motion/react";
 
 export type Props = {
   className?: string;
+  isAtBottom: boolean;
+  scrollToBottom: () => void;
 };
 
 export function ScrollToBottom(props: Props) {
-  const { isAtBottom, scrollToBottom } = useStickToBottomContext();
+  const { isAtBottom, scrollToBottom } = props;
 
   return (
     <motion.button
