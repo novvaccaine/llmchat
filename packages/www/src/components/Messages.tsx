@@ -16,18 +16,14 @@ type MessagesProps = {
 export function Messages(props: MessagesProps) {
   const { messages, conversationID, scrollRef } = props;
 
-  // scroll whenever new user message arrives
+  // TODO: handle this in `useAutoScroll` hook?
+  // scroll to bottom when new user message arrives
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role === "user" && scrollRef.current) {
-      const element = scrollRef.current.querySelector(
-        `[data-message-id="${lastMessage.id}"]`,
-      );
-      if (element instanceof HTMLDivElement) {
-        scrollRef.current.scrollTop = element.offsetTop;
-      }
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, scrollRef]);
+  }, [messages]);
 
   const [editing, setEditing] = useState<{
     id: string;
@@ -43,23 +39,15 @@ export function Messages(props: MessagesProps) {
     streamingContent &&
     (streamingContent.text || streamingContent.steps?.length);
 
-  const isStreaming =
-    streamingStatus === "waiting" || streamingStatus === "generating";
-
   return (
     <div className="flex-1 flex flex-col gap-8 pb-7">
-      {messages.map((message, i) => {
+      {messages.map((message) => {
         return (
           <div
             className={cn("flex flex-col group", {
               "self-end max-w-[80%]": message.role === "user",
               "w-full md:w-[70%]": editing?.id === message.id,
-              "min-h-[20rem]":
-                i === messages.length - 1 &&
-                message.role === "assistant" &&
-                streamingStatus, // do not set height for conversation that's not involved in streaming yet
             })}
-            data-message-id={message.id}
             key={message.id}
           >
             {editing?.id === message.id ? (
@@ -81,16 +69,12 @@ export function Messages(props: MessagesProps) {
         );
       })}
 
-      {isStreaming && (
-        <div className="min-h-[20rem]">
-          {(streamingStatus === "waiting" ||
-            (streamingStatus === "generating" && !hasContent)) && (
-            <TypingIndicator />
-          )}
-          {hasContent && (
-            <Message content={streamingContent} role="assistant" streaming />
-          )}
-        </div>
+      {(streamingStatus === "waiting" ||
+        (streamingStatus === "generating" && !hasContent)) && (
+        <TypingIndicator />
+      )}
+      {hasContent && (
+        <Message content={streamingContent} role="assistant" streaming />
       )}
     </div>
   );
