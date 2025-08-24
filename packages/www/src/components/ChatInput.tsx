@@ -10,7 +10,6 @@ type ChatInputProps = {
   onNewMessage: (content: string, onError: (content: string) => void) => void;
   conversationID?: string;
   className?: string;
-  width?: number;
 };
 
 export function ChatInput(props: ChatInputProps) {
@@ -54,14 +53,8 @@ export function ChatInput(props: ChatInputProps) {
     textareaRef.current.focus();
   }, [props.conversationID]);
 
-  const style: React.CSSProperties = {};
-  if (props.width) {
-    style.width = props.width;
-  }
-
   return (
     <div
-      style={style}
       className={cn(
         "bg-bg-2/80 backdrop-blur-lg border border-border p-2",
         props.className ?? "",

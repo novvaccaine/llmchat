@@ -9,12 +9,6 @@ import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { Logo } from "@/icons/Logo";
 import { useConversationStore } from "@/stores/conversationStore";
-import {
-  ChatContainerRoot,
-  ChatContainerContent,
-} from "@/components/ChatContainer";
-import useWidth from "@/lib/useWidth";
-import { ScrollToBottom } from "@/components/ScrollToBottom";
 import { useUIStore } from "@/stores/uiStore";
 
 type Props = {
@@ -28,7 +22,6 @@ export function Conversation(props: Props) {
   const { mutateAsync: updateMessages } = useUpdateMessages();
   const navigate = useNavigate();
   const requestGenerateContent = useConversationStore().requestGenerateContent;
-  const [widthRef, width] = useWidth();
   const model = useUIStore().selectedModel;
   const webSearch = useUIStore().webSearch;
 
@@ -66,8 +59,8 @@ export function Conversation(props: Props) {
   }
 
   return (
-    <ChatContainerRoot
-      className={cn("h-full overflow-auto flex flex-col relative", {
+    <div
+      className={cn("h-full overflow-auto flex flex-col", {
         "items-center justify-center": !conversationID,
       })}
     >
@@ -91,24 +84,15 @@ export function Conversation(props: Props) {
           />
         </motion.div>
       ) : (
-        <ChatContainerContent className="w-full max-w-3xl mx-auto px-4 pt-8 mb-[165px]">
-          <Messages
-            messages={messages}
-            conversationID={conversationID!}
-            widthRef={widthRef}
-          />
+        <div className="flex-1 flex flex-col w-full max-w-3xl mx-auto px-4 pt-8 relative">
+          <Messages messages={messages} conversationID={conversationID!} />
           <ChatInput
             onNewMessage={onNewMessage}
             conversationID={conversationID}
-            width={width}
-            className="fixed bottom-0 rounded-t-md"
+            className="sticky bottom-0 rounded-t-md sm:border-b-0"
           />
-          {/* NOTE: magic 125px value (ChatInput height) */}
-          <div className="absolute bottom-[135px] left-1/2 -translate-x-[50%]">
-            <ScrollToBottom />
-          </div>
-        </ChatContainerContent>
+        </div>
       )}
-    </ChatContainerRoot>
+    </div>
   );
 }

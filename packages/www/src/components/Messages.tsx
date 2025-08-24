@@ -2,7 +2,6 @@ import type { Message as TMessage } from "@soonagi/core/messsage/message";
 import { cn } from "@/lib/utils";
 import { TypingIndicator } from "@/components/TypingIndicator";
 import { useConversationStore } from "@/stores/conversationStore";
-import { Markdown } from "@/components/Markdown";
 import { MessageActions } from "@/components/MessageActions";
 import { useState } from "react";
 import { EditMessage } from "./EditMessage";
@@ -11,7 +10,6 @@ import { Message } from "@/components/Message";
 type MessagesProps = {
   conversationID: string;
   messages: TMessage.Entity[];
-  widthRef: React.RefObject<HTMLDivElement | null>;
 };
 
 export function Messages(props: MessagesProps) {
@@ -32,7 +30,7 @@ export function Messages(props: MessagesProps) {
     (streamingContent.text || streamingContent.steps?.length);
 
   return (
-    <div className="flex-1 flex flex-col gap-8" ref={props.widthRef}>
+    <div className="flex-1 flex flex-col gap-8 pb-7">
       {messages.map((message) => {
         return (
           <div
@@ -67,7 +65,9 @@ export function Messages(props: MessagesProps) {
         <TypingIndicator />
       )}
 
-      {hasContent && <Message content={streamingContent} role="assistant" />}
+      {hasContent && (
+        <Message content={streamingContent} role="assistant" streaming />
+      )}
     </div>
   );
 }

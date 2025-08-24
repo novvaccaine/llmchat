@@ -29,7 +29,7 @@ export function ModelPicker() {
       <Select.Trigger className="flex gap-2 items-center hover:bg-muted/10 px-2 py-1 rounded-md focus:outline-none">
         <span>{modelLabel}</span>
         <Select.Icon
-          className={cn({
+          className={cn("transition-transform", {
             "rotate-180": open,
           })}
         >

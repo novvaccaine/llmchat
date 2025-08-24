@@ -1,7 +1,7 @@
 import type { Message as TMessage } from "@soonagi/core/messsage/message";
 import { cn } from "@/lib/utils";
 import { Markdown } from "@/components/Markdown";
-import * as Accordion from "@radix-ui/react-accordion";
+import * as Collapsible from "@radix-ui/react-collapsible";
 import {
   ChevronRight as RightIcon,
   Brain as ReasoningIcon,
@@ -17,11 +17,12 @@ import { LoadingIcon } from "@/icons/LoadingIcon";
 type Props = {
   role: TMessage.Entity["role"];
   content: TMessage.Entity["content"];
+  streaming?: boolean;
 };
 
 export function Message(props: Props) {
   const { role, content } = props;
-  const [open, setOpen] = useState("steps");
+  const [open, setOpen] = useState(props.streaming);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,52 +39,42 @@ export function Message(props: Props) {
       })}
     >
       {content.steps && (
-        <Accordion.Root
-          type="single"
-          className="mb-5"
-          collapsible
-          value={open}
-          onValueChange={setOpen}
-        >
-          <Accordion.Item value="steps">
-            <Accordion.Trigger className="group border border-border rounded-xl pl-4 pr-2 py-2 data-[state=open]:border-b-0 data-[state=open]:rounded-b-none flex items-center justify-between w-full focus:outline-none">
-              <div className="flex items-center gap-2.5">
-                <StepsIcon size={16} />
-                <p>Steps</p>
-              </div>
-              <div
-                className="flex items-center p-1.5 rounded-md hover:bg-bg-2"
-                role="button"
-              >
-                <RightIcon
-                  size={17}
-                  className="transition-transform group-data-[state=open]:rotate-90"
-                />
-              </div>
-            </Accordion.Trigger>
-            <Accordion.Content
-              ref={containerRef}
-              className="border border-border border-t-0 rounded-b-md px-4 py-2 w-full max-h-[450px] overflow-auto flex flex-col"
+        <Collapsible.Root className="mb-5" open={open} onOpenChange={setOpen}>
+          <Collapsible.Trigger className="group border border-border rounded-xl pl-4 pr-2 py-2 data-[state=open]:border-b-0 data-[state=open]:rounded-b-none flex items-center justify-between w-full focus:outline-none">
+            <div className="flex items-center gap-2.5">
+              <StepsIcon size={16} />
+              <p>Steps</p>
+            </div>
+            <div
+              className="flex items-center p-1.5 rounded-md hover:bg-bg-2"
+              role="button"
             >
-              {content.steps.map((s, i) => {
-                const isLast = i === content.steps!.length - 1;
-                return (
-                  <div key={s.id} className="relative pb-5">
-                    {!isLast && (
-                      <div className="absolute left-[7.5px] top-5 w-px h-[calc(100%-16px)] bg-border" />
-                    )}
-                    <div>
-                      {s.type === "reasoning" && (
-                        <Reasoning text={s.data.text} />
-                      )}
-                      {s.type === "tool" && <Tool tool={s.data as any} />}
-                    </div>
+              <RightIcon
+                size={17}
+                className="transition-transform group-data-[state=open]:rotate-90"
+              />
+            </div>
+          </Collapsible.Trigger>
+          <Collapsible.Content
+            ref={containerRef}
+            className="border border-border border-t-0 rounded-b-md px-4 py-2 w-full max-h-[450px] overflow-auto flex flex-col"
+          >
+            {content.steps.map((s, i) => {
+              const isLast = i === content.steps!.length - 1;
+              return (
+                <div key={s.id} className="relative pb-5">
+                  {!isLast && (
+                    <div className="absolute left-[7.5px] top-5 w-px h-[calc(100%-16px)] bg-border" />
+                  )}
+                  <div>
+                    {s.type === "reasoning" && <Reasoning text={s.data.text} />}
+                    {s.type === "tool" && <Tool tool={s.data as any} />}
                   </div>
-                );
-              })}
-            </Accordion.Content>
-          </Accordion.Item>
-        </Accordion.Root>
+                </div>
+              );
+            })}
+          </Collapsible.Content>
+        </Collapsible.Root>
       )}
 
       <Markdown className="prose prose-soonagi max-w-none">
