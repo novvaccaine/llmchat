@@ -16,6 +16,8 @@ type MessagesProps = {
 export function Messages(props: MessagesProps) {
   const { messages, conversationID, scrollRef } = props;
 
+  // always scroll the container so that the new
+  // user message appear at the top
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role === "user" && scrollRef.current) {
@@ -54,7 +56,9 @@ export function Messages(props: MessagesProps) {
               "self-end max-w-[80%]": message.role === "user",
               "w-full md:w-[70%]": editing?.id === message.id,
               "min-h-[calc(100vh-20rem)]":
-                i === messages.length - 1 && message.role === "assistant",
+                i === messages.length - 1 &&
+                message.role === "assistant" &&
+                streamingStatus, // do not set height for conversation that's not involved in streaming yet
             })}
             data-message-id={message.id}
             key={message.id}
